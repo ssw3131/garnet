@@ -1,2 +1,2 @@
-garnet
+Dk JS Framework garnet
 ======
