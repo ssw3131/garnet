@@ -563,7 +563,7 @@
                     tree = {
                         // innerHTML
                         innerHTML : function( $msg ) {
-                            return ( $msg == undefined ) ? this.element.innerHTML : this.element.innerHTML = $msg;
+                            return ( $msg == undefined ) ? this.element.innerHTML : this.element.innerHTML = $msg, self;
                         },
 
                         // text 추가
