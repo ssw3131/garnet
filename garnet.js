@@ -979,7 +979,7 @@
             function end(){ caf( timer ); }
 
             // stats
-            stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement );
+//            stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement );
 
             function update(){
                 stats ? stats.begin() : null;
