@@ -475,10 +475,8 @@
                     i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
                     while( i-- )
                         v = a[ i-- ], k = a[ i ],
-                            trace( "css1", typeof v, v ),
                             v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
-                            s[ pc + k ] = v, s[ k ] = v,
-                            trace( "css2", typeof v, v );
+                            s[ pc + k ] = v, s[ k ] = v;
                     return self;
                 },
 
@@ -842,7 +840,7 @@
 
                             add : function(){
                                 var self = this;
-                                self.element.appendChild( self.conElement ), addSwf.call( self );
+                                self.element.appendChild( self.conElement ),  addSwf.call( self );
                             },
 
                             del : function(){
