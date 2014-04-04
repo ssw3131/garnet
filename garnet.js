@@ -561,6 +561,11 @@
                 // todo 네이밍
                 (function(){
                     tree = {
+                        // innerHTML
+                        innerHTML : function( $msg ) {
+                            return ( $msg == undefined ) ? this.element.innerHTML : this.element.innerHTML = $msg;
+                        },
+
                         // text 추가
                         text : (function(){
                             if( Detector.innerText )
