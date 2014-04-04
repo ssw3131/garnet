@@ -889,7 +889,6 @@
 
                     Dom = function( $type ){
                         var self = this, e = Doc.createElement( $type ? $type : "div" ), s = e.style;
-//                        s.cssText = "position : absolute; display : block;",
                             self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
                     },
 
@@ -926,7 +925,6 @@
 
                     Sheet = function(){
                         var self = this, e = Doc.createElement( "div" ), s = e.style;
-//                        s.cssText = "position : absolute; display : block;",
                             self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
                             self.data = new Data();
                     },
@@ -949,7 +947,6 @@
 
                     Flash = function(){
                         var self = this, e = Doc.createElement( "div" ), s = e.style, ce = Doc.createElement( "div" ), cs = ce.style;
-//                        s.cssText = "position : absolute; display : block;",
                             self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
                             e.appendChild( ce ), self.conElement = ce, self.conStyle = cs,
                             self.data = new Data();
