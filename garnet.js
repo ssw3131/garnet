@@ -840,7 +840,7 @@
 
                             add : function(){
                                 var self = this;
-                                self.element.appendChild( self.conElement ),  addSwf.call( self );
+                                self.element.appendChild( self.conElement ), addSwf.call( self );
                             },
 
                             del : function(){
@@ -965,7 +965,7 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Loop
         (function(){
-            var list, timer, stats, raf, caf;
+            var list, timer, stats, raf, caf, update;
             list = ( Dk.Loop = _core.adManager( start, end ) ).getList(),
 
                 raf = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || W.oRequestAnimationFrame || function( $loop ){ return W.setTimeout( $loop, 16 ) }; })(),
@@ -978,19 +978,25 @@
 
             function end(){ caf( timer ); }
 
-            trace( W.Stats )
             // stats
-//            stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement );
+            if( W.Stats )
+                stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement ),
+                    update = function(){
+                        stats ? stats.begin() : null;
 
-            function update(){
-                stats ? stats.begin() : null;
+                        var i = list.length;
+                        while( i-- ) list[ i ].value( list[ i ].key );
 
-                var i = list.length;
-                while( i-- ) list[ i ].value( list[ i ].key );
+                        timer = raf( update );
+                        stats ? stats.end() : null;
+                    }
+            else
+                update = function(){
+                    var i = list.length;
+                    while( i-- ) list[ i ].value( list[ i ].key );
 
-                timer = raf( update );
-                stats ? stats.end() : null;
-            }
+                    timer = raf( update );
+                }
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
