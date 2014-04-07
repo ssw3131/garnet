@@ -1050,8 +1050,8 @@
             function cancelBubbling( $e ){
                 if( $e.stopPropagation )
                     cancelBubbling = function( $e ){ $e.stopPropagation(); }, cancelBubbling( $e );
-                else if( W.ev )
-                    cancelBubbling = function(){ W.ev.cancelBubble = true; }, cancelBubbling();
+                else if( W.event )
+                    cancelBubbling = function(){ W.event.cancelBubble = true; }, cancelBubbling();
             }
 
             // page position 도큐먼트 기준
@@ -1073,10 +1073,6 @@
 
             // 이벤트 타겟
             function getSource( $e ){
-                trace( "getSource", $e )
-                trace( "getSource", $e.target )
-                trace( "getSource", W.ev )
-                trace( "getSource", W.event.srcElement )
                 if( $e.target )
                     return getSource = function( $e ){ return $e.target.___self }, getSource( $e );
                 else if( W.event )
@@ -1103,7 +1099,7 @@
             function end(){ cDe( Doc, we, update ); }
 
             function update( $e ){
-                var i = wl.length, t0 = W.ev || $e, delta = t0.detail ? t0.detail < 0 ? 1 : -1 : t0.wheelDelta > 0 ? 1 : -1;
+                var i = wl.length, t0 = W.event || $e, delta = t0.detail ? t0.detail < 0 ? 1 : -1 : t0.wheelDelta > 0 ? 1 : -1;
                 while( i-- ) wl[ i ].value( delta, wl[ i ].key );
             }
         })(),
