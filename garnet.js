@@ -1067,9 +1067,9 @@
                 else
                     pagePosition = function( $e ){
                         mouse.x = $e.clientX + sl(), mouse.y = $e.clientY + st();
+                        trace( 2, mouse.x );
                     }
                 pagePosition( $e );
-                trace( 2, mouse.x );
             }
 
             // 이벤트 타겟
