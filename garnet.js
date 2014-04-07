@@ -726,7 +726,6 @@
                             var self = this, data = self.data;
                             self.css( "backgroundImage", "url(" + $img + ")" ),
                                 self.pp( "ssId", "ssId" + ++ssId ),
-                                trace( Dk.loader.json ),
                                 Dk.loader.json( $json, loadComplete );
 
                             function loadComplete( $data ){
@@ -1220,6 +1219,7 @@
 
                 // json 로드
                 json : function( $url, $cb, $obj ){
+                    trace( $url, $cb, "json", $obj ? $obj : {} );
                     ajax( $url, $cb, "json", $obj ? $obj : {} );
                 },
 
