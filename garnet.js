@@ -902,7 +902,7 @@
                 // style
                 (function(){
                     var Style, pt = _prototype, list, e, sheet, rules;
-                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet, trace( sheet ), trace( sheet.rules ), trace( sheet.cssRules ), rules = sheet.cssRules || sheet.rules,
+                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, trace( sheet ), trace( sheet.rules ), trace( sheet.cssRules ), rules = sheet.cssRules || sheet.rules,
 
                         Style = function( $key ){
                             var self = this;
