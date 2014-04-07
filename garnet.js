@@ -1170,6 +1170,7 @@
                             if ( dt == "xml" ) {
                                 data = req.responseXML;
                             } else if ( dt == "json" ) {
+                                trace( req.responseText );
                                 data = ( 0, eval )('('+ req.responseText +')');
                             } else if ( dt == "text" ) {
                                 data = req.responseText;
@@ -1177,7 +1178,7 @@
                             cb( data );
                         }
                     }
-                    trace( 4 );
+                    trace( 3 );
 //                    req.readyState == 4 ? req.status == 200
 //                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
                 }
