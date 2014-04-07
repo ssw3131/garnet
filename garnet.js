@@ -902,11 +902,12 @@
                 // style
                 (function(){
                     var Style, pt = _prototype, list, e, sheet, rules;
-                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, trace( 1, sheet ), trace( 2, sheet.rules ), trace( 3, sheet.cssRules ), rules = sheet.cssRules || sheet.rules,
+                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, rules = sheet.cssRules || sheet.rules,
 
                         Style = function( $key ){
                             var self = this;
-                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
+                            trace( 1, sheet ), trace( 2, rules ), trace( 3, rules.length ), trace( 4, sheet.insertRule ),
+                                self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
                         },
 
                         Style.prototype = { st : pt.st },
