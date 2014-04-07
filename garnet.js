@@ -1040,6 +1040,7 @@
 
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
+                trace( 1, $e );
                 var t0;
                 cancelBubbling( $e ), pagePosition( $e );
                 if( t0 = getSource( $e ) )
