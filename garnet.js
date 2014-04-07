@@ -726,9 +726,11 @@
                             var self = this, data = self.data;
                             self.css( "backgroundImage", "url(" + $img + ")" ),
                                 self.pp( "ssId", "ssId" + ++ssId ),
+                                trace( Dk.loader.json ),
                                 Dk.loader.json( $json, loadComplete );
 
                             function loadComplete( $data ){
+                                trace( "loadComplete", $data );
                                 var jArr = $data.frames;
                                 data.jArr = jArr,
                                     data.tf = data.ef = jArr.length,
@@ -1176,7 +1178,7 @@
                     req.setRequestHeader( "Content-type", "application/x-www-form-urlencoded; charset=UTF-8" ), req.send( t2 ); // TODO post 서버 405
             }
 
-            // xml parser
+            // TODO xml parser
             function xmlParser( $data, $cb ){
                 trace("xmlParser")
                 var result = { $search : function( $tag ){ return $data.getElementsByTagName( $tag ) } };
