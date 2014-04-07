@@ -562,7 +562,7 @@
                 (function(){
                     tree = {
                         // innerHTML
-                        innerHTML : function( $msg ) {
+                        innerHTML : function( $msg ){
                             var self = this;
                             return ( $msg == undefined ) ? self.element.innerHTML : self.element.innerHTML = $msg, self;
                         },
@@ -889,7 +889,7 @@
 
                     Dom = function( $type ){
                         var self = this, e = Doc.createElement( $type ? $type : "div" ), s = e.style;
-                            self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
+                        self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
                     },
 
                         Dom.prototype = { id : setId, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev },
@@ -901,12 +901,15 @@
 
                 // style
                 (function(){
-                    var Style, pt = _prototype, list, e, sheet, rules, insertRule;
-                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, rules = sheet.cssRules || sheet.rules, insertRule = sheet.insertRule || sheet.addRule,
+                    var Style, pt = _prototype, list, e, sheet, rules;
+                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, rules = sheet.cssRules || sheet.rules,
 
-                        Style = function( $key ){
+                        Style = sheet.insertRule ? function( $key ){
                             var self = this;
-                                self.sheet = sheet, self.rules = rules, self.styleId = rules.length, insertRule( $key + "{}", self.styleId );
+                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
+                        } : function( $key ){
+                            var self = this;
+                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.addRule( $key, "" );
                         },
 
                         Style.prototype = { st : pt.st },
@@ -925,7 +928,7 @@
 
                     Sheet = function(){
                         var self = this, e = Doc.createElement( "div" ), s = e.style;
-                            self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
+                        self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
                             self.data = new Data();
                     },
 
@@ -947,7 +950,7 @@
 
                     Flash = function(){
                         var self = this, e = Doc.createElement( "div" ), s = e.style, ce = Doc.createElement( "div" ), cs = ce.style;
-                            self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
+                        self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
                             e.appendChild( ce ), self.conElement = ce, self.conStyle = cs,
                             self.data = new Data();
                     },
