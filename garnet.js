@@ -1164,8 +1164,14 @@
 
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
-                    req.readyState == 4 ? req.status == 200
-                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
+                    if( req.readyState == 4 ){
+                        if( req.status == 200 ){
+                            cb( ( dt == "xml" ) ? req.responseXML : ( dt == "json" ) ? eval( "(" + req.responseText + ")" ) : ( dt == "text" ) ? req.responseText : null );
+                        }
+                    }
+
+//                    req.readyState == 4 ? req.status == 200
+//                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
                 }
 
                 req.open( t0, url, true ), // XMLHttpRequest 연결
@@ -1219,7 +1225,6 @@
 
                 // json 로드
                 json : function( $url, $cb, $obj ){
-                    trace( $url, $cb, "json", $obj ? $obj : {} );
                     ajax( $url, $cb, "json", $obj ? $obj : {} );
                 },
 
