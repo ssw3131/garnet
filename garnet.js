@@ -1042,7 +1042,6 @@
             function mouseFunc( $e ){
                 var t0;
                 cancelBubbling( $e ), pagePosition( $e );
-                trace( getSource( $e ) );
                 if( t0 = getSource( $e ) )
                     localPosition( t0 ), dispatchEvent( { type : $e.type, currentTarget : t0 } );
             }
@@ -1074,10 +1073,14 @@
 
             // 이벤트 타겟
             function getSource( $e ){
+                trace( "getSource", $e )
+                trace( "getSource", $e.target )
+                trace( "getSource", W.ev )
+                trace( "getSource", W.event.srcElement )
                 if( $e.target )
                     return getSource = function( $e ){ return $e.target.___self }, getSource( $e );
-                else if( W.ev )
-                    return getSource = function(){ return W.ev.srcElement.___self; }, getSource();
+                else if( W.event )
+                    return getSource = function(){ return W.event.srcElement.___self; }, getSource();
             }
 
             function localPosition( $dom ){
