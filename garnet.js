@@ -901,13 +901,12 @@
 
                 // style
                 (function(){
-                    var Style, pt = _prototype, list, e, sheet, rules;
-                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.styleSheet || e.sheet, rules = sheet.cssRules || sheet.rules,
+                    var Style, pt = _prototype, list, e, sheet, rules, insertRule;
+                    list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, rules = sheet.cssRules || sheet.rules, insertRule = sheet.insertRule || sheet.addRule,
 
                         Style = function( $key ){
                             var self = this;
-                            trace( 1, sheet ), trace( 2, rules ), trace( 3, rules.length ), trace( 5, sheet.insertRule ),
-                                self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
+                                self.sheet = sheet, self.rules = rules, self.styleId = rules.length, insertRule( $key + "{}", self.styleId );
                         },
 
                         Style.prototype = { st : pt.st },
