@@ -1159,13 +1159,14 @@
 
             // TODO json parser
             // ajax
-            function ajax( $cb, $url, $dataType, $obj ){
-//                var url = $url, dt = $dataType, t0 = $obj.type || "GET", t1 = $obj.cache == undefined ? true : $obj.cache, t2 = $obj.postParam, req = getXHR();
-                var cb = $cb, url = $url, dt = $dataType, t0 = $obj.type || "GET", t1 = $obj.cache == undefined ? true : $obj.cache, t2 = $obj.postParam, req = getXHR();
+            function ajax( $url, $cb, $dataType, $obj ){
+                var url = $url, cb = $cb, dt = $dataType, t0 = $obj.type || "GET", t1 = $obj.cache == undefined ? true : $obj.cache, t2 = $obj.postParam, req = getXHR();
 
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
-                    req.readyState == 4 ? req.status == 200 ? cb( dt == "xml" ? req.responseXML : req.responseText ) : null : null;
+                    req.readyState == 4 ? req.status == 200 ?
+                        cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null )
+                        : null : null;
                 }
 
                 req.open( t0, url, true ), // XMLHttpRequest 연결
@@ -1213,17 +1214,17 @@
             Dk.loader = {
                 // text 로드
                 text : function( $url, $cb, $obj ){
-                    ajax( function( $data ){ $cb( $data ) }, $url, "text", $obj ? $obj : {} );
+                    ajax( $url, $cb, "text", $obj ? $obj : {} );
                 },
 
                 // json 로드
                 json : function( $url, $cb, $obj ){
-                    ajax( function( $data ){ $cb( eval( "(" + $data + ")" ) ) }, $url, "json", $obj ? $obj : {} );
+                    ajax( $url, $cb, "json", $obj ? $obj : {} );
                 },
 
                 // xml 로드
                 xml : function( $url, $cb, $obj ){
-                    ajax( function( $data ){ $cb( $data ) }, $url, function( $data ){
+                    ajax( $url, function( $data ){
                         xmlParser( $data, $cb )
                     }, "xml", $obj ? $obj : {} );
                 },
