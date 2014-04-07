@@ -1169,7 +1169,6 @@
                         ? r = dt == "xml" ? req.responseXML : req.responseText
                         : null
                     : null;
-                    trace( r );
                     return r;
                 }
 
