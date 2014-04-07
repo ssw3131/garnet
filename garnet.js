@@ -1073,6 +1073,7 @@
 
             // 이벤트 타겟
             function getSource( $e ){
+
                 if( $e.target )
                     return getSource = function( $e ){ return $e.target.___self }, getSource( $e );
                 else if( W.event )
