@@ -1165,7 +1165,7 @@
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
                     req.readyState == 4 ? req.status == 200 ?
-                        cb( dt == "xml" ? req.responseXML : dt == "json" ? alert( eval( "(" + req.responseText + ")" ) ) : dt == "text" ? req.responseText : null )
+                        cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( '(' + req.responseText + ')' ) : dt == "text" ? req.responseText : null )
                         : null : null;
                 }
 
