@@ -1041,7 +1041,8 @@
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
                 var t0;
-                /*cancelBubbling( $e ), */pagePosition( $e );
+                cancelBubbling( $e ), pagePosition( $e );
+                trace( getSource( $e ) );
                 if( t0 = getSource( $e ) )
                     localPosition( t0 ), dispatchEvent( { type : $e.type, currentTarget : t0 } );
             }
@@ -1067,7 +1068,6 @@
                 else
                     pagePosition = function( $e ){
                         mouse.x = $e.clientX + sl(), mouse.y = $e.clientY + st();
-                        trace( 2, mouse.x );
                     }
                 pagePosition( $e );
             }
