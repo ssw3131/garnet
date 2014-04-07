@@ -1170,14 +1170,14 @@
                             if ( dt == "xml" ) {
                                 data = req.responseXML;
                             } else if ( dt == "json" ) {
-                                data = eval( "(" + req.responseText + ")" );
+                                data = ( 0, eval )('('+ req.responseText +')');
                             } else if ( dt == "text" ) {
                                 data = req.responseText;
                             }
                             cb( data );
                         }
                     }
-                    trace( 3 );
+                    trace( 4 );
 //                    req.readyState == 4 ? req.status == 200
 //                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
                 }
