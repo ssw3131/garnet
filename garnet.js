@@ -1165,8 +1165,7 @@
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
                     req.readyState == 4 ? req.status == 200
-                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? JSON.parse( req.responseText ) : dt == "text" ? req.responseText : null ) : null : null;
-//                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
+                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? "test test" : dt == "text" ? req.responseText : null ) : null : null;
                 }
 
                 req.open( t0, url, true ), // XMLHttpRequest 연결
