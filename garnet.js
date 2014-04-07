@@ -1165,10 +1165,7 @@
 
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
-                    req.readyState == 4 ? req.status == 200
-                        ? cb( dt == "xml" ? req.responseXML : req.responseText )
-                        : null
-                    : null;
+                    req.readyState == 4 ? req.status == 200 ? cb( dt == "xml" ? req.responseXML : req.responseText ) : null : null;
                 }
 
                 req.open( t0, url, true ), // XMLHttpRequest 연결
@@ -1221,8 +1218,7 @@
 
                 // json 로드
                 json : function( $url, $cb, $obj ){
-//                    eval( "(" + req.responseText + ")" )
-                    ajax( function( $data ){ $cb( $data ) }, $url, "json", $obj ? $obj : {} );
+                    ajax( function( $data ){ $cb( eval( "(" + $data + ")" ) ) }, $url, "json", $obj ? $obj : {} );
                 },
 
                 // xml 로드
