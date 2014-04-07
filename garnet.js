@@ -906,7 +906,6 @@
 
                         Style = sheet.addRule ? function( $key ){
                             var self = this;
-                            trace( 1 );
                             self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.addRule( $key, " ", self.styleId );
                         } : function( $key ){
                             var self = this;
