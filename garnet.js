@@ -1158,29 +1158,63 @@
                 }
             }
 
+            function jsonParse(text, reviver) {
+
+                var j;
+
+                function walk(holder, key) {
+
+                    var k, v, value = holder[key];
+                    if (value && typeof value === 'object') {
+                        for (k in value) {
+                            if (Object.prototype.hasOwnProperty.call(value, k)) {
+                                v = walk(value, k);
+                                if (v !== undefined) {
+                                    value[k] = v;
+                                } else {
+                                    delete value[k];
+                                }
+                            }
+                        }
+                    }
+                    return reviver.call(holder, key, value);
+                }
+
+
+                text = String(text);
+                cx.lastIndex = 0;
+                if (cx.test(text)) {
+                    text = text.replace(cx, function (a) {
+                        return '\\u' +
+                            ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                    });
+                }
+
+                if (/^[\],:{}\s]*$/
+                    .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+                        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+                        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+                    j = eval('(' + text + ')');
+
+                    return typeof reviver === 'function'
+                        ? walk({'': j}, '')
+                        : j;
+                }
+
+                throw new SyntaxError('JSON.parse');
+            };
+
+
+
             // ajax
             function ajax( $url, $cb, $dataType, $obj ){
                 var url = $url, cb = $cb, dt = $dataType, t0 = $obj.type || "GET", t1 = $obj.cache == undefined ? true : $obj.cache, t2 = $obj.postParam, req = getXHR();
 
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
-                    if( req.readyState == 4 ){
-                        if( req.status == 200 ){
-                            var data;
-                            if ( dt == "xml" ) {
-                                data = req.responseXML;
-                            } else if ( dt == "json" ) {
-                                trace( req.responseText );
-                                data = ( 0, eval )('('+ req.responseText +')');
-                            } else if ( dt == "text" ) {
-                                data = req.responseText;
-                            }
-                            cb( data );
-                        }
-                    }
-                    trace( 3 );
-//                    req.readyState == 4 ? req.status == 200
-//                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
+                    req.readyState == 4 ? req.status == 200
+                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? jsonParse( req.responseText  ) : dt == "text" ? req.responseText : null ) : null : null;
                 }
 
                 req.open( t0, url, true ), // XMLHttpRequest 연결
