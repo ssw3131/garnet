@@ -904,12 +904,12 @@
                     var Style, pt = _prototype, list, e, sheet, rules;
                     list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, rules = sheet.cssRules || sheet.rules,
 
-                        Style = sheet.insertRule ? function( $key ){
+                        Style = sheet.addRule ? function( $key ){
                             var self = this;
-                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
+                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.addRule( $key, "", self.styleId );
                         } : function( $key ){
                             var self = this;
-                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.addRule( $key, "" );
+                            self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
                         },
 
                         Style.prototype = { st : pt.st },
