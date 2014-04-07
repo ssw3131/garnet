@@ -729,7 +729,6 @@
                                 Dk.loader.json( $json, loadComplete );
 
                             function loadComplete( $data ){
-                                trace( "loadComplete", $data );
                                 var jArr = $data.frames;
                                 data.jArr = jArr,
                                     data.tf = data.ef = jArr.length,
@@ -1158,55 +1157,7 @@
                 }
             }
 
-            function jsonParse(text, reviver) {
-
-                var j, cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-
-                function walk(holder, key) {
-
-                    var k, v, value = holder[key];
-                    if (value && typeof value === 'object') {
-                        for (k in value) {
-                            if (Object.prototype.hasOwnProperty.call(value, k)) {
-                                v = walk(value, k);
-                                if (v !== undefined) {
-                                    value[k] = v;
-                                } else {
-                                    delete value[k];
-                                }
-                            }
-                        }
-                    }
-                    return reviver.call(holder, key, value);
-                }
-
-
-                text = String(text);
-                cx.lastIndex = 0;
-                if (cx.test(text)) {
-                    text = text.replace(cx, function (a) {
-                        return '\\u' +
-                            ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-                    });
-                }
-
-                if (/^[\],:{}\s]*$/
-                    .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-                        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-                        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-
-                    j = eval('(' + text + ')');
-
-                    return typeof reviver === 'function'
-                        ? walk({'': j}, '')
-                        : j;
-                }
-
-                throw new SyntaxError('JSON.parse');
-            };
-
-
-
+            // TODO json parser
             // ajax
             function ajax( $url, $cb, $dataType, $obj ){
                 var url = $url, cb = $cb, dt = $dataType, t0 = $obj.type || "GET", t1 = $obj.cache == undefined ? true : $obj.cache, t2 = $obj.postParam, req = getXHR();
@@ -1214,7 +1165,7 @@
                 // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
                     req.readyState == 4 ? req.status == 200
-                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? jsonParse( req.responseText  ) : dt == "text" ? req.responseText : null ) : null : null;
+                        ? cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null ) : null : null;
                 }
 
                 req.open( t0, url, true ), // XMLHttpRequest 연결
@@ -1228,7 +1179,6 @@
 
             // TODO xml parser
             function xmlParser( $data, $cb ){
-                trace("xmlParser")
                 var result = { $search : function( $tag ){ return $data.getElementsByTagName( $tag ) } };
 
                 function _parseNode( $result, $nodes ){
