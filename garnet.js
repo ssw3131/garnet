@@ -428,6 +428,7 @@
                             case"complete":
                             case"interactive":
                             case"loaded":
+                                trace( $plugInArr );
                                 if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? t1() : $callBack();
                                 break;
                             default:
@@ -435,6 +436,7 @@
                         }
                     },
                         t1 = function(){
+                            trace("loader js");
                             Dk.loader.js( $plugInArr, function(){
                                 trace( "plugIn load complete", $plugInArr ), $callBack();
                             } );
