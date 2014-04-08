@@ -1244,7 +1244,7 @@
                     var dtt = Detector, load, hd = Head, count = 0, i = $arr.length;
 
                     load = (function(){
-                        if( !dtt.addEventListener )
+                        if( dtt.addEventListener )
                             return function( $url, $cb ){
                                 var scr = Doc.createElement( "script" );
                                 scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onload = $cb,
