@@ -1264,7 +1264,6 @@
 
                     function complete(){
                         ++count == i ? $callBack ? $callBack() : null : load( $arr[ count ], complete );
-                        trace( count, i );
                     };
                 }
             }
