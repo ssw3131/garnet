@@ -419,31 +419,32 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
-            if( Detector.addEventListener ) Dk.init = function( $callBack ){ _core.addEvent( Doc, "DOMContentLoaded", $callBack ) }
+            if( Detector.addEventListener )
+                Dk.init = function( $callBack, $plugInArr ){
+                    _core.addEvent( Doc, "DOMContentLoaded", function(){ $plugInArr ? loadPlugIn( $callBack, $plugInArr ) : $callBack() } );
+                }
             else {
                 Dk.init = function( $callBack, $plugInArr ){
-                    console.log( "Dk init" );
-                    var t0, t1;
+                    var t0;
                     t0 = function(){
                         switch( Doc.readyState ){
                             case"complete":
                             case"interactive":
                             case"loaded":
-                                trace( $plugInArr );
-                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? t1() : $callBack();
+                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? loadPlugIn( $callBack, $plugInArr ) : $callBack();
                                 break;
                             default:
                                 setTimeout( t0, 10 );
                         }
                     },
-                        t1 = function(){
-                            trace("loader js");
-                            Dk.loader.js( $plugInArr, function(){
-                                trace( "plugIn load complete", $plugInArr ), $callBack();
-                            } );
-                        },
                         t0();
                 }
+            }
+
+            function loadPlugIn( $callBack, $plugInArr ){
+                Dk.loader.js( $plugInArr, function(){
+                    trace( "plugIn load complete", $plugInArr ), $callBack();
+                } );
             }
         })(),
 
