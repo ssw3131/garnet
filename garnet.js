@@ -421,9 +421,11 @@
         (function(){
             if( Detector.addEventListener )
                 Dk.init = function( $callBack, $plugInArr ){
-                    _core.addEvent( Doc, "DOMContentLoaded", function(){ $plugInArr ? loadPlugIn( $callBack, $plugInArr ) : $callBack() } );
+                    _core.addEvent( Doc, "DOMContentLoaded", function(){
+                        complete( $callBack, $plugInArr );
+                    } );
                 }
-            else {
+            else
                 Dk.init = function( $callBack, $plugInArr ){
                     var t0;
                     t0 = function(){
@@ -431,20 +433,18 @@
                             case"complete":
                             case"interactive":
                             case"loaded":
-                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? loadPlugIn( $callBack, $plugInArr ) : $callBack();
+                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) complete( $callBack, $plugInArr );
                                 break;
                             default:
                                 setTimeout( t0, 10 );
                         }
-                    },
-                        t0();
+                    }, t0();
                 }
-            }
 
-            function loadPlugIn( $callBack, $plugInArr ){
-                Dk.loader.js( $plugInArr, function(){
-                    trace( "plugIn load complete", $plugInArr ), $callBack();
-                } );
+            function complete( $callBack, $plugInArr ){
+                $plugInArr ? Dk.loader.js( $plugInArr, function(){
+                    $callBack();
+                } ) : $callBack();
             }
         })(),
 
