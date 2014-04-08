@@ -420,7 +420,8 @@
         // init
         (function(){
             var pl = {};
-            Dk.init = Detector.addEventListener ? function( $callBack, $plugInArr ){
+            trace( "test" );
+            Dk.init = !Detector.addEventListener ? function( $callBack, $plugInArr ){
                 _core.addEvent( Doc, "DOMContentLoaded", function(){
                     complete( $callBack, $plugInArr );
                 } );
