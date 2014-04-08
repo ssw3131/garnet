@@ -419,6 +419,7 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
+            var pl = {};
             if( Detector.addEventListener )
                 Dk.init = function( $callBack, $plugInArr ){
                     _core.addEvent( Doc, "DOMContentLoaded", function(){
@@ -442,9 +443,19 @@
                 }
 
             function complete( $callBack, $plugInArr ){
-                $plugInArr ? Dk.loader.js( $plugInArr, function(){
+                if( $plugInArr ){
+                    var arr = $plugInArr.slice(), i = arr.length;
+                    while( i-- ){
+                        pl[ arr[ i ] ] ? arr.splice( i, 1 ) : pl[ arr[ i ] ] = arr[ i ];
+                    }
+                    Dk.loader.js( arr, function(){
+                        $callBack();
+                    } );
+                    trace( arr );
+                    trace( pl );
+                } else {
                     $callBack();
-                } ) : $callBack();
+                }
             }
         })(),
 
