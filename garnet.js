@@ -420,27 +420,24 @@
         // init
         (function(){
             var pl = {};
-            if( Detector.addEventListener )
-                Dk.init = function( $callBack, $plugInArr ){
-                    _core.addEvent( Doc, "DOMContentLoaded", function(){
-                        complete( $callBack, $plugInArr );
-                    } );
-                }
-            else
-                Dk.init = function( $callBack, $plugInArr ){
-                    var t0;
-                    t0 = function(){
-                        switch( Doc.readyState ){
-                            case"complete":
-                            case"interactive":
-                            case"loaded":
-                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) complete( $callBack, $plugInArr );
-                                break;
-                            default:
-                                setTimeout( t0, 10 );
-                        }
-                    }, t0();
-                }
+            Dk.init = Detector.addEventListener ? function( $callBack, $plugInArr ){
+                _core.addEvent( Doc, "DOMContentLoaded", function(){
+                    complete( $callBack, $plugInArr );
+                } );
+            } : function( $callBack, $plugInArr ){
+                var t0;
+                t0 = function(){
+                    switch( Doc.readyState ){
+                        case"complete":
+                        case"interactive":
+                        case"loaded":
+                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) complete( $callBack, $plugInArr );
+                            break;
+                        default:
+                            setTimeout( t0, 10 );
+                    }
+                }, t0();
+            }
 
             function complete( $callBack, $plugInArr ){
                 if( $plugInArr ){
@@ -451,11 +448,8 @@
                     Dk.loader.js( arr, function(){
                         $callBack();
                     } );
-                    trace( arr );
-                    trace( pl );
-                } else {
+                } else
                     $callBack();
-                }
             }
         })(),
 
