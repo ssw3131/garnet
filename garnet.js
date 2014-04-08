@@ -421,19 +421,25 @@
         (function(){
             if( Detector.addEventListener ) Dk.init = function( $callBack ){ _core.addEvent( Doc, "DOMContentLoaded", $callBack ) }
             else {
-                Dk.init = function( $callBack ){
-                    var t0 = function(){
+                Dk.init = function( $callBack, $plugInArr ){
+                    var t0, t1;
+                    t0 = function(){
                         switch( Doc.readyState ){
                             case"complete":
                             case"interactive":
                             case"loaded":
-                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $callBack();
+                                if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? t1() : $callBack();
                                 break;
                             default:
                                 setTimeout( t0, 10 );
                         }
-                    }
-                    t0();
+                    },
+                        t1 = function(){
+                            Dk.loader.js( $plugInArr, function(){
+                                trace( "plugIn load complete", $plugInArr ), $callBack();
+                            } );
+                        },
+                        t0();
                 }
             }
         })(),
