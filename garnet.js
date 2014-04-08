@@ -422,6 +422,7 @@
             if( Detector.addEventListener ) Dk.init = function( $callBack ){ _core.addEvent( Doc, "DOMContentLoaded", $callBack ) }
             else {
                 Dk.init = function( $callBack, $plugInArr ){
+                    trace( $plugInArr );
                     var t0, t1;
                     t0 = function(){
                         switch( Doc.readyState ){
