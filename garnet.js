@@ -886,7 +886,7 @@
                 var list, adManager, cr = _core, cTe = cr.throwError;
                 list = ( adManager = cr.adManager( function(){}, function(){} ) ).getList(),
 
-                    setId = function( $id ){
+                    _prototype = setId = function( $id ){
                         var self = this;
                         Doc.getElementById( $id ) ? cTe( "Dk : 제공된 id가 기존에 존재합니다." ) : adManager.add( $id, self ) ? self.element.id = $id : null;
                         return self;
