@@ -459,7 +459,7 @@
             var property, tree, sheet, flash, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cOl = cr.onload, cTe = cr.throwError, cSl = cr.slice,
                 pc = dtt.prefixCss, npx = { opacity : true, zIndex : true, "z-index" : true };
 
-            _prototype = {
+            Dk.prototype = _prototype = {
                 // property
                 pp : function(){
                     var self = this, pp = property, a = arguments, i = a.length, k0 = a[ 0 ];
@@ -554,14 +554,14 @@
                     var self = this, st = sheet, a = arguments, i = a.length, k0 = a[ 0 ];
                     i == 1 ? st[ k0 ].call( self ) : st[ k0 ].apply( self, cSl.call( a, 1 ) );
                     return self;
-                },
+                }
 
                 // flash
-                fl : function(){
+                /*fl : function(){
                     var self = this, fl = flash, a = arguments, i = a.length, k0 = a[ 0 ];
                     i == 1 ? fl[ k0 ].call( self ) : fl[ k0 ].apply( self, cSl.call( a, 1 ) );
                     return self;
-                }
+                }*/
             },
 
                 // property
@@ -789,10 +789,10 @@
                                 render.add( self.pp( "ssId" ), self );
                         }
                     }
-                })(),
+                })()
 
                 // flash
-                (function(){
+                /*(function(){
                     var dtt = Detector, addSwf;
 
                     function checkVersion( $params ){
@@ -873,7 +873,7 @@
                                 this.flash.toFlash( $func, ( $params ) ? $params : [] );
                             }
                         }
-                })()
+                })()*/
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
@@ -957,10 +957,10 @@
                         Dk.sheet = function(){
                             return new Sheet();
                         }
-                })(),
+                })()
 
                 // flash
-                (function(){
+                /*(function(){
                     var Flash, pt = _prototype, Data;
 
                     Flash = function(){
@@ -980,7 +980,7 @@
                         Dk.flash = function(){
                             return new Flash();
                         }
-                })()
+                })()*/
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
