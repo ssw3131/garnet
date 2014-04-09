@@ -417,6 +417,21 @@
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
+        // get set
+        (function(){
+            var cTe = _core.throwError;
+            Dk.gs = function(){
+                var a = arguments, i = a.length, k0 = a[ 0 ], k, v;
+                if( i == 1 )
+                    return Dk[ k0 ];
+                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                while( i-- )
+                    v = a[ i-- ], k = a[ i ],
+                    Dk[ k ] ? cTe( "Dk : 제공된 " + k + "가 기존에 존재합니다." ) : Dk[ k ] = v;
+            }
+        })(),
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
             var pl = {};
@@ -555,13 +570,6 @@
                     i == 1 ? st[ k0 ].call( self ) : st[ k0 ].apply( self, cSl.call( a, 1 ) );
                     return self;
                 }
-
-                // flash
-                /*fl : function(){
-                    var self = this, fl = flash, a = arguments, i = a.length, k0 = a[ 0 ];
-                    i == 1 ? fl[ k0 ].call( self ) : fl[ k0 ].apply( self, cSl.call( a, 1 ) );
-                    return self;
-                }*/
             },
 
                 // property
@@ -790,103 +798,17 @@
                         }
                     }
                 })()
-
-                // flash
-                /*(function(){
-                    var dtt = Detector, addSwf;
-
-                    function checkVersion( $params ){
-                        var version;
-                        if( $params.version == undefined ) return dtt.flashVersion >= 10.1;
-                        else  return version = $params.version, delete $params.version, dtt.flashVersion >= version;
-                    }
-
-                    addSwf = ( function(){
-                        if( dtt.browser == "ie" && dtt.browserVersion < 9 ){
-                            return function(){
-                                var self = this, data = self.data, params = data.params, r, k;
-                                r = "<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' width=" + data.width + " height=" + data.height + " style='position:absolute; margin:0px; padding:0px'>"
-                                    + "<param name='movie' value=" + data.url + " />";
-                                for( k in params ){
-                                    r += "<param name=" + k + " value=" + params[ k ] + " />";
-                                }
-                                r += "</object>",
-                                    self.conElement.innerHTML = r,
-                                    self.flash = self.conElement.firstChild;
-                            }
-                        } else {
-                            return function(){
-                                var self = this, data = self.data, params = data.params, r, k;
-                                r = "<object type='application/x-shockwave-flash' data=" + data.url + " width=" + data.width + " height=" + data.height + " style='position:absolute; margin:0px; padding:0px'>";
-                                for( k in params ){
-                                    r += "<param name=" + k + " value=" + params[ k ] + " />";
-                                }
-                                r += "</object>",
-                                    self.conElement.innerHTML = r,
-                                    self.flash = self.conElement.firstChild;
-                            }
-                        }
-                    }() ),
-
-                        flash = {
-                            load : function( $url, $width, $height, $params ){
-                                var self = this, data = self.data;
-                                data.url = $url, data.width = $width, data.height = $height, data.params = $params = $params || {};
-                                if( checkVersion( $params ) )
-                                    $params.wmode = $params.wmode || "opaque",
-                                        $params.allowScriptAccess = $params.allowScriptAccess || "always",
-                                        addSwf.call( self ),
-                                        flash.setSize.call( self, $width, $height );
-                                else
-                                    self.conElement.innerHTML = "<a href='http://www.adobe.com/go/getflashplayer' target'_blank'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player'></a>";
-                            },
-
-                            setSize : function( $width, $height ){
-                                var self = this, data = self.data, s = self.style, cs = self.conStyle, f = self.flash;
-                                data.width = s.width = cs.width = f.width = ( typeof $width == "number" ) ? $width + "px" : $width,
-                                    data.height = s.height = cs.height = f.height = ( typeof $height == "number" ) ? $height + "px" : $height;
-                            },
-
-                            show : function(){
-                                this.conStyle.visibility = "visible";
-                            },
-
-                            hide : function(){
-                                this.conStyle.visibility = "hidden";
-                            },
-
-                            refresh : function(){
-                                addSwf.call( this );
-                            },
-
-                            add : function(){
-                                var self = this;
-                                self.element.appendChild( self.conElement ), addSwf.call( self );
-                            },
-
-                            del : function(){
-                                var self = this;
-                                self.element.removeChild( self.conElement );
-                            },
-
-                            toFlash : function( $func, $params ){
-                                this.flash.toFlash( $func, ( $params ) ? $params : [] );
-                            }
-                        }
-                })()*/
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // dom, style, sheet, flash
         (function(){
-            var setId;
-
             // prototype id
             (function(){
                 var list, adManager, cr = _core, cTe = cr.throwError;
                 list = ( adManager = cr.adManager( function(){}, function(){} ) ).getList(),
 
-                    _prototype.setId = setId = function( $id ){
+                    _prototype.setId = function( $id ){
                         var self = this;
                         Doc.getElementById( $id ) ? cTe( "Dk : 제공된 id가 기존에 존재합니다." ) : adManager.add( $id, self ) ? self.element.id = $id : null;
                         return self;
@@ -907,7 +829,7 @@
                         self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
                     },
 
-                        Dom.prototype = { id : setId, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev },
+                        Dom.prototype = { id : pt.setId, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev },
 
                         Dk.dom = function( $type ){
                             return new Dom( $type );
@@ -952,35 +874,12 @@
                             this.jArr = null, this.rp = true, this.cf = 1, this.tf = 1, this.sf = 1, this.ef = 1, this.cr = 0, this.fr = 30;
                         },
 
-                        Sheet.prototype = { id : setId, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev, ss : pt.ss },
+                        Sheet.prototype = { id : pt.setId, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev, ss : pt.ss },
 
                         Dk.sheet = function(){
                             return new Sheet();
                         }
                 })()
-
-                // flash
-                /*(function(){
-                    var Flash, pt = _prototype, Data;
-
-                    Flash = function(){
-                        var self = this, e = Doc.createElement( "div" ), s = e.style, ce = Doc.createElement( "div" ), cs = ce.style;
-                        self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self,
-                            e.appendChild( ce ), self.conElement = ce, self.conStyle = cs,
-                            self.data = new Data();
-                    },
-
-                        // data
-                        Data = function(){
-                            this.url = "", this.width = 0, this.height = 0, this.params = {};
-                        },
-
-                        Flash.prototype = { id : setId, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, fl : pt.fl },
-
-                        Dk.flash = function(){
-                            return new Flash();
-                        }
-                })()*/
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
