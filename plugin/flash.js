@@ -5,14 +5,14 @@
     if( Dk.gs( "flash" ) ) return;
 
     var Info = { name : "Dk garnet plugIn - flash", version : "v0.0.1", contact : "ssw3131@daum.net" },
-        Doc = document, _prototype, _dkDtt = Dk.gs( "Detector" ), _dkProto = Dk.gs( "prototype" );
+        Doc = document, _prototype, _dkDtt = Dk.gs( "Detector" ), _dkProto = Dk.gs( "prototype" ), _dkCore = Dk.gs( "core" );
 
     trace( Info ),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // prototype
         (function(){
-            var flash, cSl = Array.prototype.slice;
+            var flash, cSl = _dkCore.slice;
 
             _prototype = function(){
                 var self = this, fl = flash, a = arguments, i = a.length, k0 = a[ 0 ];
@@ -122,7 +122,7 @@
                     this.url = "", this.width = 0, this.height = 0, this.params = {};
                 },
 
-                Flash.prototype = { id : _dkProto.setId, pp : _dkProto.pp, atr : _dkProto.atr, css : _dkProto.css, tr : _dkProto.tr, fl : _prototype },
+                Flash.prototype = { id : _dkProto.id, pp : _dkProto.pp, atr : _dkProto.atr, css : _dkProto.css, tr : _dkProto.tr, fl : _prototype },
 
                 Dk.gs( "flash", function(){
                     return new Flash();
