@@ -457,22 +457,16 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // plugIn load
         (function(){
-            var list = {}, cl = 0, nl = 0, cbList = [], cb ;
+            var list = {}, cl = 0, nl = 0, cb ;
             Dk.plugIn = function( $plugInArr, $callBack ){
                 var arr = $plugInArr.slice(), i = arr.length;
                 while( i-- ){
                     list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
                 }
                 nl += arr.length;
-                trace( arr );
-                cb = $callBack;
-                trace( cb );
+                $callBack ? cb = $callBack : null;
                 Dk.loader.js( arr, function(){  } );
             }
-
-            /*function complete( $cb ){
-                cl == nl ? $cb() : null;
-            }*/
 
             Dk.plugIn.add = function(){
                 ++cl == nl ? cb() : null;
