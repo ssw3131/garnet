@@ -1030,7 +1030,7 @@
                 // js 로드
                 js : function( $arr, $callBack ){
                     var dtt = Detector, load, hd = Head, count = 0, i = $arr.length;
-                    i == 0 ? $callBack() : null,
+                    if( i == 0 ) return $callBack(), undefined;
 
                         load = (function(){
                             if( dtt.addEventListener )
