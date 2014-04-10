@@ -128,5 +128,6 @@
                     return new Flash();
                 } );
         })(),
+        trace( "flash" ),
         Dk.plugIn.add();
 })();

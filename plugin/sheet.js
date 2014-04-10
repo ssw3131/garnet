@@ -129,5 +129,6 @@
                     return new Sheet();
                 } );
         })(),
+        trace( "sheet" ),
         Dk.plugIn.add();
 })();
