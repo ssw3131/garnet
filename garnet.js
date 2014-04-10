@@ -1029,6 +1029,8 @@
 
                 // js 로드
                 js : function( $arr, $callBack ){
+                    trace( "js" );
+                    trace( $arr );
                     var dtt = Detector, load, hd = Head, count = 0, i = $arr.length;
                     if( i == 0 ) return $callBack(), undefined;
 
