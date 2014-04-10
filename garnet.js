@@ -465,7 +465,7 @@
                 }
                 nl += arr.length,
                     $callBack ? cb = $callBack : null,
-                    Dk.loader.js( arr, function(){} );
+                    Dk.loader.js( arr );
             }
 
             Dk.plugIn.add = function(){
