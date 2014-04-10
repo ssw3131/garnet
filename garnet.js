@@ -1030,23 +1030,24 @@
                 // js 로드
                 js : function( $arr, $callBack ){
                     var dtt = Detector, load, hd = Head, count = 0, i = $arr.length;
+                    i == 0 ? $callBack : null,
 
-                    load = (function(){
-                        if( dtt.addEventListener )
-                            return function( $url, $cb ){
-                                var scr = Doc.createElement( "script" );
-                                scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onload = $cb,
-                                    hd.appendChild( scr );
-                            };
-                        else
-                            return function( $url, $cb ){
-                                var scr = Doc.createElement( "script" );
-                                scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onreadystatechange = function(){
-                                    if( this.readyState == "loaded" || this.readyState == "complete" ) this.onreadystatechange = null, $cb();
-                                },
-                                    hd.appendChild( scr );
-                            };
-                    })(),
+                        load = (function(){
+                            if( dtt.addEventListener )
+                                return function( $url, $cb ){
+                                    var scr = Doc.createElement( "script" );
+                                    scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onload = $cb,
+                                        hd.appendChild( scr );
+                                };
+                            else
+                                return function( $url, $cb ){
+                                    var scr = Doc.createElement( "script" );
+                                    scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onreadystatechange = function(){
+                                        if( this.readyState == "loaded" || this.readyState == "complete" ) this.onreadystatechange = null, $cb();
+                                    },
+                                        hd.appendChild( scr );
+                                };
+                        })(),
 
                         load( $arr[ count ], complete );
 
