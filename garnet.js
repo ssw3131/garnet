@@ -464,6 +464,7 @@
                     list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
                 }
                 nl += arr.length;
+                trace( arr );
                 cb = $callBack;
                 trace( cb );
                 Dk.loader.js( arr, function(){  } );
