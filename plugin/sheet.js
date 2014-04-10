@@ -128,5 +128,6 @@
                 Dk.gs( "sheet", function(){
                     return new Sheet();
                 } );
-        })()
+        })(),
+        Dk.plugIn.add();
 })();

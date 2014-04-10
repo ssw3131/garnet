@@ -127,5 +127,6 @@
                 Dk.gs( "flash", function(){
                     return new Flash();
                 } );
-        })()
+        })(),
+        Dk.plugIn.add();
 })();
