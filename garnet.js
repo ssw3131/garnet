@@ -457,7 +457,7 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // plugIn load
         (function(){
-            var list = {}, cb, cl = 0, nl = 0;
+            var list = {}, cl = 0, nl = 0, cbList = [];
             Dk.plugIn = function( $plugInArr, $callBack ){
                 var arr = $plugInArr.slice(), i = arr.length;
                 while( i-- ){
@@ -475,6 +475,7 @@
 
             Dk.plugIn.add = function(){
                 ++cl == nl ? cb() : null;
+                trace( cl, nl );
             }
         })(),
 
