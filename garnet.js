@@ -457,20 +457,19 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // plugIn load
         (function(){
-            var list = {}, cl = 0, nl = 0, cb ;
+            var list = {}, cl = 0, nl = 0, cb;
             Dk.plugIn = function( $plugInArr, $callBack ){
                 var arr = $plugInArr.slice(), i = arr.length;
                 while( i-- ){
                     list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
                 }
-                nl += arr.length;
-                $callBack ? cb = $callBack : null;
-                Dk.loader.js( arr, function(){  } );
+                nl += arr.length,
+                    $callBack ? cb = $callBack : null,
+                    Dk.loader.js( arr, function(){} );
             }
 
             Dk.plugIn.add = function(){
                 ++cl == nl ? cb() : null;
-                trace( cl, nl );
             }
         })(),
 
@@ -1037,7 +1036,7 @@
                 // js 로드
                 js : function( $arr, $callBack ){
                     var dtt = Detector, load, hd = Head, count = 0, i = $arr.length;
-                    if( i == 0 ) return $callBack(), undefined;
+                    if( i == 0 ) return $callBack ? $callBack() : null, undefined;
 
                     load = (function(){
                         if( dtt.addEventListener )
