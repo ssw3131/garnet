@@ -222,7 +222,7 @@
                         if( dtt.addEventListener )
                             return function( $e, $et, $cb ){
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.addEventListener( $et, $cb, true );
+                                    $e.addEventListener( $et, $cb, false );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb ){
@@ -232,7 +232,7 @@
                     } else {
                         if( dtt.addEventListener )
                             return function( $e, $et, $cb ){
-                                $e.addEventListener( $et, $cb, true );
+                                $e.addEventListener( $et, $cb, false );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb ){
