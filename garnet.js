@@ -222,7 +222,7 @@
                         if( dtt.addEventListener )
                             return function( $e, $et, $cb ){
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.addEventListener( $et, $cb, true );
+                                    $e.addEventListener( $et, $cb, false );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb ){
@@ -232,7 +232,7 @@
                     } else {
                         if( dtt.addEventListener )
                             return function( $e, $et, $cb ){
-                                $e.addEventListener( $et, $cb, true );
+                                $e.addEventListener( $et, $cb, false );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb ){
@@ -840,7 +840,7 @@
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
                 var t0;
-                /*cancelBubbling( $e ), */pagePosition( $e );
+                cancelBubbling( $e ), pagePosition( $e );
                 if( t0 = getSource( $e ) )
                     localPosition( t0 ), dispatchEvent( { type : $e.type, currentTarget : t0 } );
             }
