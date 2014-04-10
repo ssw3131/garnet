@@ -465,6 +465,7 @@
                 }
                 nl += arr.length;
                 cb = $callBack;
+                trace( cb );
                 Dk.loader.js( arr, function(){  } );
             }
 
