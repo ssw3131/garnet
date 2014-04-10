@@ -434,7 +434,7 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
-            Dk.init = Detector.addEventListener ? function( $callBack, $plugInArr ){
+            Dk.init = Detector.addEventListener ? function( $plugInArr, $callBack ){
                 _core.addEvent( Doc, "DOMContentLoaded", function(){
                     $plugInArr ? Dk.plugIn( $callBack, $plugInArr ) : $callBack();
                 } );
@@ -458,7 +458,7 @@
         // plugIn load
         (function(){
             var list = {};
-            Dk.plugIn = function( $callBack, $plugInArr ){
+            Dk.plugIn = function( $plugInArr, $callBack ){
                 var arr = $plugInArr.slice(), i = arr.length;
                 while( i-- ){
                     list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
