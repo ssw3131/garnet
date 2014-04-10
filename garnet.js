@@ -427,17 +427,16 @@
                 i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
                 while( i-- )
                     v = a[ i-- ], k = a[ i ],
-                    Dk[ k ] ? cTe( "Dk : 제공된 " + k + "가 기존에 존재합니다." ) : Dk[ k ] = v;
+                        Dk[ k ] ? cTe( "Dk : 제공된 " + k + "가 기존에 존재합니다." ) : Dk[ k ] = v;
             }
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
-            var pl = {};
             Dk.init = Detector.addEventListener ? function( $callBack, $plugInArr ){
                 _core.addEvent( Doc, "DOMContentLoaded", function(){
-                    complete( $callBack, $plugInArr );
+                    $plugInArr ? Dk.plugIn( $callBack, $plugInArr ) : $callBack();
                 } );
             } : function( $callBack, $plugInArr ){
                 var t0;
@@ -446,25 +445,25 @@
                         case"complete":
                         case"interactive":
                         case"loaded":
-                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) complete( $callBack, $plugInArr );
+                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? Dk.plugIn( $callBack, $plugInArr ) : $callBack();
                             break;
                         default:
                             setTimeout( t0, 10 );
                     }
                 }, t0();
             }
+        })(),
 
-            function complete( $callBack, $plugInArr ){
-                if( $plugInArr ){
-                    var arr = $plugInArr.slice(), i = arr.length;
-                    while( i-- ){
-                        pl[ arr[ i ] ] ? arr.splice( i, 1 ) : pl[ arr[ i ] ] = arr[ i ];
-                    }
-                    Dk.loader.js( arr, function(){
-                        $callBack();
-                    } );
-                } else
-                    $callBack();
+        //----------------------------------------------------------------------------------------------------------------------------------------------//
+        // plugIn load
+        (function(){
+            var list = {};
+            Dk.plugIn = function( $callBack, $plugInArr ){
+                var arr = $plugInArr.slice(), i = arr.length;
+                while( i-- ){
+                    list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
+                }
+                Dk.loader.js( arr, $callBack );
             }
         })(),
 
@@ -510,7 +509,7 @@
                     return self;
                 },
 
-                // style sheet
+                // styleSheet
                 st : function(){
                     var self = this, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
                     if( i == 1 )
@@ -743,7 +742,7 @@
                         }
                 })(),
 
-                // style
+                // styleSheet
                 (function(){
                     var Style, pt = _prototype, list, e, sheet, rules;
                     list = {}, e = Doc.createElement( "style" ), Head.appendChild( e ), sheet = e.sheet || e.styleSheet, rules = sheet.cssRules || sheet.rules,
