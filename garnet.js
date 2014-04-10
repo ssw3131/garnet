@@ -434,9 +434,9 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
-            Dk.init = Detector.addEventListener ? function( $plugInArr, $callBack ){
+            Dk.init = Detector.addEventListener ? function( $callBack, $plugInArr ){
                 _core.addEvent( Doc, "DOMContentLoaded", function(){
-                    $plugInArr ? Dk.plugIn( $callBack, $plugInArr ) : $callBack();
+                    $plugInArr ? Dk.plugIn( $plugInArr, $callBack ) : $callBack();
                 } );
             } : function( $callBack, $plugInArr ){
                 var t0;
@@ -445,7 +445,7 @@
                         case"complete":
                         case"interactive":
                         case"loaded":
-                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? Dk.plugIn( $callBack, $plugInArr ) : $callBack();
+                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? Dk.plugIn( $plugInArr, $callBack ) : $callBack();
                             break;
                         default:
                             setTimeout( t0, 10 );
