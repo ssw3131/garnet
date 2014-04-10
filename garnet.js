@@ -457,13 +457,23 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // plugIn load
         (function(){
-            var list = {};
+            var list = {}, cb, cl = 0, nl = 0;
             Dk.plugIn = function( $plugInArr, $callBack ){
                 var arr = $plugInArr.slice(), i = arr.length;
                 while( i-- ){
                     list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
                 }
-                Dk.loader.js( arr, $callBack );
+                nl += arr.length;
+                cb = $callBack;
+                Dk.loader.js( arr, function(){  } );
+            }
+
+            /*function complete( $cb ){
+                cl == nl ? $cb() : null;
+            }*/
+
+            Dk.plugIn.add = function(){
+                ++cl == nl ? cb() : null;
             }
         })(),
 
@@ -1029,27 +1039,25 @@
 
                 // js 로드
                 js : function( $arr, $callBack ){
-                    trace( "js" );
-                    trace( $arr );
                     var dtt = Detector, load, hd = Head, count = 0, i = $arr.length;
                     if( i == 0 ) return $callBack(), undefined;
 
-                        load = (function(){
-                            if( dtt.addEventListener )
-                                return function( $url, $cb ){
-                                    var scr = Doc.createElement( "script" );
-                                    scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onload = $cb,
-                                        hd.appendChild( scr );
-                                };
-                            else
-                                return function( $url, $cb ){
-                                    var scr = Doc.createElement( "script" );
-                                    scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onreadystatechange = function(){
-                                        if( this.readyState == "loaded" || this.readyState == "complete" ) this.onreadystatechange = null, $cb();
-                                    },
-                                        hd.appendChild( scr );
-                                };
-                        })(),
+                    load = (function(){
+                        if( dtt.addEventListener )
+                            return function( $url, $cb ){
+                                var scr = Doc.createElement( "script" );
+                                scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onload = $cb,
+                                    hd.appendChild( scr );
+                            };
+                        else
+                            return function( $url, $cb ){
+                                var scr = Doc.createElement( "script" );
+                                scr.type = "text/javascript", scr.charset = "utf-8", scr.src = $url, scr.onreadystatechange = function(){
+                                    if( this.readyState == "loaded" || this.readyState == "complete" ) this.onreadystatechange = null, $cb();
+                                },
+                                    hd.appendChild( scr );
+                            };
+                    })(),
 
                         load( $arr[ count ], complete );
 
