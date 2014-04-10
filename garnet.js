@@ -457,19 +457,28 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // plugIn load
         (function(){
-            var list = {}, cl = 0, nl = 0, cb;
+            var list = {};
             Dk.plugIn = function( $plugInArr, $callBack ){
-                var arr = $plugInArr.slice(), i = arr.length;
+                var arr = $plugInArr.slice(), i = arr.length, jl = [], nc = i, cc = 0;
                 while( i-- ){
-                    list[ arr[ i ] ] ? arr.splice( i, 1 ) : list[ arr[ i ] ] = arr[ i ];
+                    list[ arr[ i ].id ] ? arr.splice( i, 1 ) : list[ arr[ i ].id ] = complete;
                 }
-                nl += arr.length,
-                    $callBack ? cb = $callBack : null,
-                    Dk.loader.js( arr );
+
+                function complete(){
+                    trace( "complete", cc, nc )
+                    ++cc == nc ? $callBack() : null;
+                }
+
+                i = arr.length;
+                while( i-- ){
+                    jl[ i ] = arr[ i ].url;
+                }
+                trace( jl )
+                Dk.loader.js( jl );
             }
 
-            Dk.plugIn.add = function(){
-                ++cl == nl ? cb() : null;
+            Dk.plugIn.add = function( $id ){
+                list[ $id ]();
             }
         })(),
 
