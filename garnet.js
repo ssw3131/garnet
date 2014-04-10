@@ -465,7 +465,6 @@
                 }
 
                 function complete(){
-                    trace( "complete", cc, nc )
                     ++cc == nc ? $callBack() : null;
                 }
 
@@ -473,7 +472,6 @@
                 while( i-- ){
                     jl[ i ] = arr[ i ].url;
                 }
-                trace( jl )
                 Dk.loader.js( jl );
             }
 
