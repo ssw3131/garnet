@@ -434,18 +434,18 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // init
         (function(){
-            Dk.init = Detector.addEventListener ? function( $callBack, $plugInArr ){
+            Dk.init = Detector.addEventListener ? function( $callBack ){
                 _core.addEvent( Doc, "DOMContentLoaded", function(){
-                    $plugInArr ? Dk.plugIn( $plugInArr, $callBack ) : $callBack();
+                    $callBack();
                 } );
-            } : function( $callBack, $plugInArr ){
+            } : function( $callBack ){
                 var t0;
                 t0 = function(){
                     switch( Doc.readyState ){
                         case"complete":
                         case"interactive":
                         case"loaded":
-                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $plugInArr ? Dk.plugIn( $plugInArr, $callBack ) : $callBack();
+                            if( Doc && Doc.getElementsByTagName && Doc.getElementById && Doc.body ) $callBack();
                             break;
                         default:
                             setTimeout( t0, 10 );
@@ -458,8 +458,17 @@
         // plugIn load
         (function(){
             var list = {};
+
+            function loadJs( $arr ){
+                var arr = [], i = $arr.length;
+                while( i-- ){
+                    arr[ i ] = arr[ i ].url;
+                }
+                Dk.loader.js( arr );
+            }
+
             Dk.plugIn = function( $plugInArr, $callBack ){
-                var arr = $plugInArr.slice(), i = arr.length, jl = [], nc = i, cc = 0;
+                var arr = $plugInArr.slice(), i = arr.length, nc = i, cc = 0;
                 while( i-- ){
                     list[ arr[ i ].id ] ? arr.splice( i, 1 ) : list[ arr[ i ].id ] = complete;
                 }
@@ -468,16 +477,12 @@
                     ++cc == nc ? $callBack() : null;
                 }
 
-                i = arr.length;
-                while( i-- ){
-                    jl[ i ] = arr[ i ].url;
-                }
-                Dk.loader.js( jl );
-            }
+                loadJs( arr );
+            },
 
-            Dk.plugIn.add = function( $id ){
-                list[ $id ]();
-            }
+                Dk.plugIn.add = function( $id ){
+                    list[ $id ]();
+                }
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
