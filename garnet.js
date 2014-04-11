@@ -462,7 +462,7 @@
             function loadJs( $arr ){
                 var arr = [], i = $arr.length;
                 while( i-- ){
-                    arr[ i ] = arr[ i ].url;
+                    arr[ i ] = $arr[ i ].url;
                 }
                 Dk.loader.js( arr );
             }
