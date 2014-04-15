@@ -220,23 +220,22 @@
                 addEvent : (function(){
                     if( dtt.touchBool ){
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
+                            return function( $e, $et, $cb, $cap ){
+                                if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.addEventListener( $et, $cb, false );
-                            }
-                        else if( dtt.attachEvent )
-                            return function( $e, $et, $cb ){
-                                $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.attachEvent( "on" + $et, $cb );
+//                                    $cap = $cap ? $cap : false,
+                                    $e.addEventListener( $et, $cb, $cap );
                             }
                     } else {
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
-                                $e.addEventListener( $et, $cb, false );
+                            return function( $e, $et, $cb, $cap ){
+//                                $cap = $cap ? $cap : false,
+                                $e.addEventListener( $et, $cb, $cap );
                             }
                         else if( dtt.attachEvent )
-                            return function( $e, $et, $cb ){
-                                $e.attachEvent( "on" + $et, $cb );
+                            return function( $e, $et, $cb, $cap ){
+                                $e.attachEvent( "on" + $et, $cb ),
+                                    $cap ? $e.setCapture() : null;
                             }
                     }
                 })(),
@@ -245,23 +244,20 @@
                 delEvent : (function(){
                     if( dtt.touchBool ){
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
+                            return function( $e, $et, $cb, $cap ){
+                                if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.removeEventListener( $et, $cb, false );
-                            }
-                        else if( dtt.attachEvent )
-                            return function( $e, $et, $cb ){
-                                $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.detachEvent( "on" + $et, $cb );
+                                    $e.removeEventListener( $et, $cb, $cap );
                             }
                     } else {
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
-                                $e.removeEventListener( $et, $cb, false );
+                            return function( $e, $et, $cb, $cap ){
+                                $e.removeEventListener( $et, $cb, $cap );
                             }
                         else if( dtt.attachEvent )
-                            return function( $e, $et, $cb ){
-                                $e.detachEvent( "on" + $et, $cb );
+                            return function( $e, $et, $cb, $cap ){
+                                $e.detachEvent( "on" + $et, $cb ),
+                                    $cap ? $e.releaseCapture() : null;
                             }
                     }
                 })(),
@@ -370,9 +366,10 @@
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
-        // trace
+        // log
         (function(){
-            var trace, log = [], cr = _core, cJoin = cr.join, t0, t1, t2;
+            var log, logArr = [], cr = _core, cJoin = cr.join, cTe = cr.throwError, t0, t1, t2;
+            if( W.log ) return cTe( "log가 이미 존재합니다." );
 
             t0 = Doc.createElement( "div" ),
                 t0.style.cssText = "left : 710px; top : 32px; width : 800px; height : 90%; " +
@@ -382,35 +379,35 @@
                     "position : fixed;display : block; padding-left : 10px; background-color : #000; font : 12px/18px 돋움, sans-serif; color : #FFF; opacity : 0.8; z-index : 10000000;",
                 t1.innerHTML = "Keyboard F8 key press : toggle",
 
-                W.trace = trace = (function(){
+                W.log = log = (function(){
                     if( (W["console"]) )
                         return function(){
                             var a = arguments, str;
                             if( a.length > 1 )
-                                str = cJoin.call( a, ',' ), log.splice( 0, 0, str ), console.log( str );
+                                str = cJoin.call( a, ',' ), logArr.splice( 0, 0, str ), console.log( str );
                             else
-                                log.splice( 0, 0, a[ 0 ] ), console.log( a[ 0 ] );
-                            t2 ? t0.innerHTML = log[ 0 ] + "<br>" + t0.innerHTML : null;
+                                logArr.splice( 0, 0, a[ 0 ] ), console.log( a[ 0 ] );
+                            t2 ? t0.innerHTML = logArr[ 0 ] + "<br>" + t0.innerHTML : null;
                         }
                     else
                         return function(){
                             var a = arguments, str;
                             if( a.length > 1 )
-                                str = cJoin.call( a, ',' ), log.splice( 0, 0, str );
+                                str = cJoin.call( a, ',' ), logArr.splice( 0, 0, str );
                             else
-                                log.splice( 0, 0, a[ 0 ] );
-                            t2 ? t0.innerHTML = log[ 0 ] + "<br>" + t0.innerHTML : null;
+                                logArr.splice( 0, 0, a[ 0 ] );
+                            t2 ? t0.innerHTML = logArr[ 0 ] + "<br>" + t0.innerHTML : null;
                         }
                 })(),
 
-                cr.addEvent( Doc, "keydown", function( $e ){ $e.keyCode == 119 ? t2 ? trace.hide() : trace.show() : null; } ),// F8
+                cr.addEvent( Doc, "keydown", function( $e ){ $e.keyCode == 119 ? t2 ? log.hide() : log.show() : null; } ),// F8
 
-                trace.show = function(){
+                log.show = function(){
                     var body = Doc.body;
-                    t0.innerHTML = cJoin.call( log, "<br>" ), body.appendChild( t0 ), body.appendChild( t1 ), t2 = true;
+                    t0.innerHTML = cJoin.call( logArr, "<br>" ), body.appendChild( t0 ), body.appendChild( t1 ), t2 = true;
                 },
 
-                trace.hide = function(){
+                log.hide = function(){
                     var body = Doc.body;
                     body.removeChild( t0 ), body.removeChild( t1 ), t2 = false;
                 }
@@ -488,107 +485,16 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // prototype
         (function(){
-            var property, tree, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cOl = cr.onload, cTe = cr.throwError,
+            var property, tree, event, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cAe = cr.addEvent, cDe = cr.delEvent, cOl = cr.onload, cTe = cr.throwError,
                 pc = dtt.prefixCss, npx = { opacity : true, zIndex : true, "z-index" : true };
 
-            Dk.prototype = _prototype = {
-                // property
-                pp : function(){
-                    var self = this, pp = property, a = arguments, i = a.length, k0 = a[ 0 ];
-                    if( i == 1 )
-                        return pp[ k0 ] ? pp[ k0 ].call( self ) : self[ k0 ];
-                    i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
-                    while( i-- )
-                        self[ a[ i - 1 ] ] = a[ i-- ];
-                    return self;
-                },
-
-                // attribute
-                atr : function(){
-                    var self = this, e = self.element, a = arguments, i = a.length, k0 = a[ 0 ];
-                    if( i == 1 )
-                        return e[ k0 ];
-                    i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
-                    while( i-- )
-                        e[ a[ i - 1 ] ] = a[ i-- ];
-                    return self;
-                },
-
-                // inline style
-                css : function(){
-                    var self = this, e = self.element, s = e.style, a = arguments, i = a.length, k, v, r, t0;
-                    if( i == 1 )
-                        return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
-                    i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
-                    while( i-- )
-                        v = a[ i-- ], k = a[ i ],
-                            v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
-                            s[ pc + k ] = v, s[ k ] = v;
-                    return self;
-                },
-
-                // styleSheet
-                st : function(){
-                    var self = this, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
-                    if( i == 1 )
-                        return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
-                    i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
-                    while( i-- )
-                        v = a[ i-- ], k = a[ i ],
-                            v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
-                            s[ pc + k ] = v, s[ k ] = v;
-                    return self;
-                },
-
-                // tree
-                tr : function(){
-                    var self = this, tr = tree, a = arguments, i = a.length, k, v, r, t0 = cIs;
-                    if( i == 1 )
-                        return tr[ a[ 0 ] ].call( self );
-                    i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
-                    while( i-- )
-                        v = a[ i-- ], k = a[ i ],
-                            r = t0( "array", v ) ? tr[ k ].apply( self, v ) : tr[ k ].call( self, v );
-                    return r;
-                },
-
-                // event
-                ev : (function(){
-                    if( dtt.touchBool )
-                        return function(){
-                            var self = this, a = arguments, i = a.length, k, v, t0 = cRet, t1 = cOl;
-                            if( typeof a[ 1 ] == "function" )
-                                while( i-- )
-                                    v = a[ i-- ], k = t0[ k = a[ i ] ] ? t0[ k ] : k,
-                                            k == "onload" ? t1( self, v ) : self.___eventList[ k ] = v;
-                            else
-                                while( i-- )
-                                    k = t0[ k = a[ i ] ] ? t0[ k ] : k,
-                                        delete self.___eventList[ k ];
-                            return self;
-                        }
-                    else
-                        return function(){
-                            var self = this, a = arguments, i = a.length, k, v, t0 = cOl;
-                            if( typeof a[ 1 ] == "function" )
-                                while( i-- )
-                                    v = a[ i-- ], k = a[ i ],
-                                            k == "onload" ? t0( self, v ) : self.___eventList[ k ] = v;
-                            else
-                                while( i-- )
-                                    delete self.___eventList[ a[ i ] ];
-                            return self;
-                        }
-                })()
-            },
-
-                // property
-                (function(){
-                    property = {
-                        scrollWidth : function(){ return this.element.scrollWidth; },
-                        scrollHeight : function(){ return this.element.scrollHeight; }
-                    }
-                })(),
+            // property
+            (function(){
+                property = {
+                    scrollWidth : function(){ return this.element.scrollWidth; },
+                    scrollHeight : function(){ return this.element.scrollHeight; }
+                }
+            })(),
 
                 // tree
                 // todo 네이밍
@@ -721,7 +627,136 @@
                             return self;
                         }
                     }
-                })()
+                })(),
+
+                // event
+                (function(){
+                    function dispatchEvent( $dom, $v ){
+                        var self = $dom, cb = $v;
+                        return function( $e ){
+                            var r;
+                            cancelBubbling( $e ),
+                                r = localPosition( self ),
+                                r.type = $e.type,
+                                r.currentTarget = self,
+                                cb( r );
+                        }
+                    }
+
+                    // 버블링 캔슬
+                    function cancelBubbling( $e ){
+                        if( $e.stopPropagation )
+                            cancelBubbling = function( $e ){ $e.stopPropagation(); }, cancelBubbling( $e );
+                        else if( W.event )
+                            cancelBubbling = function(){ W.event.cancelBubble = true; }, cancelBubbling();
+                    }
+
+                    function localPosition( $dom ){
+                        var e = $dom.element, x = e.offsetLeft, y = e.offsetTop, dkDoc = Dk.Doc;
+                        while( e.offsetParent ) e = e.offsetParent, x += e.offsetLeft, y += e.offsetTop;
+                        return { localX : dkDoc.pageX - x, localY : dkDoc.pageY - y };
+                    }
+
+                    event = {
+                        add : function( $d, $k, $v ){
+                            var self = $d, e = self.element, cb;
+                            cb = dispatchEvent( self, $v );
+                            self.___eventList[ $k ] = cb,
+                                cAe( e, $k, cb );
+                        },
+                        del : function( $d, $k ){
+                            var self = $d, e = self.element, el = self.___eventList;
+                            cDe( e, $k, el[ $k ] ),
+                                delete el[ $k ];
+                        }
+                    }
+                })(),
+
+                Dk.prototype = _prototype = {
+                    // property
+                    pp : function(){
+                        var self = this, pp = property, a = arguments, i = a.length, k0 = a[ 0 ];
+                        if( i == 1 )
+                            return pp[ k0 ] ? pp[ k0 ].call( self ) : self[ k0 ];
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        while( i-- )
+                            self[ a[ i - 1 ] ] = a[ i-- ];
+                        return self;
+                    },
+
+                    // attribute
+                    atr : function(){
+                        var self = this, e = self.element, a = arguments, i = a.length, k0 = a[ 0 ];
+                        if( i == 1 )
+                            return e[ k0 ];
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        while( i-- )
+                            e[ a[ i - 1 ] ] = a[ i-- ];
+                        return self;
+                    },
+
+                    // inline style
+                    css : function(){
+                        var self = this, e = self.element, s = e.style, a = arguments, i = a.length, k, v, r, t0;
+                        if( i == 1 )
+                            return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        while( i-- )
+                            v = a[ i-- ], k = a[ i ],
+                                v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
+                                s[ pc + k ] = v, s[ k ] = v;
+                        return self;
+                    },
+
+                    // styleSheet
+                    st : function(){
+                        var self = this, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
+                        if( i == 1 )
+                            return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        while( i-- )
+                            v = a[ i-- ], k = a[ i ],
+                                v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
+                                s[ pc + k ] = v, s[ k ] = v;
+                        return self;
+                    },
+
+                    // tree
+                    tr : function(){
+                        var self = this, tr = tree, a = arguments, i = a.length, k, v, r, t0 = cIs;
+                        if( i == 1 )
+                            return tr[ a[ 0 ] ].call( self );
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        while( i-- )
+                            v = a[ i-- ], k = a[ i ],
+                                r = t0( "array", v ) ? tr[ k ].apply( self, v ) : tr[ k ].call( self, v );
+                        return r;
+                    },
+
+                    // event
+                    ev : (function(){
+                        var ev = event, t0 = cOl, t1 = cRet;
+                        if( dtt.touchBool )
+                            return function(){
+                                var self = this, a = arguments, i = a.length, k, v;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : null;
+                                while( i-- )
+                                    v = a[ i-- ], k = t1[ k = a[ i ] ] ? t1[ k ] : k,
+                                            k == "onload" ? t0( self, v ) : v ? ev.add( self, k, v ) : ev.del( self, k );
+                                return self;
+                            }
+                        else
+                            return function(){
+                                var self = this, a = arguments, i = a.length, k, v;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : null;
+                                while( i-- ){
+                                    v = a[ i-- ], k = a[ i ],
+                                            k == "onload" ? t0( self, v ) : v ? ev.add( self, k, v ) : ev.del( self, k );
+                                }
+                                return self;
+                            }
+                    })()
+                }
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
@@ -840,87 +875,6 @@
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
-        // Mouse touch wheel
-        (function(){
-            var mouse, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
-
-            Dk.Mouse = mouse = {},
-
-                // 도큐먼트 이벤트 리스너
-                cAe( Doc, "click", mouseFunc ),
-                cAe( Doc, "mousedown", mouseFunc ),
-                cAe( Doc, "mouseup", mouseFunc ),
-                cAe( Doc, "mouseover", mouseFunc ),
-                cAe( Doc, "mouseout", mouseFunc ),
-                cAe( Doc, "mousemove", mouseFunc );
-
-            // 도큐먼트 이벤트 핸들러
-            function mouseFunc( $e ){
-                var t0;
-                cancelBubbling( $e ), pagePosition( $e );
-                if( t0 = getSource( $e ) )
-                    localPosition( t0 ), dispatchEvent( { type : $e.type, currentTarget : t0 } );
-            }
-
-            // 버블링 캔슬
-            function cancelBubbling( $e ){
-                if( $e.stopPropagation )
-                    cancelBubbling = function( $e ){ $e.stopPropagation(); }, cancelBubbling( $e );
-                else if( W.event )
-                    cancelBubbling = function(){ W.event.cancelBubble = true; }, cancelBubbling();
-            }
-
-            // page position 도큐먼트 기준
-            function pagePosition( $e ){
-                var sl = function(){ return Doc.documentElement.scrollLeft }, st = function(){ return Doc.documentElement.scrollTop };
-                if( dtt.touchBool )
-                    pagePosition = function( $e ){
-                        var t0 = [], t1 = $e.touches, i = t1.length, t2 = sl(), t3 = st();
-                        mouse.x = t1[ 0 ].x + t2, mouse.y = t1[ 0 ].y + t3;
-                        while( i-- ) t0[ i ] = { x : t1[ i ].x + t2, y : t1[ i ].y + t3 }
-                        mouse.touchList = t0;
-                    }
-                else
-                    pagePosition = function( $e ){
-                        mouse.x = $e.clientX + sl(), mouse.y = $e.clientY + st();
-                    }
-                pagePosition( $e );
-            }
-
-            // 이벤트 타겟
-            function getSource( $e ){
-                if( $e.target )
-                    return getSource = function( $e ){ return $e.target.___self }, getSource( $e );
-                else if( W.event )
-                    return getSource = function(){ return W.event.srcElement.___self; }, getSource();
-            }
-
-            function localPosition( $dom ){
-                var e = $dom.element, x = e.offsetLeft, y = e.offsetTop;
-                while( e.offsetParent ) e = e.offsetParent, x += e.offsetLeft, y += e.offsetTop;
-                $dom.pp( "localX", mouse.x - x, "localY", mouse.y - y );
-            }
-
-            // 이벤트 발생
-            function dispatchEvent( $evObj ){
-                var handler = $evObj.currentTarget.___eventList[ $evObj.type ];
-                handler ? handler( $evObj ) : null;
-            }
-
-            // wheel
-            wm = cr.adManager( start, end ), mouse.addWheel = wm.add, mouse.delWheel = wm.del, wl = wm.getList();
-
-            function start(){ cAe( Doc, we, update ); }
-
-            function end(){ cDe( Doc, we, update ); }
-
-            function update( $e ){
-                var i = wl.length, t0 = W.event || $e, delta = t0.detail ? t0.detail < 0 ? 1 : -1 : t0.wheelDelta > 0 ? 1 : -1;
-                while( i-- ) wl[ i ].value( delta, wl[ i ].key );
-            }
-        })(),
-
-        //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Doc
         (function(){
             var dkDoc, rm, rl, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, gw, gh;
@@ -950,6 +904,50 @@
                 var i = rl.length;
                 dkDoc.width = gw(), dkDoc.height = gh();
                 while( i-- ) rl[ i ].value( rl[ i ].key );
+            }
+        })(),
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------//
+        // Mouse touch wheel
+        (function(){
+            var dkDoc = Dk.Doc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
+
+            // 도큐먼트 이벤트 리스너
+            cAe( Doc, "mousedown", mouseFunc, true ),
+                cAe( Doc, "mouseup", mouseFunc, true ),
+//                cAe( Doc, "mouseover", mouseFunc, true ),
+                cAe( Doc, "mousemove", mouseFunc, true );
+
+            // 도큐먼트 이벤트 핸들러
+            function mouseFunc( $e ){
+                var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
+                    st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
+                if( dtt.touchBool )
+                    mouseFunc = function( $e ){
+                        var touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st();
+                        dkDoc.mouseX = eTouches[ 0 ].x, dkDoc.mouseY = eTouches[ 0 ].y;
+                        dkDoc.pageX = dkDoc.mouseX + sl, dkDoc.pageY = dkDoc.mouseY + st;
+                        while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
+                        mouse.touchList = touchList;
+                    }
+                else
+                    mouseFunc = function( $e ){
+                        dkDoc.mouseX = $e.clientX, dkDoc.mouseY = $e.clientY;
+                        dkDoc.pageX = dkDoc.mouseX + sl(), dkDoc.pageY = dkDoc.mouseY + st();
+                    }
+                mouseFunc( $e );
+            }
+
+            // wheel
+//            wm = cr.adManager( start, end ), mouse.addWheel = wm.add, mouse.delWheel = wm.del, wl = wm.getList();
+
+            function start(){ cAe( Doc, we, update ); }
+
+            function end(){ cDe( Doc, we, update ); }
+
+            function update( $e ){
+                var i = wl.length, t0 = W.event || $e, delta = t0.detail ? t0.detail < 0 ? 1 : -1 : t0.wheelDelta > 0 ? 1 : -1;
+                while( i-- ) wl[ i ].value( delta, wl[ i ].key );
             }
         })(),
 
