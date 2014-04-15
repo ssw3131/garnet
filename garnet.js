@@ -234,7 +234,7 @@
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb, $cap ){
-//                                $e.attachEvent( "on" + $et, $cb ),
+                                $e.attachEvent( "on" + $et, $cb )
 //                                    $cap ? $e.setCapture() : null;
                             }
                     }
