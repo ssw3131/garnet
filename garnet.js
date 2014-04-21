@@ -235,7 +235,7 @@
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb, $cap ){
                                 $e.attachEvent( "on" + $et, $cb );
-//                                    $cap ? $e.setCapture() : null;
+                                    $cap ? $e.setCapture() : null;
                             }
                     }
                 })(),
@@ -635,7 +635,7 @@
                         var self = $dom, cb = $v;
                         return function( $e ){
                             var r;
-                            cancelBubbling( $e ),
+//                            cancelBubbling( $e ),
                                 r = localPosition( self ),
                                 r.type = $e.type,
                                 r.currentTarget = self,
@@ -918,17 +918,6 @@
 //                cAe( Doc, "mouseover", mouseFunc, true ),
                 cAe( Doc, "mousemove", mouseFunc, true );
 
-            if( dtt.browser == "ie" && dtt.browserVersion < 9 ) {
-                Doc.onmousemove = gobie
-            }
-
-            function gobie(e) {
-//                log (e.button);
-                log (event.button);
-                if (event.button==0) return false;
-                return true;
-            }
-
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
                 var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
@@ -945,7 +934,6 @@
                     mouseFunc = function( $e ){
                         dkDoc.mouseX = $e.clientX, dkDoc.mouseY = $e.clientY;
                         dkDoc.pageX = dkDoc.mouseX + sl(), dkDoc.pageY = dkDoc.mouseY + st();
-                        return true;
                     }
                 mouseFunc( $e );
             }
