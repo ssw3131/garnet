@@ -223,19 +223,17 @@
                             return function( $e, $et, $cb, $cap ){
                                 if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-//                                    $cap = $cap ? $cap : false,
                                     $e.addEventListener( $et, $cb, $cap );
                             }
                     } else {
                         if( dtt.addEventListener )
                             return function( $e, $et, $cb, $cap ){
-//                                $cap = $cap ? $cap : false,
                                 $e.addEventListener( $et, $cb, $cap );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb, $cap ){
                                 $e.attachEvent( "on" + $et, $cb );
-//                                    $cap ? $e.setCapture() : null;
+                                //$cap ? $e.setCapture() : null; // ie8 이하 capture 불가능
                             }
                     }
                 })(),
@@ -256,8 +254,8 @@
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb, $cap ){
-                                $e.detachEvent( "on" + $et, $cb ),
-                                    $cap ? $e.releaseCapture() : null;
+                                $e.detachEvent( "on" + $et, $cb );
+                                //$cap ? $e.releaseCapture() : null; // ie8 이하 capture 불가능
                             }
                     }
                 })(),
@@ -634,10 +632,11 @@
                     function dispatchEvent( $dom, $v ){
                         var self = $dom, cb = $v;
                         return function( $e ){
-                            var r;
-//                            cancelBubbling( $e ),
+                            var r, et;
+                            et = $e.type,
+                                    et == "mousedown" || et == "mouseup" || et == "mousemove" ? null : cancelBubbling( $e ),
                                 r = localPosition( self ),
-                                r.type = $e.type,
+                                r.type = et,
                                 r.currentTarget = self,
                                 cb( r );
                         }
@@ -658,7 +657,7 @@
                     }
 
                     event = {
-                        add : function( $d, $k, $v ){
+                        add : function( $d, $k, $v, $b ){
                             var self = $d, e = self.element, cb;
                             cb = dispatchEvent( self, $v );
                             self.___eventList[ $k ] = cb,
@@ -913,10 +912,9 @@
             var dkDoc = Dk.Doc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
 
             // 도큐먼트 이벤트 리스너
-            cAe( Doc, "mousedown", mouseFunc, false ),
-                cAe( Doc, "mouseup", mouseFunc, false ),
-//                cAe( Doc, "mouseover", mouseFunc, false ),
-                cAe( Doc, "mousemove", mouseFunc, false );
+            cAe( Doc, "mousedown", mouseFunc ),
+                cAe( Doc, "mouseup", mouseFunc ),
+                cAe( Doc, "mousemove", mouseFunc );
 
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
