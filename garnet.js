@@ -635,7 +635,7 @@
                         var self = $dom, cb = $v;
                         return function( $e ){
                             var r;
-                            cancelBubbling( $e ),
+//                            cancelBubbling( $e ),
                                 r = localPosition( self ),
                                 r.type = $e.type,
                                 r.currentTarget = self,
