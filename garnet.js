@@ -918,8 +918,15 @@
 //                cAe( Doc, "mouseover", mouseFunc, true ),
                 cAe( Doc, "mousemove", mouseFunc, true );
 
-            if (window.Event) {
-                document.captureEvents(Event.MOUSEMOVE);
+            if( dtt.browser == "ie" && dtt.browserVersion < 9 ) {
+                window.onmousemove = gobie
+            }
+
+            function gobie(e) {
+                log (e.button);
+                log (event.button);
+                if (event.button==2) return false;
+                return true;
             }
 
             // 도큐먼트 이벤트 핸들러
