@@ -919,7 +919,7 @@
                 cAe( Doc, "mousemove", mouseFunc, true );
 
             if( dtt.browser == "ie" && dtt.browserVersion < 9 ) {
-                window.onmousemove = gobie
+                Doc.onmousemove = gobie
             }
 
             function gobie(e) {
