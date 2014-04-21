@@ -873,79 +873,110 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Doc
         (function(){
-            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, gw, gh, rm, rl, wm, wl, we = Detector.wheelEvent, oldX = 0, oldY = 0;
+            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent;
             Dk.Doc = dkDoc = {},
 
-                // 도큐먼트 이벤트 리스너
-                cAe( Doc, "mousedown", mouseFunc ),
-                cAe( Doc, "mouseup", mouseFunc ),
-                cAe( Doc, "mousemove", mouseFunc );
+                // mouse - mouseX, pageX, speedX, moveX, touchList
+                (function(){
+                    var moveF = { mousedown : moveStart, touchstart : moveStart, mouseup : moveStop, touchend : moveStop, mousemove : moveNothing, touchmove : moveNothing }, oldX = 0, oldY = 0, stX, stY;
+                    cAe( Doc, "mousedown", mouseFunc ),
+                        cAe( Doc, "mouseup", mouseFunc ),
+                        cAe( Doc, "mousemove", mouseFunc );
 
-            // 도큐먼트 이벤트 핸들러
-            function mouseFunc( $e ){
-                var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
-                    st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
-                if( !dtt.touchBool )
-                    mouseFunc = function( $e ){
-                        var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st();
-                        mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
-                            dkDoc.mouseX = mx, dkDoc.mouseY = my,
-                            dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
-                            dkDoc.moveX = mx - oldX, dkDoc.moveY = my - oldY,
-                            oldX = mx, oldY = my;
-                        while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
-                        mouse.touchList = touchList;
+                    function mouseFunc( $e ){
+                        var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
+                            st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
+                        if( dtt.touchBool )
+                            mouseFunc = function( $e ){
+                                var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st(), et = $e.type;
+                                mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
+                                    dkDoc.mouseX = mx, dkDoc.mouseY = my,
+                                    dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
+                                    dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY,
+                                    oldX = mx, oldY = my,
+                                    moveF[ et ]( mx, my );
+                                while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
+                                mouse.touchList = touchList;
+                            }
+                        else
+                            mouseFunc = function( $e ){
+                                var mx, my, et = $e.type;
+                                mx = $e.clientX, my = $e.clientY,
+                                    dkDoc.mouseX = mx, dkDoc.mouseY = my,
+                                    dkDoc.pageX = mx + sl(), dkDoc.pageY = my + st(),
+                                    dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY,
+                                    oldX = mx, oldY = my,
+                                    moveF[ et ]( mx, my );
+                            }
+                        mouseFunc( $e );
                     }
-                else
-                    mouseFunc = function( $e ){
-                        var mx, my;
-                        mx = $e.clientX, my = $e.clientY,
-                            dkDoc.mouseX = mx, dkDoc.mouseY = my,
-                            dkDoc.pageX = mx + sl(), dkDoc.pageY = my + st(),
-                            dkDoc.moveX = mx - oldX, dkDoc.moveY = my - oldY,
-                            oldX = mx, oldY = my;
+
+                    function moveStart( $x, $y ){
+                        moveF.mousemove = moveIng,
+                            moveF.touchmove = moveIng,
+                            dkDoc.moveX = dkDoc.moveY = 0,
+                            stX = $x, stY = $y;
                     }
-                mouseFunc( $e );
-            }
 
-            // resize
-            gw = (function(){
-                if( W.innerWidth )
-                    return function(){ return W.innerWidth };
-                else
-                    return function(){ return Doc.documentElement.clientWidth };
-            })(),
+                    function moveStop( $x, $y ){
+                        moveF.mousemove = moveNothing,
+                            moveF.touchmove = moveNothing,
+                            dkDoc.moveX = $x - stX,
+                            dkDoc.moveY = $y - stY;
+                    }
 
-                gh = (function(){
-                    if( W.innerHeight )
-                        return function(){ return W.innerHeight };
-                    else
-                        return function(){ return Doc.documentElement.clientHeight };
+                    function moveIng( $x, $y ){
+                        dkDoc.moveX = $x - stX,
+                            dkDoc.moveY = $y - stY;
+                    }
+
+                    function moveNothing(){}
                 })(),
 
-                dkDoc.width = gw(), dkDoc.height = gh(), rm = cr.adManager( rStart, rEnd ), dkDoc.addResize = rm.add, dkDoc.delResize = rm.del, rl = rm.getList();
+                // resize
+                (function(){
+                    var gw, gh, rm, rl;
+                    gw = (function(){
+                        if( W.innerWidth )
+                            return function(){ return W.innerWidth };
+                        else
+                            return function(){ return Doc.documentElement.clientWidth };
+                    })(),
 
-            function rStart(){ cAe( W, "resize", rUpdate ); }
+                        gh = (function(){
+                            if( W.innerHeight )
+                                return function(){ return W.innerHeight };
+                            else
+                                return function(){ return Doc.documentElement.clientHeight };
+                        })(),
 
-            function rEnd(){ cDe( W, "resize", rUpdate ); }
+                        dkDoc.width = gw(), dkDoc.height = gh(), rm = cr.adManager( start, end ), dkDoc.addResize = rm.add, dkDoc.delResize = rm.del, rl = rm.getList();
 
-            function rUpdate( $e ){
-                var i = rl.length;
-                dkDoc.width = gw(), dkDoc.height = gh();
-                while( i-- ) rl[ i ].value( rl[ i ].key );
-            }
+                    function start(){ cAe( W, "resize", update ); }
 
-            // wheel
-            wm = cr.adManager( wStart, wEnd ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
+                    function end(){ cDe( W, "resize", update ); }
 
-            function wStart(){ cAe( Doc, we, wUpdate ); }
+                    function update( $e ){
+                        var i = rl.length;
+                        dkDoc.width = gw(), dkDoc.height = gh();
+                        while( i-- ) rl[ i ].value( rl[ i ].key );
+                    }
+                })(),
 
-            function wEnd(){ cDe( Doc, we, wUpdate ); }
+                // wheel
+                (function(){
+                    var wm, wl, we = Detector.wheelEvent;
+                    wm = cr.adManager( start, end ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
 
-            function wUpdate( $e ){
-                var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? 1 : -1 : ev.wheelDelta > 0 ? 1 : -1;
-                while( i-- ) wl[ i ].value( delta, wl[ i ].key );
-            }
+                    function start(){ cAe( Doc, we, update ); }
+
+                    function end(){ cDe( Doc, we, update ); }
+
+                    function update( $e ){
+                        var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? 1 : -1 : ev.wheelDelta > 0 ? 1 : -1;
+                        while( i-- ) wl[ i ].value( delta, wl[ i ].key );
+                    }
+                })()
         })(),
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
