@@ -925,7 +925,7 @@
             function gobie(e) {
 //                log (e.button);
                 log (event.button);
-                if (event.button==2) return false;
+                if (event.button==0) return false;
                 return true;
             }
 
