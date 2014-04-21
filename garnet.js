@@ -235,7 +235,7 @@
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb, $cap ){
                                 $e.attachEvent( "on" + $et, $cb );
-                                    $cap ? $e.setCapture() : null;
+//                                    $cap ? $e.setCapture() : null;
                             }
                     }
                 })(),
@@ -913,10 +913,10 @@
             var dkDoc = Dk.Doc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
 
             // 도큐먼트 이벤트 리스너
-            cAe( Doc, "mousedown", mouseFunc, true ),
-                cAe( Doc, "mouseup", mouseFunc, true ),
-//                cAe( Doc, "mouseover", mouseFunc, true ),
-                cAe( Doc, "mousemove", mouseFunc, true );
+            cAe( Doc, "mousedown", mouseFunc, false ),
+                cAe( Doc, "mouseup", mouseFunc, false ),
+//                cAe( Doc, "mouseover", mouseFunc, false ),
+                cAe( Doc, "mousemove", mouseFunc, false );
 
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
