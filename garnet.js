@@ -945,6 +945,7 @@
                     mouseFunc = function( $e ){
                         dkDoc.mouseX = $e.clientX, dkDoc.mouseY = $e.clientY;
                         dkDoc.pageX = dkDoc.mouseX + sl(), dkDoc.pageY = dkDoc.mouseY + st();
+                        return true;
                     }
                 mouseFunc( $e );
             }
