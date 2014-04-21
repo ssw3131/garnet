@@ -873,43 +873,11 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Doc
         (function(){
-            var dkDoc, rm, rl, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, gw, gh;
+            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, gw, gh, rm, rl, wm, wl, we = Detector.wheelEvent;
             Dk.Doc = dkDoc = {},
 
-                gw = (function(){
-                    if( W.innerWidth )
-                        return function(){ return W.innerWidth };
-                    else
-                        return function(){ return Doc.documentElement.clientWidth };
-                })(),
-
-                gh = (function(){
-                    if( W.innerHeight )
-                        return function(){ return W.innerHeight };
-                    else
-                        return function(){ return Doc.documentElement.clientHeight };
-                })(),
-
-                dkDoc.width = gw(), dkDoc.height = gh(), rm = cr.adManager( start, end ), dkDoc.addResize = rm.add, dkDoc.delResize = rm.del, rl = rm.getList();
-
-            function start(){ cAe( W, "resize", update ); }
-
-            function end(){ cDe( W, "resize", update ); }
-
-            function update( $e ){
-                var i = rl.length;
-                dkDoc.width = gw(), dkDoc.height = gh();
-                while( i-- ) rl[ i ].value( rl[ i ].key );
-            }
-        })(),
-
-        //----------------------------------------------------------------------------------------------------------------------------------------------//
-        // Mouse touch wheel
-        (function(){
-            var dkDoc = Dk.Doc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
-
-            // 도큐먼트 이벤트 리스너
-            cAe( Doc, "mousedown", mouseFunc ),
+                // 도큐먼트 이벤트 리스너
+                cAe( Doc, "mousedown", mouseFunc ),
                 cAe( Doc, "mouseup", mouseFunc ),
                 cAe( Doc, "mousemove", mouseFunc );
 
@@ -933,18 +901,88 @@
                 mouseFunc( $e );
             }
 
+            // resize
+            gw = (function(){
+                if( W.innerWidth )
+                    return function(){ return W.innerWidth };
+                else
+                    return function(){ return Doc.documentElement.clientWidth };
+            })(),
+
+                gh = (function(){
+                    if( W.innerHeight )
+                        return function(){ return W.innerHeight };
+                    else
+                        return function(){ return Doc.documentElement.clientHeight };
+                })(),
+
+                dkDoc.width = gw(), dkDoc.height = gh(), rm = cr.adManager( rStart, rEnd ), dkDoc.addResize = rm.add, dkDoc.delResize = rm.del, rl = rm.getList();
+
+            function rStart(){ cAe( W, "resize", rUpdate ); }
+
+            function rEnd(){ cDe( W, "resize", rUpdate ); }
+
+            function rUpdate( $e ){
+                var i = rl.length;
+                dkDoc.width = gw(), dkDoc.height = gh();
+                while( i-- ) rl[ i ].value( rl[ i ].key );
+            }
+
             // wheel
-            wm = cr.adManager( start, end ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
+            wm = cr.adManager( wStart, wEnd ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
 
-            function start(){ cAe( Doc, we, update ); }
+            function wStart(){ cAe( Doc, we, wUpdate ); }
 
-            function end(){ cDe( Doc, we, update ); }
+            function wEnd(){ cDe( Doc, we, wUpdate ); }
 
-            function update( $e ){
-                var i = wl.length, t0 = W.event || $e, delta = t0.detail ? t0.detail < 0 ? 1 : -1 : t0.wheelDelta > 0 ? 1 : -1;
+            function wUpdate( $e ){
+                var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? 1 : -1 : ev.wheelDelta > 0 ? 1 : -1;
                 while( i-- ) wl[ i ].value( delta, wl[ i ].key );
             }
         })(),
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------//
+        // Mouse touch wheel
+        /*(function(){
+         var dkDoc = Dk.Doc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
+
+         // 도큐먼트 이벤트 리스너
+         cAe( Doc, "mousedown", mouseFunc ),
+         cAe( Doc, "mouseup", mouseFunc ),
+         cAe( Doc, "mousemove", mouseFunc );
+
+         // 도큐먼트 이벤트 핸들러
+         function mouseFunc( $e ){
+         var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
+         st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
+         if( dtt.touchBool )
+         mouseFunc = function( $e ){
+         var touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st();
+         dkDoc.mouseX = eTouches[ 0 ].x, dkDoc.mouseY = eTouches[ 0 ].y;
+         dkDoc.pageX = dkDoc.mouseX + sl, dkDoc.pageY = dkDoc.mouseY + st;
+         while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
+         mouse.touchList = touchList;
+         }
+         else
+         mouseFunc = function( $e ){
+         dkDoc.mouseX = $e.clientX, dkDoc.mouseY = $e.clientY;
+         dkDoc.pageX = dkDoc.mouseX + sl(), dkDoc.pageY = dkDoc.mouseY + st();
+         }
+         mouseFunc( $e );
+         }
+
+         // wheel
+         wm = cr.adManager( start, end ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
+
+         function start(){ cAe( Doc, we, update ); }
+
+         function end(){ cDe( Doc, we, update ); }
+
+         function update( $e ){
+         var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? 1 : -1 : ev.wheelDelta > 0 ? 1 : -1;
+         while( i-- ) wl[ i ].value( delta, wl[ i ].key );
+         }
+         })(),*/
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // loader
