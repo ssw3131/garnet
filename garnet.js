@@ -873,7 +873,7 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Doc
         (function(){
-            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, gw, gh, rm, rl, wm, wl, we = Detector.wheelEvent;
+            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, gw, gh, rm, rl, wm, wl, we = Detector.wheelEvent, oldX = 0, oldY = 0;
             Dk.Doc = dkDoc = {},
 
                 // 도큐먼트 이벤트 리스너
@@ -883,24 +883,27 @@
 
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
-                var oldX = 0, oldY = 0, sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
+                var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
                     st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
-                if( dtt.touchBool )
+                if( !dtt.touchBool )
                     mouseFunc = function( $e ){
-                        var touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st();
-                        dkDoc.mouseX = eTouches[ 0 ].x, dkDoc.mouseY = eTouches[ 0 ].y;
-                        dkDoc.pageX = dkDoc.mouseX + sl, dkDoc.pageY = dkDoc.mouseY + st;
+                        var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st();
+                        mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
+                            dkDoc.mouseX = mx, dkDoc.mouseY = my,
+                            dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
+                            dkDoc.moveX = mx - oldX, dkDoc.moveY = my - oldY,
+                            oldX = mx, oldY = my;
                         while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
                         mouse.touchList = touchList;
                     }
                 else
                     mouseFunc = function( $e ){
                         var mx, my;
-                        mx = $e.clientX, my = $e.clientY;
-                        dkDoc.mouseX = mx, dkDoc.mouseY = my;
-                        dkDoc.pageX = mx + sl(), dkDoc.pageY = my + st();
-                        dkDoc.moveX = mx - oldX, dkDoc.moveY = my - oldY;
-                        oldX = mx, oldY = my;
+                        mx = $e.clientX, my = $e.clientY,
+                            dkDoc.mouseX = mx, dkDoc.mouseY = my,
+                            dkDoc.pageX = mx + sl(), dkDoc.pageY = my + st(),
+                            dkDoc.moveX = mx - oldX, dkDoc.moveY = my - oldY,
+                            oldX = mx, oldY = my;
                     }
                 mouseFunc( $e );
             }
