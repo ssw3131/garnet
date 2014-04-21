@@ -883,7 +883,7 @@
 
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
-                var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
+                var oldX = 0, oldY = 0, sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
                     st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
                 if( dtt.touchBool )
                     mouseFunc = function( $e ){
@@ -895,8 +895,12 @@
                     }
                 else
                     mouseFunc = function( $e ){
-                        dkDoc.mouseX = $e.clientX, dkDoc.mouseY = $e.clientY;
-                        dkDoc.pageX = dkDoc.mouseX + sl(), dkDoc.pageY = dkDoc.mouseY + st();
+                        var mx, my;
+                        mx = $e.clientX, my = $e.clientY;
+                        dkDoc.mouseX = mx, dkDoc.mouseY = my;
+                        dkDoc.pageX = mx + sl(), dkDoc.pageY = my + st();
+                        dkDoc.moveX = mx - oldX, dkDoc.moveY = my - oldY;
+                        oldX = mx, oldY = my;
                     }
                 mouseFunc( $e );
             }
@@ -940,49 +944,6 @@
                 while( i-- ) wl[ i ].value( delta, wl[ i ].key );
             }
         })(),
-
-        //----------------------------------------------------------------------------------------------------------------------------------------------//
-        // Mouse touch wheel
-        /*(function(){
-         var dkDoc = Dk.Doc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, wm, wl, we = Detector.wheelEvent;
-
-         // 도큐먼트 이벤트 리스너
-         cAe( Doc, "mousedown", mouseFunc ),
-         cAe( Doc, "mouseup", mouseFunc ),
-         cAe( Doc, "mousemove", mouseFunc );
-
-         // 도큐먼트 이벤트 핸들러
-         function mouseFunc( $e ){
-         var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
-         st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
-         if( dtt.touchBool )
-         mouseFunc = function( $e ){
-         var touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st();
-         dkDoc.mouseX = eTouches[ 0 ].x, dkDoc.mouseY = eTouches[ 0 ].y;
-         dkDoc.pageX = dkDoc.mouseX + sl, dkDoc.pageY = dkDoc.mouseY + st;
-         while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
-         mouse.touchList = touchList;
-         }
-         else
-         mouseFunc = function( $e ){
-         dkDoc.mouseX = $e.clientX, dkDoc.mouseY = $e.clientY;
-         dkDoc.pageX = dkDoc.mouseX + sl(), dkDoc.pageY = dkDoc.mouseY + st();
-         }
-         mouseFunc( $e );
-         }
-
-         // wheel
-         wm = cr.adManager( start, end ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
-
-         function start(){ cAe( Doc, we, update ); }
-
-         function end(){ cDe( Doc, we, update ); }
-
-         function update( $e ){
-         var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? 1 : -1 : ev.wheelDelta > 0 ? 1 : -1;
-         while( i-- ) wl[ i ].value( delta, wl[ i ].key );
-         }
-         })(),*/
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // loader
