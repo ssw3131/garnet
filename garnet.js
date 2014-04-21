@@ -934,7 +934,7 @@
             }
 
             // wheel
-//            wm = cr.adManager( start, end ), mouse.addWheel = wm.add, mouse.delWheel = wm.del, wl = wm.getList();
+            wm = cr.adManager( start, end ), dkDoc.addWheel = wm.add, dkDoc.delWheel = wm.del, wl = wm.getList();
 
             function start(){ cAe( Doc, we, update ); }
 
