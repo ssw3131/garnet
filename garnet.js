@@ -635,7 +635,7 @@
                         var self = $dom, cb = $v;
                         return function( $e ){
                             var r;
-//                            cancelBubbling( $e ),
+                            cancelBubbling( $e ),
                                 r = localPosition( self ),
                                 r.type = $e.type,
                                 r.currentTarget = self,
@@ -917,6 +917,10 @@
                 cAe( Doc, "mouseup", mouseFunc, true ),
 //                cAe( Doc, "mouseover", mouseFunc, true ),
                 cAe( Doc, "mousemove", mouseFunc, true );
+
+            if (window.Event) {
+                document.captureEvents(Event.MOUSEMOVE);
+            }
 
             // 도큐먼트 이벤트 핸들러
             function mouseFunc( $e ){
