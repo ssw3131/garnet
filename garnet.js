@@ -220,20 +220,19 @@
                 addEvent : (function(){
                     if( dtt.touchBool ){
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb, $cap ){
+                            return function( $e, $et, $cb ){
                                 if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.addEventListener( $et, $cb, $cap );
+                                    $e.addEventListener( $et, $cb );
                             }
                     } else {
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb, $cap ){
-                                $e.addEventListener( $et, $cb, $cap );
+                            return function( $e, $et, $cb ){
+                                $e.addEventListener( $et, $cb );
                             }
                         else if( dtt.attachEvent )
-                            return function( $e, $et, $cb, $cap ){
-                                $e.attachEvent( "on" + $et, $cb );
-                                //$cap ? $e.setCapture() : null; // ie8 이하 capture 불가능
+                            return function( $e, $et, $cb ){
+                                $e.attachEvent( "on" + $et, $cb ); // ie8 이하 capture 불가능
                             }
                     }
                 })(),
@@ -242,20 +241,19 @@
                 delEvent : (function(){
                     if( dtt.touchBool ){
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb, $cap ){
+                            return function( $e, $et, $cb ){
                                 if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.removeEventListener( $et, $cb, $cap );
+                                    $e.removeEventListener( $et, $cb );
                             }
                     } else {
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb, $cap ){
-                                $e.removeEventListener( $et, $cb, $cap );
+                            return function( $e, $et, $cb ){
+                                $e.removeEventListener( $et, $cb );
                             }
                         else if( dtt.attachEvent )
-                            return function( $e, $et, $cb, $cap ){
-                                $e.detachEvent( "on" + $et, $cb );
-                                //$cap ? $e.releaseCapture() : null; // ie8 이하 capture 불가능
+                            return function( $e, $et, $cb ){
+                                $e.detachEvent( "on" + $et, $cb ); // ie8 이하 capture 불가능
                             }
                     }
                 })(),
@@ -627,14 +625,13 @@
                     }
                 })(),
 
-                // event
+                // event : mousedown, mouseup, mousemove 일경우 버블링유지
                 (function(){
                     function dispatchEvent( $dom, $v ){
                         var self = $dom, cb = $v;
                         return function( $e ){
                             var r, et;
-                            et = $e.type,
-                                    et == "mousedown" || et == "mouseup" || et == "mousemove" ? null : cancelBubbling( $e ),
+                            et = $e.type, et == "mousedown" || et == "mouseup" || et == "mousemove" ? null : cancelBubbling( $e ),
                                 r = localPosition( self ),
                                 r.type = et,
                                 r.currentTarget = self,
@@ -657,7 +654,7 @@
                     }
 
                     event = {
-                        add : function( $d, $k, $v, $b ){
+                        add : function( $d, $k, $v ){
                             var self = $d, e = self.element, cb;
                             cb = dispatchEvent( self, $v );
                             self.___eventList[ $k ] = cb,
