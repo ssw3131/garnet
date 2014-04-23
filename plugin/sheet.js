@@ -123,7 +123,7 @@
                     this.jArr = null, this.rp = true, this.cf = 1, this.tf = 1, this.sf = 1, this.ef = 1, this.cr = 0, this.fr = 30;
                 },
 
-                Sheet.prototype = { id : _dkProto.id, pp : _dkProto.pp, atr : _dkProto.atr, css : _dkProto.css, tr : _dkProto.tr, ev : _dkProto.ev, ss : _prototype },
+                Sheet.prototype = { id : _dkProto.id, pp : _dkProto.pp, atr : _dkProto.atr, css : _dkProto.css, tr : _dkProto.tr, ev : _dkProto.ev, gs : pt.gs, ss : _prototype },
 
                 Dk.gs( "sheet", function(){
                     return new Sheet();
