@@ -220,15 +220,15 @@
                 addEvent : (function(){
                     if( dtt.touchBool ){
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
+                            return function( $e, $et, $cb, $cap ){
                                 if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.addEventListener( $et, $cb );
+                                    $e.addEventListener( $et, $cb, $cap );
                             }
                     } else {
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
-                                $e.addEventListener( $et, $cb );
+                            return function( $e, $et, $cb, $cap ){
+                                $e.addEventListener( $et, $cb, $cap );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb ){
@@ -241,15 +241,15 @@
                 delEvent : (function(){
                     if( dtt.touchBool ){
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
+                            return function( $e, $et, $cb, $cap ){
                                 if( $et == "mouseover" || $et == "mouseout" ) return;
                                 $et = cRet[ $et ] ? cRet[ $et ] : $et,
-                                    $e.removeEventListener( $et, $cb );
+                                    $e.removeEventListener( $et, $cb, $cap );
                             }
                     } else {
                         if( dtt.addEventListener )
-                            return function( $e, $et, $cb ){
-                                $e.removeEventListener( $et, $cb );
+                            return function( $e, $et, $cb, $cap ){
+                                $e.removeEventListener( $et, $cb, $cap );
                             }
                         else if( dtt.attachEvent )
                             return function( $e, $et, $cb ){
@@ -879,9 +879,9 @@
                 // mouse - mouseX, pageX, speedX, moveX, touchList
                 (function(){
                     var moveF = { mousedown : moveStart, touchstart : moveStart, mouseup : moveStop, touchend : moveStop, mousemove : moveNothing, touchmove : moveNothing }, oldX = 0, oldY = 0, stX, stY;
-                    cAe( Doc, "mousedown", mouseFunc ),
-                        cAe( Doc, "mouseup", mouseFunc ),
-                        cAe( Doc, "mousemove", mouseFunc );
+                    cAe( Doc, "mousedown", mouseFunc, true ),
+                        cAe( Doc, "mouseup", mouseFunc, true ),
+                        cAe( Doc, "mousemove", mouseFunc, true );
 
                     function mouseFunc( $e ){
                         var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
