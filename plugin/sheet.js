@@ -54,7 +54,7 @@
                     sheet = {
                         load : function( $img, $json, $framerate ){
                             var self = this, data = self.data;
-                            self.css( "backgroundImage", "url(" + $img + ")" ),
+                            self.css( "bgImg", $img ),
                                 self.pp( "ssId", "ssId" + ++ssId ),
                                 Dk.loader.json( $json, loadComplete );
 

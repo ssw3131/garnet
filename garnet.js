@@ -481,14 +481,21 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // prototype
         (function(){
-            var property, tree, event, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cAe = cr.addEvent, cDe = cr.delEvent, cOl = cr.onload, cTe = cr.throwError,
+            var css, tree, event, getStyle, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cAe = cr.addEvent, cDe = cr.delEvent, cOl = cr.onload, cTe = cr.throwError,
                 pc = dtt.prefixCss, npx = { opacity : true, zIndex : true, "z-index" : true };
 
-            // property
+            // css
             (function(){
-                property = {
-                    scrollWidth : function(){ return this.element.scrollWidth; },
-                    scrollHeight : function(){ return this.element.scrollHeight; }
+                css = {
+                    bg : function( $s, $v ){
+                        if ( $v ) $s[ "backgroundColor" ] = $v;
+                        else return $s[ "backgroundColor" ];
+                    },
+
+                    bgImg : function( $s, $v ){
+                        if ( $v ) $s[ "backgroundImage" ] = "url(" + $v + ")";
+                        else return $s[ "backgroundImage" ];
+                    }
                 }
             })(),
 
@@ -668,12 +675,20 @@
                     }
                 })(),
 
+                // get computed style
+                (function(){
+                    getStyle = {
+                        scrollWidth : function(){ return this.element.scrollWidth; },
+                        scrollHeight : function(){ return this.element.scrollHeight; }
+                    }
+                })(),
+
                 Dk.prototype = _prototype = {
                     // property
                     pp : function(){
-                        var self = this, pp = property, a = arguments, i = a.length, k0 = a[ 0 ];
+                        var self = this, a = arguments, i = a.length, k0 = a[ 0 ];
                         if( i == 1 )
-                            return pp[ k0 ] ? pp[ k0 ].call( self ) : self[ k0 ];
+                            return self[ k0 ];
                         i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
                         while( i-- )
                             self[ a[ i - 1 ] ] = a[ i-- ];
@@ -693,27 +708,14 @@
 
                     // inline style
                     css : function(){
-                        var self = this, e = self.element, s = e.style, a = arguments, i = a.length, k, v, r, t0;
+                        var self = this, cs = css, e = self.element, s = e.style, a = arguments, i = a.length, k, v, r, t0;
                         if( i == 1 )
-                            return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
+                            return k = a[ 0 ], r = cs[ k ] ? cs[ k ]( s ) : s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
                         i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
                         while( i-- )
                             v = a[ i-- ], k = a[ i ],
                                 v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
-                                s[ pc + k ] = v, s[ k ] = v;
-                        return self;
-                    },
-
-                    // styleSheet
-                    st : function(){
-                        var self = this, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
-                        if( i == 1 )
-                            return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
-                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
-                        while( i-- )
-                            v = a[ i-- ], k = a[ i ],
-                                v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
-                                s[ pc + k ] = v, s[ k ] = v;
+                                cs[ k ] ? cs[ k ]( s, v ) : s[ k ] = v, s[ pc + k ] = v;
                         return self;
                     },
 
@@ -751,7 +753,38 @@
                                 }
                                 return self;
                             }
-                    })()
+                    })(),
+
+                    // get computed style
+                    gs : (function(){
+                        var gcs;
+
+                        gcs = W.getComputedStyle ? function( $k ){
+                            var self = this;
+                            return W.getComputedStyle( self.element )[ $k ];
+                        } : function( $k ){
+                            var self = this;
+                            return self.element.currentStyle[ $k ];
+                        };
+
+                        return function( $k ){
+                            var self = this, gs = getStyle;
+                            return gs[ $k ] ? gs[ $k ].call( self ) : parseFloat( gcs.call( self, $k ) );
+                        }
+                    })(),
+
+                    // styleSheet
+                    st : function(){
+                        var self = this, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
+                        if( i == 1 )
+                            return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        while( i-- )
+                            v = a[ i-- ], k = a[ i ],
+                                v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
+                                s[ pc + k ] = v, s[ k ] = v;
+                        return self;
+                    }
                 }
         })(),
 
@@ -784,7 +817,7 @@
                         self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
                     },
 
-                        Dom.prototype = { id : pt.id, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev },
+                        Dom.prototype = { id : pt.id, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev, gs : pt.gs },
 
                         Dk.dom = function( $type ){
                             return new Dom( $type );
