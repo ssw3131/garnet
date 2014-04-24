@@ -775,14 +775,14 @@
 
                     // styleSheet
                     st : function(){
-                        var self = this, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
+                        var self = this, cs = css, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
                         if( i == 1 )
                             return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
                         i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
                         while( i-- )
                             v = a[ i-- ], k = a[ i ],
                                 v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
-                                s[ pc + k ] = v, s[ k ] = v;
+                                cs[ k ] ? cs[ k ]( s, v ) : s[ k ] = v, s[ pc + k ] = v;
                         return self;
                     }
                 }
