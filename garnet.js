@@ -681,6 +681,14 @@
                         scrollWidth : function(){ return this.element.scrollWidth; },
                         scrollHeight : function(){ return this.element.scrollHeight; }
                     }
+
+                    getStyle.gcs = W.getComputedStyle ? function( $k ){
+                        var self = this;
+                        return W.getComputedStyle( self.element )[ $k ];
+                    } : function( $k ){
+                        var self = this;
+                        return self.element.currentStyle[ $k ];
+                    };
                 })(),
 
                 Dk.prototype = _prototype = {
@@ -756,20 +764,10 @@
                     })(),
 
                     // get computed style
-                    gs : (function(){
-                        var gcs;
-
-                        gcs = W.getComputedStyle ? function( $k ){
-                            var self = this;
-                            return W.getComputedStyle( self.element )[ $k ];
-                        } : function( $k ){
-                            var self = this;
-                            return self.element.currentStyle[ $k ];
-                        };
-
+                    gcs : (function(){
                         return function( $k ){
-                            var self = this, gs = getStyle;
-                            return gs[ $k ] ? gs[ $k ].call( self ) : parseFloat( gcs.call( self, $k ) );
+                            var self = this, gcs = getStyle;
+                            return gcs[ $k ] ? gcs[ $k ].call( self ) : parseFloat( gcs.gcs.call( self, $k ) );
                         }
                     })(),
 
@@ -817,7 +815,7 @@
                         self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
                     },
 
-                        Dom.prototype = { id : pt.id, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev, gs : pt.gs },
+                        Dom.prototype = { id : pt.id, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev, gcs : pt.gcs },
 
                         Dk.dom = function( $type ){
                             return new Dom( $type );

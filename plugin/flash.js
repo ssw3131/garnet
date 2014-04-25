@@ -2,10 +2,10 @@
  * Created by ssw on 2014-04-08.
  */
 (function(){
-    if( Dk.gs( "flash" ) ) return;
+    if( Dk.gcs( "flash" ) ) return;
 
     var Info = { name : "Dk garnet plugIn - flash", version : "v0.0.1", contact : "ssw3131@daum.net" },
-        Doc = document, _prototype, _dkDtt = Dk.gs( "Detector" ), _dkProto = Dk.gs( "prototype" ), _dkCore = Dk.gs( "core" );
+        Doc = document, _prototype, _dkDtt = Dk.gcs( "Detector" ), _dkProto = Dk.gcs( "prototype" ), _dkCore = Dk.gcs( "core" );
 
     log( Info ),
 
@@ -124,7 +124,7 @@
 
                 Flash.prototype = { id : _dkProto.id, pp : _dkProto.pp, atr : _dkProto.atr, css : _dkProto.css, tr : _dkProto.tr, fl : _prototype },
 
-                Dk.gs( "flash", function(){
+                Dk.gcs( "flash", function(){
                     return new Flash();
                 } );
         })(),
