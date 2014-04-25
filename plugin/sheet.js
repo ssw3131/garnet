@@ -2,10 +2,10 @@
  * Created by ssw on 2014-04-09.
  */
 (function(){
-    if( Dk.gcs( "sheet" ) ) return;
+    if( Dk.gs( "sheet" ) ) return;
 
     var Info = { name : "Dk garnet plugIn - sprite sheet", version : "v0.0.1", contact : "ssw3131@daum.net" },
-        Doc = document, _prototype, _dkProto = Dk.gcs( "prototype" ), _dkCore = Dk.gcs( "core" );
+        Doc = document, _prototype, _dkProto = Dk.gs( "prototype" ), _dkCore = Dk.gs( "core" );
 
     log( Info ),
 
@@ -125,7 +125,7 @@
 
                 Sheet.prototype = { id : _dkProto.id, pp : _dkProto.pp, atr : _dkProto.atr, css : _dkProto.css, tr : _dkProto.tr, ev : _dkProto.ev, gcs : _dkProto.gcs, ss : _prototype },
 
-                Dk.gcs( "sheet", function(){
+                Dk.gs( "sheet", function(){
                     return new Sheet();
                 } );
         })(),
