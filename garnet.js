@@ -1004,7 +1004,7 @@
                     function end(){ cDe( Doc, we, update ); }
 
                     function update( $e ){
-                        var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? 1 : -1 : ev.wheelDelta > 0 ? 1 : -1;
+                        var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
                         while( i-- ) wl[ i ].value( delta, wl[ i ].key );
                     }
                 })()
