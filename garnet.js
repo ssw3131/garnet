@@ -488,12 +488,12 @@
             (function(){
                 css = {
                     bg : function( $s, $v ){
-                        if ( $v ) $s[ "backgroundColor" ] = $v;
+                        if( $v ) $s[ "backgroundColor" ] = $v;
                         else return $s[ "backgroundColor" ];
                     },
 
                     bgImg : function( $s, $v ){
-                        if ( $v ) $s[ "backgroundImage" ] = "url(" + $v + ")";
+                        if( $v ) $s[ "backgroundImage" ] = "url(" + $v + ")";
                         else return $s[ "backgroundImage" ];
                     }
                 }
@@ -904,8 +904,24 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Doc
         (function(){
-            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent;
+            var dkDoc, dtt = Detector, cr = _core, cAe = cr.addEvent, cDe = cr.delEvent, scLeft, scTop;
             Dk.Doc = dkDoc = {},
+
+                // scrollLeft, scrollTop
+                scLeft = (function(){
+                    return Doc.documentElement.scrollLeft ? function(){
+                        return Doc.documentElement.scrollLeft;
+                    } : function(){
+                        return Doc.body.scrollLeft;
+                    }
+                })(),
+                scTop = (function(){
+                    return Doc.documentElement.scrollTop ? function(){
+                        return Doc.documentElement.scrollTop;
+                    } : function(){
+                        return Doc.body.scrollTop;
+                    }
+                })(),
 
                 // mouse - mouseX, pageX, speedX, moveX, touchList
                 (function(){
@@ -915,11 +931,9 @@
                         cAe( Doc, "mousemove", mouseFunc, true );
 
                     function mouseFunc( $e ){
-                        var sl = function(){ return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft },
-                            st = function(){ return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop };
                         if( dtt.touchBool )
                             mouseFunc = function( $e ){
-                                var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = sl(), st = st(), et = $e.type;
+                                var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = scLeft(), st = scTop(), et = $e.type;
                                 mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
                                     dkDoc.mouseX = mx, dkDoc.mouseY = my,
                                     dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
@@ -934,7 +948,7 @@
                                 var mx, my, et = $e.type;
                                 mx = $e.clientX, my = $e.clientY,
                                     dkDoc.mouseX = mx, dkDoc.mouseY = my,
-                                    dkDoc.pageX = mx + sl(), dkDoc.pageY = my + st(),
+                                    dkDoc.pageX = mx + scLeft(), dkDoc.pageY = my + scTop(),
                                     dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY,
                                     oldX = mx, oldY = my,
                                     moveF[ et ]( mx, my );
@@ -1006,6 +1020,21 @@
                     function update( $e ){
                         var i = wl.length, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
                         while( i-- ) wl[ i ].value( delta, wl[ i ].key );
+                    }
+                })(),
+
+                // scroll
+                (function(){
+                    var sm, sl;
+                    sm = cr.adManager( start, end ), dkDoc.addScroll = sm.add, dkDoc.delScroll = sm.del, sl = sm.getList();
+
+                    function start(){ cAe( Doc, "scroll", update ); }
+
+                    function end(){ cDe( Doc, "scroll", update ); }
+
+                    function update( $e ){
+                        var i = sl.length, scl = scLeft(), sct = scTop();
+                        while( i-- ) sl[ i ].value( { scrollLeft : scl, scrollTop : sct }, sl[ i ].key );
                     }
                 })()
         })(),
