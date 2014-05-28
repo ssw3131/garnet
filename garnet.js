@@ -283,11 +283,11 @@
                                     return list[ list[ $k ] = list.length ] = { key : $k, value : $v },
                                             ++total == 1 ? $sF() : null,
                                         true;
-                                else return false; //trace( "Dk : list에 이미 " + $k + "값이 존재합니다." )
+                                else return false; //log( "Dk : list에 이미 " + $k + "값이 존재합니다." )
                             },
 
                             del : function( $k ){
-                                // if( list[ $k ] == undefined ) return trace( "Dk : list에 " + $k + "값이 존재하지 않습니다." );
+                                // if( list[ $k ] == undefined ) return log( "Dk : list에 " + $k + "값이 존재하지 않습니다." );
                                 if( list[ $k ] == undefined ) return;
                                 var t0 = list[ $k ], k;
                                 list.splice( t0, 1 ), delete list[ $k ];
@@ -364,16 +364,16 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // log
         (function(){
-            var log, logArr = [], cr = _core, cJoin = cr.join, cTe = cr.throwError, t0, t1, t2;
-            if( W.log ) return cTe( "log가 이미 존재합니다." );
+            if( W.log ) return W.log( "Dk : log가 이미 존재합니다." );
+            var log, logArr = [], cr = _core, cJoin = cr.join, e0, e1, toggle, x = 710, y = 10, w = 800;
 
-            t0 = Doc.createElement( "div" ),
-                t0.style.cssText = "left : 710px; top : 32px; width : 800px; height : 90%; " +
+            e0 = Doc.createElement( "div" ),
+                e0.style.cssText = "left : " + x + "px; top : " + ( y + 22 ) + "px; width : " + w + "px; height : 90%; " +
                     "position : fixed; display : block; overflow : auto; padding : 10px; background-color : #000; font : 12px/18px 돋움, sans-serif; color : #FFF; opacity : 0.8; z-index : 10000000;",
-                t1 = Doc.createElement( "div" ),
-                t1.style.cssText = "left : 710px; top : 10px; width : 810px; height : 20px; " +
+                e1 = Doc.createElement( "div" ),
+                e1.style.cssText = "left : " + x + "px; top : " + y + "px; width : " + ( w + 10 ) + "px; height : 20px; " +
                     "position : fixed;display : block; padding-left : 10px; background-color : #000; font : 12px/18px 돋움, sans-serif; color : #FFF; opacity : 0.8; z-index : 10000000;",
-                t1.innerHTML = "Keyboard F8 key press : toggle",
+                e1.innerHTML = "Keyboard F8 key press : toggle",
 
                 W.log = log = (function(){
                     if( (W["console"]) )
@@ -383,7 +383,7 @@
                                 str = cJoin.call( a, ',' ), logArr.splice( 0, 0, str ), console.log( str );
                             else
                                 logArr.splice( 0, 0, a[ 0 ] ), console.log( a[ 0 ] );
-                            t2 ? t0.innerHTML = logArr[ 0 ] + "<br>" + t0.innerHTML : null;
+                            toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
                         }
                     else
                         return function(){
@@ -392,20 +392,26 @@
                                 str = cJoin.call( a, ',' ), logArr.splice( 0, 0, str );
                             else
                                 logArr.splice( 0, 0, a[ 0 ] );
-                            t2 ? t0.innerHTML = logArr[ 0 ] + "<br>" + t0.innerHTML : null;
+                            toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
                         }
                 })(),
 
-                cr.addEvent( Doc, "keydown", function( $e ){ $e.keyCode == 119 ? t2 ? log.hide() : log.show() : null; } ),// F8
+                cr.addEvent( Doc, "keydown", function( $e ){ $e.keyCode == 119 ? toggle ? log.hide() : log.show() : null; } ),// F8
 
                 log.show = function(){
                     var body = Doc.body;
-                    t0.innerHTML = cJoin.call( logArr, "<br>" ), body.appendChild( t0 ), body.appendChild( t1 ), t2 = true;
+                    e0.innerHTML = cJoin.call( logArr, "<br>" ), body.appendChild( e0 ), body.appendChild( e1 ), toggle = true;
                 },
 
                 log.hide = function(){
                     var body = Doc.body;
-                    body.removeChild( t0 ), body.removeChild( t1 ), t2 = false;
+                    body.removeChild( e0 ), body.removeChild( e1 ), toggle = false;
+                },
+
+                log.position = function( $left, $top, $width ){
+                    if( $left ) e0.style.left = $left + "px", e1.style.left = $left + "px";
+                    if( $top ) e0.style.top = $top + 22 + "px", e1.style.top = $top + "px";
+                    if( $width ) e0.style.width = $width + "px", e1.style.width = $width + 10 + "px";
                 }
         })(),
 
@@ -539,12 +545,9 @@
                         addParent : function( $parent ){
                             var self = this, body = Doc.body;
                             if( self.parent == $parent ) return self;
-                            if( self.parent == body )
-                                $parent.tr( "addChild", self );
-                            else
-                                self.parent ? self.parent.tr( "removeChild", self ) : null,
-                                    self.parent = $parent,
-                                        $parent == body ? $parent.appendChild( self.element ) : $parent.tr( "addChild", self );
+
+                            self.parent == body ? body.removeChild( self.element ) : self.parent ? self.parent.tr( "removeChild", self ) : null,
+                                self.parent = $parent, $parent == body ? $parent.appendChild( self.element ) : $parent.tr( "addChild", self );
                             return self;
                         },
 
@@ -854,9 +857,6 @@
 
                 raf = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || W.oRequestAnimationFrame || function( $loop ){ return W.setTimeout( $loop, 16 ) }; })(),
                 caf = (function(){ return W.cancelAnimationFrame || W.webkitCancelAnimationFrame || W.mozCancelAnimationFrame || W.oCancelAnimationFrame || function( $id ){ W.clearTimeout( $id ); }; })()
-
-            // function start(){ timer = setInterval( update, 16 ); }
-            // function end(){ clearInterval( timer ); }
 
             function start(){ timer = raf( update ); }
 
