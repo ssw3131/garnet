@@ -340,6 +340,17 @@
                     }
                 })(),
 
+                randomColorHex : (function(){
+                    var letters = "0123456789ABCDEF".split( "" ), t0 = uRir;
+                    return function(){
+                        var color = "#";
+                        for( var i = 0; i < 6; i++ ){
+                            color += letters[ t0( 15 ) ];
+                        }
+                        return color;
+                    }
+                })(),
+
                 // 모니터 가로값을 가져온다
                 widthScreen : function(){
                     return screen.width;
