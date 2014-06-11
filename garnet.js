@@ -174,7 +174,7 @@
                 attachEvent : Doc.attachEvent ? 1 : 0,
                 insertBefore : testDIV.insertBefore ? 1 : 0,
 //				XMLHttp          : checkXMLHttp(),
-                isMobile : browser.indexOf( "mobile" ) > -1 ? 1 : 0,
+                isMobile : isMobile(),
                 touchBool : W.ontouchstart !== undefined,
                 videoOgg : video.canPlayType && video.canPlayType( 'video/ogg' ) ? 1 : 0,
                 videoH264 : video.canPlayType && video.canPlayType( 'video/mp4' ) ? 1 : 0,
