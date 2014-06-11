@@ -952,10 +952,12 @@
                                     dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
                                     dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY,
                                     oldX = mx, oldY = my,
+                                    log( 2, mx );
                                     moveF[ et ]( mx, my );
+                                log( 3, mx );
                                 while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
                                 mouse.touchList = touchList;
-                                log( 2, mx );
+                                log( 4, mx );
                             }
                         else
                             mouseFunc = function( $e ){
