@@ -936,6 +936,7 @@
 
                 // mouse - mouseX, pageX, speedX, moveX, touchList
                 (function(){
+                    log.show();
                     var moveF = { mousedown : moveStart, touchstart : moveStart, mouseup : moveStop, touchend : moveStop, mousemove : moveNothing, touchmove : moveNothing }, oldX = 0, oldY = 0, stX, stY;
                     cAe( Doc, "mousedown", mouseFunc, true ),
                         cAe( Doc, "mouseup", mouseFunc, true ),
@@ -945,6 +946,7 @@
                         if( dtt.touchBool )
                             mouseFunc = function( $e ){
                                 var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = scLeft(), st = scTop(), et = $e.type;
+                                log( eTouches );
                                 mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
                                     dkDoc.mouseX = mx, dkDoc.mouseY = my,
                                     dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
