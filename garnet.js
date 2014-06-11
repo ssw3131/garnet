@@ -41,7 +41,7 @@
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Detector
-        // todo 외부연동
+        // todo 외부연동, isMobile 에러
         (function(){
             var navigator = W.navigator, agent = navigator.userAgent.toLowerCase(), platform = navigator.platform,
                 browser , browserVersion, os, osVersion,
