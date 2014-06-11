@@ -947,7 +947,7 @@
                             mouseFunc = function( $e ){
                                 var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = scLeft(), st = scTop(), et = $e.type;
                                 log( 1, eTouches );
-                                mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
+                                mx = eTouches[ 0 ].clientX, my = eTouches[ 0 ].clientY,
                                     dkDoc.mouseX = mx, dkDoc.mouseY = my,
                                     dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
                                     dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY,
@@ -959,8 +959,9 @@
                                 }
                                     log( eTouches[ 0 ] );
                                     moveF[ et ]( mx, my );
-                                while( i-- ) log(3), touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
-                                mouse.touchList = touchList;
+                                while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
+                                log(5);
+                                    mouse.touchList = touchList;
                                 log( 4, mx );
                             }
                         else
