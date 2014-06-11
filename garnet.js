@@ -952,10 +952,14 @@
                                     dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
                                     dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY,
                                     oldX = mx, oldY = my,
-                                    log( 2, eTouches[ 0 ].x );
+                                    log( 2 );
+                                for( var k in eTouches[ 0 ]){
+                                    log( 3, k );
+                                    log( 4, eTouches[ 0 ][ k ] );
+                                }
+                                    log( eTouches[ 0 ] );
                                     moveF[ et ]( mx, my );
-                                log( 3, i );
-                                while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
+                                while( i-- ) log(3), touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
                                 mouse.touchList = touchList;
                                 log( 4, mx );
                             }
