@@ -946,6 +946,7 @@
                         if( dtt.touchBool )
                             mouseFunc = function( $e ){
                                 var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = scLeft(), st = scTop(), et = $e.type;
+                                log( 1, eTouches );
                                 mx = eTouches[ 0 ].x, my = eTouches[ 0 ].y,
                                     dkDoc.mouseX = mx, dkDoc.mouseY = my,
                                     dkDoc.pageX = mx + sl, dkDoc.pageY = my + st,
@@ -954,7 +955,7 @@
                                     moveF[ et ]( mx, my );
                                 while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
                                 mouse.touchList = touchList;
-                                log( mx );
+                                log( 2, mx );
                             }
                         else
                             mouseFunc = function( $e ){
