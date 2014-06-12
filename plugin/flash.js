@@ -26,8 +26,8 @@
 
                     function checkVersion( $params ){
                         var version;
-                        if( $params.version == undefined ) return dtt.flashVersion >= 10.1;
-                        else  return version = $params.version, delete $params.version, dtt.flashVersion >= version;
+                        if( $params.version == undefined ) return dtt.flash >= 10.1;
+                        else  return version = $params.version, delete $params.version, dtt.flash >= version;
                     }
 
                     addSwf = ( function(){
