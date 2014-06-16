@@ -282,7 +282,7 @@
                                     add : function( $k, $v ){
                                         if( list[ $k ] == undefined )
                                             return list[ list[ $k ] = list.length ] = { key : $k, value : $v },
-                                                    ++total == 1 ? $sF() : null,
+                                                    ++total == 1 ? $sF ? $sF() : null : null,
                                                 true;
                                         else return false; //log( "Dk : list에 이미 " + $k + "값이 존재합니다." )
                                     },
@@ -293,7 +293,7 @@
                                         var t0 = list[ $k ], k;
                                         list.splice( t0, 1 ), delete list[ $k ];
                                         for( k in list ) list[ k ] >= t0 ? list[ k ] -= 1 : null;
-                                        --total ? null : $eF();
+                                        --total ? null : $eF ? $eF() : null;
                                     },
 
                                     getList : function(){ return list; }
