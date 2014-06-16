@@ -142,24 +142,24 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Detector
         Dk.loader.js( [ "http://ssw3131.github.io/garnet/bsDetect.js" ], function(){
-            var Detector, _bsDetect, _callBack, _core, _util, _prototype;
+            var Detector, bsDetect, _callBack, _core, _util, _prototype;
 
-            _bsDetect = bs.detectDOM( W, bs.detectWindow( W ) ),
+            bsDetect = bs.detectDOM( W, bs.detectWindow( W ) ),
                 Dk.Detector = Detector = {
-                    device : _bsDetect.device,
-                    browser : _bsDetect.browser, browserVersion : _bsDetect.browserVer,
-                    os : _bsDetect.os, osVersion : _bsDetect.osVer,
-                    flash : _bsDetect.flash,
-                    prefixCss : _bsDetect.cssPrefix, prefixStyle : _bsDetect.stylePrefix,
-                    transform3D : _bsDetect.transform3D, transform : _bsDetect.transform,
-                    transition : _bsDetect.transition, keyframe : _bsDetect.keyframe,
-                    video : _bsDetect.video, videoTeora : _bsDetect.videoTeora, videoH264 : _bsDetect.videoH264, videoWebm : _bsDetect.videoWebm,
-                    insertBefore : _bsDetect.insertBefore,
+                    device : bsDetect.device,
+                    browser : bsDetect.browser, browserVersion : bsDetect.browserVer,
+                    os : bsDetect.os, osVersion : bsDetect.osVer,
+                    flash : bsDetect.flash,
+                    prefixCss : bsDetect.cssPrefix, prefixStyle : bsDetect.stylePrefix,
+                    transform3D : bsDetect.transform3D, transform : bsDetect.transform,
+                    transition : bsDetect.transition, keyframe : bsDetect.keyframe,
+                    video : bsDetect.video, videoTeora : bsDetect.videoTeora, videoH264 : bsDetect.videoH264, videoWebm : bsDetect.videoWebm,
+                    insertBefore : bsDetect.insertBefore,
 
                     touchBool : W.ontouchstart !== undefined,
-                    innerText : _bsDetect.browser == "firefox" ? 0 : 1,
-                    currentTarget : _bsDetect.browser == "firefox" ? "target" : "srcElement",
-                    wheelEvent : _bsDetect.browser == "firefox" ? "DOMMouseScroll" : "mousewheel"
+                    innerText : bsDetect.browser == "firefox" ? 0 : 1,
+                    currentTarget : bsDetect.browser == "firefox" ? "target" : "srcElement",
+                    wheelEvent : bsDetect.browser == "firefox" ? "DOMMouseScroll" : "mousewheel"
                 },
 
                 //----------------------------------------------------------------------------------------------------------------------------------------------//
