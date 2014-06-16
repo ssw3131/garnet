@@ -215,11 +215,11 @@
                         toString : cTs = Object.prototype.toString,
                         hasOwn : Object.prototype.hasOwnProperty,
                         trim : String.prototype.trim,
-                        replaceEventType : cRet = ( dtt.touchBool ) ? { mousedown : "touchstart", mousemove : "touchmove", mouseup : "touchend" } : {},
+                        replaceEventType : cRet = dtt.device != "pc" ? { mousedown : "touchstart", mousemove : "touchmove", mouseup : "touchend" } : {},
 
                         // addEvent
                         addEvent : (function(){
-                            if( dtt.touchBool ){
+                            if( dtt.device != "pc" ){
                                 if( Doc.addEventListener )
                                     return function( $e, $et, $cb, $cap ){
                                         if( $et == "mouseover" || $et == "mouseout" ) return;
@@ -240,7 +240,7 @@
 
                         // delEvent
                         delEvent : (function(){
-                            if( dtt.touchBool ){
+                            if( dtt.device != "pc" ){
                                 if( Doc.addEventListener )
                                     return function( $e, $et, $cb, $cap ){
                                         if( $et == "mouseover" || $et == "mouseout" ) return;
@@ -754,7 +754,7 @@
                             // event
                             ev : (function(){
                                 var ev = event, t0 = cOl, t1 = cRet;
-                                if( dtt.touchBool )
+                                if( dtt.device != "pc" )
                                     return function(){
                                         var self = this, a = arguments, i = a.length, k, v;
                                         i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : null;
@@ -804,7 +804,7 @@
                     // prototype id
                     (function(){
                         var list, adManager, cr = _core, cTe = cr.throwError;
-                        list = ( adManager = cr.adManager( function(){}, function(){} ) ).getList(),
+                        list = ( adManager = cr.adManager() ).getList(),
 
                             _prototype.id = function( $id ){
                                 var self = this;
@@ -940,7 +940,7 @@
                                 cAe( Doc, "mousemove", mouseFunc, true );
 
                             function mouseFunc( $e ){
-                                if( dtt.touchBool )
+                                if( dtt.device != "pc" )
                                     mouseFunc = function( $e ){
                                         var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = scLeft(), st = scTop(), et = $e.type;
                                         mx = eTouches[ 0 ].clientX, my = eTouches[ 0 ].clientY,
