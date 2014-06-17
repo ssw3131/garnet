@@ -374,60 +374,6 @@
                 })(),
 
                 //----------------------------------------------------------------------------------------------------------------------------------------------//
-                // log
-                (function(){
-                    if( W.log ) return W.log( "Dk : log가 이미 존재합니다." );
-                    var log, logArr = [], cr = _core, cJoin = cr.join, e0, e1, toggle, x = 710, y = 10, w = 800;
-
-                    e0 = Doc.createElement( "div" ),
-                        e0.style.cssText = "left : " + x + "px; top : " + ( y + 22 ) + "px; width : " + w + "px; height : 90%; " +
-                            "position : fixed; display : block; overflow : auto; padding : 10px; background-color : #000; font : 12px/18px 돋움, sans-serif; color : #FFF; opacity : 0.8; z-index : 10000000;",
-                        e1 = Doc.createElement( "div" ),
-                        e1.style.cssText = "left : " + x + "px; top : " + y + "px; width : " + ( w + 10 ) + "px; height : 20px; " +
-                            "position : fixed;display : block; padding-left : 10px; background-color : #000; font : 12px/18px 돋움, sans-serif; color : #FFF; opacity : 0.8; z-index : 10000000;",
-                        e1.innerHTML = "Keyboard F8 key press : toggle",
-
-                        W.log = log = (function(){
-                            if( (W["console"]) )
-                                return function(){
-                                    var a = arguments, str;
-                                    if( a.length > 1 )
-                                        str = cJoin.call( a, ',' ), logArr.splice( 0, 0, str ), console.log( str );
-                                    else
-                                        logArr.splice( 0, 0, a[ 0 ] ), console.log( a[ 0 ] );
-                                    toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
-                                }
-                            else
-                                return function(){
-                                    var a = arguments, str;
-                                    if( a.length > 1 )
-                                        str = cJoin.call( a, ',' ), logArr.splice( 0, 0, str );
-                                    else
-                                        logArr.splice( 0, 0, a[ 0 ] );
-                                    toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
-                                }
-                        })(),
-
-                        cr.addEvent( Doc, "keydown", function( $e ){ $e.keyCode == 119 ? toggle ? log.hide() : log.show() : null; } ),// F8
-
-                        log.show = function(){
-                            var body = Doc.body;
-                            e0.innerHTML = cJoin.call( logArr, "<br>" ), body.appendChild( e0 ), body.appendChild( e1 ), toggle = true;
-                        },
-
-                        log.hide = function(){
-                            var body = Doc.body;
-                            body.removeChild( e0 ), body.removeChild( e1 ), toggle = false;
-                        },
-
-                        log.position = function( $left, $top, $width ){
-                            if( $left ) e0.style.left = $left + "px", e1.style.left = $left + "px";
-                            if( $top ) e0.style.top = $top + 22 + "px", e1.style.top = $top + "px";
-                            if( $width ) e0.style.width = $width + "px", e1.style.width = $width + 10 + "px";
-                        }
-                })(),
-
-                //----------------------------------------------------------------------------------------------------------------------------------------------//
                 // get set
                 (function(){
                     var cTe = _core.throwError;
