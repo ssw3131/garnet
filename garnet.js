@@ -821,13 +821,13 @@
                     if( W.Stats )
                         stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement ),
                             update = function(){
-                                stats ? stats.begin() : null;
+                                stats.begin();
 
                                 var i = list.length;
                                 while( i-- ) list[ i ].value( list[ i ].key );
-
                                 timer = raf( update );
-                                stats ? stats.end() : null;
+
+                                stats.end();
                             }
                     else
                         update = function(){
