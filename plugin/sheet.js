@@ -1,6 +1,7 @@
 /**
  * Created by ssw on 2014-04-09.
  */
+"use strict";
 (function(){
     if( Dk.gs( "sheet" ) ) return;
 

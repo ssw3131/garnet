@@ -1,6 +1,7 @@
 /**
  * Created by ssw on 2014-04-08.
  */
+"use strict";
 (function(){
     if( Dk.gs( "flash" ) ) return;
 
