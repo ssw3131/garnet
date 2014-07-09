@@ -34,14 +34,9 @@
                         while( i-- ){
                             sheet = list[ i ].value, data = sheet.data;
                             if( ++data.cr % data.fr < 1 )
-                                ++data.cf > data.ef ? data.rp ? data.cf = data.sf : goEnd( sheet ) : null,
+                                ++data.cf > data.ef ? data.rp ? data.cf = data.sf : ( sheet.data.cf = sheet.data.ef, render.del( sheet.pp( "ssId" ) ) ) : null,
                                     goFrame( sheet );
                         }
-                    }
-
-                    function goEnd( $sheet ){
-                        $sheet.data.cf = $sheet.data.ef,
-                            render.del( $sheet.pp( "ssId" ) );
                     }
 
                     function goFrame( $sheet ){
@@ -62,7 +57,7 @@
                                 var jArr = $data.frames;
                                 data.jArr = jArr,
                                     data.tf = data.ef = jArr.length,
-                                    data.fr = $framerate == undefined ? 60 / 30 : 60 / $framerate,
+                                    data.fr = $framerate == undefined ? 2 : 60 / $framerate,
                                     self.css( "width", jArr[ 0 ].sourceSize.w, "height", jArr[ 0 ].sourceSize.h );
                             }
                         },
