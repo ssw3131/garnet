@@ -16,12 +16,17 @@
             Dk.loader = {
                 // text 로드
                 text : function( $url, $cb, $obj ){
-                    ajax( $url, $cb, "text", $obj ? $obj : {} );
+                    ajax( $url, function( $data ){
+                        $cb( $data );
+                    }, "text", $obj ? $obj : {} );
                 },
 
+                // TODO json parser
                 // json 로드
                 json : function( $url, $cb, $obj ){
-                    ajax( $url, $cb, "json", $obj ? $obj : {} );
+                    ajax( $url, function( $data ){
+                        $cb( eval( "(" + $data + ")" ) );
+                    }, "json", $obj ? $obj : {} );
                 },
 
                 // xml 로드
@@ -34,7 +39,7 @@
                 // js 로드
                 js : function( $arr, $callBack ){
                     var load, hd = Head, count = 0, i = $arr.length;
-                    if( i == 0 ) return $callBack ? $callBack() : null, undefined;
+                    if( i == 0 ) return $callBack ? $callBack() : 0, undefined;
 
                     load = (function(){
                         if( Doc.addEventListener )
@@ -56,7 +61,7 @@
                         load( $arr[ count ], complete );
 
                     function complete(){
-                        ++count == i ? $callBack ? $callBack() : null : load( $arr[ count ], complete );
+                        ++count == i ? $callBack ? $callBack() : 0 : load( $arr[ count ], complete );
                     };
                 }
             }
@@ -78,25 +83,17 @@
                 }
             }
 
-            // TODO json parser
             // ajax
             function ajax( $url, $cb, $dataType, $obj ){
-                var url = $url, cb = $cb, dt = $dataType, t0 = $obj.type || "GET", t1 = $obj.cache == undefined ? true : $obj.cache, t2 = $obj.postParam, req = getXHR();
+                var url = $url, type = $obj.type || "GET", cache = $obj.cache == undefined ? true : $obj.cache, postParam = $obj.postParam, req = getXHR();
 
-                // XMLHttpRequest 상태변화
                 req.onreadystatechange = function(){
-                    req.readyState == 4 ? req.status == 200 ?
-                        cb( dt == "xml" ? req.responseXML : dt == "json" ? eval( "(" + req.responseText + ")" ) : dt == "text" ? req.responseText : null )
-                        : null : null;
+                    req.readyState == 4 ? req.status == 200 ? $cb( $dataType == "xml" ? req.responseXML : req.responseText ) : 0 : 0;
                 }
 
-                req.open( t0, url, true ), // XMLHttpRequest 연결
-                    t1 ? null : req.setRequestHeader( "If-Modified-Since", new Date( 1970, 0, 1 ).toGMTString() ); // 캐시 사용여부
-
-                if( t0 == "GET" )
-                    req.send( null );
-                else if( t0 == "POST" )
-                    req.setRequestHeader( "Content-type", "application/x-www-form-urlencoded; charset=UTF-8" ), req.send( t2 ); // TODO post 서버 405
+                req.open( type, url, true ),
+                    cache ? null : req.setRequestHeader( "If-Modified-Since", new Date( 1970, 0, 1 ).toGMTString() ),
+                        type == "GET" ? req.send( null ) : type == "POST" ? ( req.setRequestHeader( "Content-type", "application/x-www-form-urlencoded; charset=UTF-8" ), req.send( postParam ) ) : 0; // TODO post 서버 405
             }
 
             // TODO xml parser
@@ -159,7 +156,8 @@
                     touchBool : W.ontouchstart !== undefined,
                     innerText : bsDetect.browser == "firefox" ? 0 : 1,
                     currentTarget : bsDetect.browser == "firefox" ? "target" : "srcElement",
-                    wheelEvent : bsDetect.browser == "firefox" ? "DOMMouseScroll" : "mousewheel"
+                    wheelEvent : bsDetect.browser == "firefox" ? "DOMMouseScroll" : "mousewheel",
+                    isLocalhost : location.host.indexOf( "localhost" ) < 0 ? false : true
                 },
 
                 //----------------------------------------------------------------------------------------------------------------------------------------------//
@@ -264,7 +262,7 @@
                             if( dtt.browser == "ie" && dtt.browserVersion < 9 )
                                 return function( $d, $cb ){
                                     var t0 = setInterval( function(){
-                                        $d.element.complete ? clearInterval( t0 ) : null, $cb( $d );
+                                        $d.element.complete ? clearInterval( t0 ) : 0, $cb( $d );
                                     }, 16 );
                                 }
                             else
@@ -282,7 +280,7 @@
                                     add : function( $k, $v ){
                                         if( list[ $k ] == undefined )
                                             return list[ list[ $k ] = list.length ] = { key : $k, value : $v },
-                                                    ++total == 1 ? $sF ? $sF() : null : null,
+                                                    ++total == 1 ? $sF ? $sF() : 0 : 0,
                                                 true;
                                         else return false; //log( "Dk : list에 이미 " + $k + "값이 존재합니다." )
                                     },
@@ -292,8 +290,8 @@
                                         if( list[ $k ] == undefined ) return;
                                         var t0 = list[ $k ], k;
                                         list.splice( t0, 1 ), delete list[ $k ];
-                                        for( k in list ) list[ k ] >= t0 ? list[ k ] -= 1 : null;
-                                        --total ? null : $eF ? $eF() : null;
+                                        for( k in list ) list[ k ] >= t0 ? list[ k ] -= 1 : 0;
+                                        --total ? 0 : $eF ? $eF() : 0;
                                     },
 
                                     getList : function(){ return list; }
@@ -381,7 +379,7 @@
                         var a = arguments, i = a.length, k0 = a[ 0 ], k, v;
                         if( i == 1 )
                             return Dk[ k0 ];
-                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : 0;
                         while( i-- )
                             v = a[ i-- ], k = a[ i ],
                                 Dk[ k ] ? cTe( "Dk : 제공된 " + k + "가 기존에 존재합니다." ) : Dk[ k ] = v;
@@ -428,7 +426,7 @@
                         }
 
                         function complete(){
-                            ++cc == nc ? $callBack() : null;
+                            ++cc == nc ? $callBack() : 0;
                         }
 
                         loadJs( arr );
@@ -448,7 +446,7 @@
                     // css
                     (function(){
                         css = {
-                            bg : function( $s, $v ){
+                            bgColor : function( $s, $v ){
                                 if( $v ) $s[ "backgroundColor" ] = $v;
                                 else return $s[ "backgroundColor" ];
                             },
@@ -456,6 +454,18 @@
                             bgImg : function( $s, $v ){
                                 if( $v ) $s[ "backgroundImage" ] = "url(" + $v + ")";
                                 else return $s[ "backgroundImage" ];
+                            },
+
+                            float : function( $s, $v ){
+                                $s[ "cssFloat" ] == undefined ?
+                                    css.float = function( $s, $v ){ if( $v ) $s[ "styleFloat" ] = $v; else return $s[ "styleFloat" ]; } :
+                                    css.float = function( $s, $v ){ if( $v ) $s[ "cssFloat" ] = $v; else return $s[ "cssFloat" ]; },
+                                    css.float( $s, $v );
+                            },
+
+                            fontSmoothing : function( $s, $v ){
+                                if( $v ) $s[ "font-smoothing" ] = $v, $s[ pc + "font-smoothing" ] = $v;
+                                else return $s[ "font-smoothing" ];
                             }
                         }
                     })(),
@@ -501,7 +511,7 @@
                                     var self = this, body = Doc.body;
                                     if( self.parent == $parent ) return self;
 
-                                    self.parent == body ? body.removeChild( self.element ) : self.parent ? self.parent.tr( "removeChild", self ) : null,
+                                    self.parent == body ? body.removeChild( self.element ) : self.parent ? self.parent.tr( "removeChild", self ) : 0,
                                         self.parent = $parent, $parent == body ? $parent.appendChild( self.element ) : $parent.tr( "addChild", self );
                                     return self;
                                 },
@@ -509,7 +519,7 @@
                                 // 부모객체에 자식객체 제거
                                 removeParent : function( $parent ){
                                     var self = this, body = Doc.body;
-                                    self.parent == $parent ? null : cTe( "Dk : 제공된 parent는 호출자의 부모이어야 합니다." );
+                                    self.parent == $parent ? 0 : cTe( "Dk : 제공된 parent는 호출자의 부모이어야 합니다." );
                                     if( $parent == body )
                                         self.parent = null, $parent.removeChild( self.element );
                                     else
@@ -520,7 +530,7 @@
                                 // 자식객체 추가
                                 addChild : function( $child ){
                                     var self = this;
-                                    $child.parent ? $child.parent.tr( "removeChild", $child ) : null,
+                                    $child.parent ? $child.parent.tr( "removeChild", $child ) : 0,
                                         $child.parent = self, self.children.push( $child ),
                                         self.element.appendChild( $child.element );
                                     return self;
@@ -530,7 +540,7 @@
                                 addChildAt : function( $child, $index ){
                                     var self = this, e = self.element, t0 = self.children, i = t0.length, t1 = $child.element, t2;
                                     $index < 0 ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : $index = $index > i ? i : $index,
-                                        $child.parent ? $child.parent.tr( "removeChild", $child ) : null,
+                                        $child.parent ? $child.parent.tr( "removeChild", $child ) : 0,
                                         $child.parent = self,
                                         t2 = t0.splice( $index ), t0.push( $child ), t0 = self.children = t0.concat( t2 ),
                                         ( $index >= i ) ? e.appendChild( t1 ) : e.insertBefore( t1, t0[ ++$index ].element );
@@ -540,13 +550,13 @@
                                 // 해당 인덱스의 객체 반환
                                 getChildAt : function( $index ){
                                     var self = this, t0 = self.children, i = t0.length;
-                                    $index < 0 || $index >= i ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : null;
+                                    $index < 0 || $index >= i ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : 0;
                                     return t0[ $index ];
                                 },
 
                                 // 해당 객체의 인덱스 반환
                                 getChildIndex : function( $child ){
-                                    $child ? null : cTe( "Dk : 제공된 파라미터 값이 존재하지 않습니다." );
+                                    $child ? 0 : cTe( "Dk : 제공된 파라미터 값이 존재하지 않습니다." );
                                     var self = this, t0 = self.children, i = t0.length;
                                     while( i-- ) if( $child == t0[ i ] ) return i;
                                     cTe( "Dk : 제공된 child는 호출자의 자식이어야 합니다." );
@@ -555,7 +565,7 @@
                                 // 자식객체 제거
                                 removeChild : function( $child ){
                                     var self = this, t0 = self.children, i = t0.length;
-                                    $child.parent == self ? null : cTe( "Dk : 제공된 child는 호출자의 자식이어야 합니다." );
+                                    $child.parent == self ? 0 : cTe( "Dk : 제공된 child는 호출자의 자식이어야 합니다." );
                                     while( i-- ){
                                         if( t0[ i ] == $child ){
                                             $child.parent = null, t0.splice( i, 1 ),
@@ -569,7 +579,7 @@
                                 // 해당 인덱스의 객체 제거
                                 removeChildAt : function( $index ){
                                     var self = this, t0 = self.children, i = t0.length, t1;
-                                    $index < 0 || $index >= i ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : null,
+                                    $index < 0 || $index >= i ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : 0,
                                         t1 = t0.splice( $index, 1 ),
                                         t1[ 0 ].parent = null,
                                         self.element.removeChild( t1[ 0 ].element );
@@ -579,9 +589,9 @@
                                 // 자식객체 모두 제거 or 해당 인덱스 범위 제거 (slice 개념)
                                 removeChildren : function( $bIndex, $eIndex ){
                                     var self = this, e = self.element, i, t0 = self.children, t1 = t0.length, t2;
-                                    ( $bIndex < 0 || $eIndex < 0 || $bIndex >= $eIndex || $bIndex >= t1 ) ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : null,
-                                        ( $bIndex == undefined ) ? $bIndex = 0 : null,
-                                        ( $eIndex == undefined ) ? $eIndex = t1 : null,
+                                    ( $bIndex < 0 || $eIndex < 0 || $bIndex >= $eIndex || $bIndex >= t1 ) ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : 0,
+                                            $bIndex == undefined ? $bIndex = 0 : 0,
+                                            $eIndex == undefined ? $eIndex = t1 : 0,
                                         t2 = t0.splice( $bIndex, $eIndex - $bIndex ),
                                         i = t2.length;
                                     while( i-- ) t2[ i ].parent = null, e.removeChild( t2[ i ].element );
@@ -596,7 +606,7 @@
                                 var self = $dom, cb = $v;
                                 return function( $e ){
                                     var r, et;
-                                    et = $e.type, et == "mousedown" || et == "mouseup" || et == "mousemove" ? null : cancelBubbling( $e ),
+                                    et = $e.type, et == "mousedown" || et == "mouseup" || et == "mousemove" ? 0 : cancelBubbling( $e ),
                                         r = localPosition( self ),
                                         r.type = et,
                                         r.currentTarget = self,
@@ -655,7 +665,7 @@
                                 var self = this, a = arguments, i = a.length, k0 = a[ 0 ];
                                 if( i == 1 )
                                     return self[ k0 ];
-                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : 0;
                                 while( i-- )
                                     self[ a[ i - 1 ] ] = a[ i-- ];
                                 return self;
@@ -666,7 +676,7 @@
                                 var self = this, e = self.element, a = arguments, i = a.length, k0 = a[ 0 ];
                                 if( i == 1 )
                                     return e[ k0 ];
-                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : 0;
                                 while( i-- )
                                     e[ a[ i - 1 ] ] = a[ i-- ];
                                 return self;
@@ -677,7 +687,7 @@
                                 var self = this, cs = css, e = self.element, s = e.style, a = arguments, i = a.length, k, v, r, t0;
                                 if( i == 1 )
                                     return k = a[ 0 ], r = cs[ k ] ? cs[ k ]( s ) : s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
-                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : 0;
                                 while( i-- )
                                     v = a[ i-- ], k = a[ i ],
                                         v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
@@ -690,7 +700,7 @@
                                 var self = this, tr = tree, a = arguments, i = a.length, k, v, r, t0 = cIs;
                                 if( i == 1 )
                                     return tr[ a[ 0 ] ].call( self );
-                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : 0;
                                 while( i-- )
                                     v = a[ i-- ], k = a[ i ],
                                         r = t0( "array", v ) ? tr[ k ].apply( self, v ) : tr[ k ].call( self, v );
@@ -703,7 +713,7 @@
                                 if( dtt.device != "pc" )
                                     return function(){
                                         var self = this, a = arguments, i = a.length, k, v;
-                                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : null;
+                                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : 0;
                                         while( i-- )
                                             v = a[ i-- ], k = t1[ k = a[ i ] ] ? t1[ k ] : k,
                                                     k == "onload" ? t0( self, v ) : v ? ev.add( self, k, v ) : ev.del( self, k );
@@ -712,7 +722,7 @@
                                 else
                                     return function(){
                                         var self = this, a = arguments, i = a.length, k, v;
-                                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : null;
+                                        i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 짝수여야 합니다" ) : 0;
                                         while( i-- ){
                                             v = a[ i-- ], k = a[ i ],
                                                     k == "onload" ? t0( self, v ) : v ? ev.add( self, k, v ) : ev.del( self, k );
@@ -734,7 +744,7 @@
                                 var self = this, cs = css, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
                                 if( i == 1 )
                                     return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
-                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : null;
+                                i % 2 > 0 ? cTe( "DK : 파라미터 갯수는 1 또는 짝수여야 합니다" ) : 0;
                                 while( i-- )
                                     v = a[ i-- ], k = a[ i ],
                                         v = typeof v == "number" ? npx[ k ] ? v : v + "px" : v,
@@ -754,7 +764,7 @@
 
                             _prototype.id = function( $id ){
                                 var self = this;
-                                Doc.getElementById( $id ) ? cTe( "Dk : 제공된 id가 기존에 존재합니다." ) : adManager.add( $id, self ) ? self.element.id = $id : null;
+                                Doc.getElementById( $id ) ? cTe( "Dk : 제공된 id가 기존에 존재합니다." ) : adManager.add( $id, self ) ? self.element.id = $id : 0;
                                 return self;
                             },
 
@@ -807,15 +817,9 @@
                 //----------------------------------------------------------------------------------------------------------------------------------------------//
                 // Loop
                 (function(){
-                    var list, timer, stats, raf, caf, update;
-                    list = ( Dk.Loop = _core.adManager( start, end ) ).getList(),
-
-                        raf = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || W.oRequestAnimationFrame || function( $loop ){ return W.setTimeout( $loop, 16 ) }; })(),
-                        caf = (function(){ return W.cancelAnimationFrame || W.webkitCancelAnimationFrame || W.mozCancelAnimationFrame || W.oCancelAnimationFrame || function( $id ){ W.clearTimeout( $id ); }; })()
-
-                    function start(){ timer = raf( update ); }
-
-                    function end(){ caf( timer ); }
+                    var list, stats, raf, update;
+                    list = ( Dk.Loop = _core.adManager() ).getList(),
+                        raf = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || W.oRequestAnimationFrame || function( $loop ){ return W.setTimeout( $loop, 16 ) }; })();
 
                     // stats
                     if( W.Stats )
@@ -825,17 +829,18 @@
 
                                 var i = list.length;
                                 while( i-- ) list[ i ].value( list[ i ].key );
-                                timer = raf( update );
+                                raf( update );
 
                                 stats.end();
-                            }
+                            };
                     else
                         update = function(){
                             var i = list.length;
                             while( i-- ) list[ i ].value( list[ i ].key );
+                            raf( update );
+                        };
 
-                            timer = raf( update );
-                        }
+                    raf( update );
                 })(),
 
                 //----------------------------------------------------------------------------------------------------------------------------------------------//
@@ -996,6 +1001,6 @@
 
                 //----------------------------------------------------------------------------------------------------------------------------------------------//
                 // callBack
-                _callBack ? _callBack() : null;
+                _callBack ? _callBack() : 0;
         } )
 })()
