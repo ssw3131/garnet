@@ -115,7 +115,7 @@ detectDOM = function( W, detect ){
         videoCaption:'track' in doc.createElement('track') ? 1 : 0,
         videoPoster:v && 'poster' in v ? 1 : 0,
         videoWebm:v && v['canPlayType'] && v.canPlayType( 'video/webm; codecs="vp8,mp4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
-        videoH264:v && v['canPlayType'] && v.canPlayType( 'video/mp4; codecs="avc1.42E01E,m4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
+        videoH264:v && v['canPlayType'] && v.canPlayType( 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
         videoTeora:v && v['canPlayType'] && v.canPlayType( 'video/ogg; codecs="theora,vorbis"' ).indexOf( 'no' ) == -1 ? 1 : 0,
         local:( W['localStorage'] && 'setItem' in localStorage ) ? 1 : 0,
         geo:( navigator['geolocation'] ) ? 1 : 0, worker:W['Worker'] ? 1 : 0, file:W['FileReader'] ? 1 : 0, message:W['postMessage'] ? 1 : 0,
