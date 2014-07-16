@@ -8,6 +8,8 @@
     var Info = { name : "Dk garnet plugIn - sprite sheet", version : "v0.0.1", contact : "ssw3131@daum.net" },
         Doc = document, _prototype, _dkProto = Dk.gs( "prototype" ), _dkCore = Dk.gs( "core" );
 
+    log( Info ),
+
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // prototype
         (function(){

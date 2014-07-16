@@ -8,6 +8,8 @@
     var Info = { name : "Dk garnet plugIn - flash", version : "v0.0.1", contact : "ssw3131@daum.net" },
         Doc = document, _prototype, _dkDtt = Dk.gs( "Detector" ), _dkProto = Dk.gs( "prototype" ), _dkCore = Dk.gs( "core" );
 
+    log( Info ),
+
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // prototype
         (function(){
