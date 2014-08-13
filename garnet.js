@@ -485,7 +485,8 @@
 											if( $msg == undefined )
 												return self.element.innerText;else
 												return self.element.innerText = $msg, self;
-										}else
+										}
+									else
 										return function( $msg ){
 											// todo br 처리
 											var self = this;
