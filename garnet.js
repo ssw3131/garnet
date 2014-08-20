@@ -8,14 +8,14 @@
 
 	//----------------------------------------------------------------------------------------------------------------------------------------------//
 	// Dk
-	Dk = W.Dk = { Information: { name: "Dk garnet", version: "v0.1.0", contact: "ssw3131@daum.net" } },
+	Dk = W.Dk = { Information : { name : "Dk garnet", version : "v0.1.0", contact : "ssw3131@daum.net" } },
 
 		//----------------------------------------------------------------------------------------------------------------------------------------------//
 		// loader
 		(function(){
 			Dk.loader = {
 				// text 로드
-				text: function( $url, $cb, $obj ){
+				text : function( $url, $cb, $obj ){
 					ajax( $url, function( $data ){
 						$cb( $data );
 					}, "text", $obj ? $obj : {} );
@@ -23,21 +23,21 @@
 
 				// TODO json parser
 				// json 로드
-				json: function( $url, $cb, $obj ){
+				json : function( $url, $cb, $obj ){
 					ajax( $url, function( $data ){
 						$cb( eval( "(" + $data + ")" ) );
 					}, "json", $obj ? $obj : {} );
 				},
 
 				// xml 로드
-				xml: function( $url, $cb, $obj ){
+				xml : function( $url, $cb, $obj ){
 					ajax( $url, function( $data ){
 						xmlParser( $data, $cb )
 					}, "xml", $obj ? $obj : {} );
 				},
 
 				// js 로드
-				js: function( $arr, $cb ){
+				js : function( $arr, $cb ){
 					var load, hd = Head, count = 0, i = $arr.length;
 					if( i == 0 ) return $cb ? $cb() : 0, undefined;
 
@@ -64,7 +64,7 @@
 				},
 
 				// asset 로드
-				asset: function( $arr, $cb ){
+				asset : function( $arr, $cb ){
 					(function(){
 						var core = Dk.core, cTe = core.throwError;
 
@@ -126,7 +126,7 @@
 
 			// TODO xml parser
 			function xmlParser( $data, $cb ){
-				var result = { $search: function( $tag ){
+				var result = { $search : function( $tag ){
 					return $data.getElementsByTagName( $tag )
 				} };
 
@@ -171,21 +171,21 @@
 			var Detector, bsDetect, _callBack, _core, _util, _prototype;
 
 			bsDetect = bs.detectDOM( W, bs.detectWindow( W ) ), Dk.Detector = Detector = {
-				device: bsDetect.device,
-				browser: bsDetect.browser, browserVersion: bsDetect.browserVer,
-				os: bsDetect.os, osVersion: bsDetect.osVer,
-				flash: bsDetect.flash,
-				prefixCss: bsDetect.cssPrefix, prefixStyle: bsDetect.stylePrefix,
-				transform3D: bsDetect.transform3D, transform: bsDetect.transform,
-				transition: bsDetect.transition, keyframe: bsDetect.keyframe,
-				video: bsDetect.video, videoTeora: bsDetect.videoTeora, videoH264: bsDetect.videoH264, videoWebm: bsDetect.videoWebm,
-				insertBefore: bsDetect.insertBefore,
+				device : bsDetect.device,
+				browser : bsDetect.browser, browserVersion : bsDetect.browserVer,
+				os : bsDetect.os, osVersion : bsDetect.osVer,
+				flash : bsDetect.flash,
+				prefixCss : bsDetect.cssPrefix, prefixStyle : bsDetect.stylePrefix,
+				transform3D : bsDetect.transform3D, transform : bsDetect.transform,
+				transition : bsDetect.transition, keyframe : bsDetect.keyframe,
+				video : bsDetect.video, videoTeora : bsDetect.videoTeora, videoH264 : bsDetect.videoH264, videoWebm : bsDetect.videoWebm,
+				insertBefore : bsDetect.insertBefore,
 
-				touchBool: W.ontouchstart !== undefined,
-				innerText: bsDetect.browser == "firefox" ? 0 : 1,
-				currentTarget: bsDetect.browser == "firefox" ? "target" : "srcElement",
-				wheelEvent: bsDetect.browser == "firefox" ? "DOMMouseScroll" : "mousewheel",
-				isLocalhost: location.host.indexOf( "localhost" ) < 0 ? false : true
+				touchBool : W.ontouchstart !== undefined,
+				innerText : bsDetect.browser == "firefox" ? 0 : 1,
+				currentTarget : bsDetect.browser == "firefox" ? "target" : "srcElement",
+				wheelEvent : bsDetect.browser == "firefox" ? "DOMMouseScroll" : "mousewheel",
+				isLocalhost : location.host.indexOf( "localhost" ) < 0 ? false : true
 			},
 
 				//----------------------------------------------------------------------------------------------------------------------------------------------//
@@ -235,18 +235,18 @@
 				(function(){
 					var dtt = Detector, cRet, cTs;
 					Dk.core = _core = {
-						push: Array.prototype.push,
-						slice: Array.prototype.slice,
-						indexOf: Array.prototype.indexOf,
-						splice: Array.prototype.splice,
-						join: Array.prototype.join,
-						toString: cTs = Object.prototype.toString,
-						hasOwn: Object.prototype.hasOwnProperty,
-						trim: String.prototype.trim,
-						replaceEventType: cRet = dtt.device != "pc" ? { mousedown: "touchstart", mousemove: "touchmove", mouseup: "touchend" } : {},
+						push : Array.prototype.push,
+						slice : Array.prototype.slice,
+						indexOf : Array.prototype.indexOf,
+						splice : Array.prototype.splice,
+						join : Array.prototype.join,
+						toString : cTs = Object.prototype.toString,
+						hasOwn : Object.prototype.hasOwnProperty,
+						trim : String.prototype.trim,
+						replaceEventType : cRet = dtt.device != "pc" ? { mousedown : "touchstart", mousemove : "touchmove", mouseup : "touchend" } : {},
 
 						// addEvent
-						addEvent: (function(){
+						addEvent : (function(){
 							if( dtt.device != "pc" ){
 								if( Doc.addEventListener )
 									return function( $e, $et, $cb, $cap ){
@@ -266,7 +266,7 @@
 						})(),
 
 						// delEvent
-						delEvent: (function(){
+						delEvent : (function(){
 							if( dtt.device != "pc" ){
 								if( Doc.addEventListener )
 									return function( $e, $et, $cb, $cap ){
@@ -286,7 +286,7 @@
 						})(),
 
 						// onload
-						onload: (function(){
+						onload : (function(){
 							if( dtt.browser == "ie" && dtt.browserVersion < 9 )
 								return function( $d, $cb ){
 									var t0 = setInterval( function(){
@@ -302,17 +302,19 @@
 						})(),
 
 						// ad manager
-						adManager: function( $sF, $eF ){
+						adManager : function( $sF, $eF ){
 							return (function(){
 								var list = [], total = 0;
 
 								return {
-									add: function( $k, $v ){
+									add : function( $k, $v ){
 										if( list[ $k ] == undefined )
-											return list[ list[ $k ] = list.length ] = { key: $k, value: $v }, ++total == 1 ? $sF ? $sF() : 0 : 0, true;else return false; //log( "Dk : list에 이미 " + $k + "값이 존재합니다." )
+											return list[ list[ $k ] = list.length ] = { key : $k, value : $v }, ++total == 1 ? $sF ? $sF() : 0 : 0, true;
+										else
+											return false; //log( "Dk : list에 이미 " + $k + "값이 존재합니다." )
 									},
 
-									del: function( $k ){
+									del : function( $k ){
 										// if( list[ $k ] == undefined ) return log( "Dk : list에 " + $k + "값이 존재하지 않습니다." );
 										if( list[ $k ] == undefined ) return;
 										var t0 = list[ $k ], k;
@@ -321,7 +323,7 @@
 										--total ? 0 : $eF ? $eF() : 0;
 									},
 
-									getList: function(){
+									getList : function(){
 										return list;
 									}
 								}
@@ -330,15 +332,15 @@
 
 						// 객체의 타입이 맞는지 체크
 						// todo is 확장
-						is: (function(){
-							var t0 = { "array": "[object Array]", "function": "[object Function]", "string": "[object String]", "number": "[object Number]", "object": "[object Object]" };
+						is : (function(){
+							var t0 = { "array" : "[object Array]", "function" : "[object Function]", "string" : "[object String]", "number" : "[object Number]", "object" : "[object Object]" };
 							return function( $t, $o ){
 								return $o !== undefined && $o !== null && t0[ $t ] === cTs.call( $o );
 							}
 						})(),
 
 						// throw error
-						throwError: function( $m ){
+						throwError : function( $m ){
 							throw new Error( $m );
 						}
 					}
@@ -351,19 +353,19 @@
 
 					Dk.util = _util = {
 						// 랜덤 범위지정
-						randomRange: function( $max, $min ){
+						randomRange : function( $max, $min ){
 							$max = $max || 1, $min = $min || 0;
 							return ( $max - $min ) * mRandom() + $min;
 						},
 
 						// 정수랜덤 범위지정
-						randomIntRange: uRir = function( $max, $min ){
+						randomIntRange : uRir = function( $max, $min ){
 							$min = $min || 0;
 							return parseInt( ( $max - $min + 0.99999 ) * mRandom() + $min );
 						},
 
 						// 랜덤 컬러생성
-						randomColor: (function(){
+						randomColor : (function(){
 							var t0 = uRir, rd = function(){
 								return t0( 256 )
 							};
@@ -372,7 +374,7 @@
 							}
 						})(),
 
-						randomColorHex: (function(){
+						randomColorHex : (function(){
 							var letters = "0123456789ABCDEF".split( "" ), t0 = uRir;
 							return function(){
 								var color = "#";
@@ -384,20 +386,21 @@
 						})(),
 
 						// 모니터 가로값을 가져온다
-						widthScreen: function(){
+						widthScreen : function(){
 							return screen.width;
 						},
 
 						// 모니터 세로값을 가져온다
-						heightScreen: function(){
+						heightScreen : function(){
 							return screen.height;
 						},
 
 						// 타임체크
-						timeCheck: function( $toggle ){
+						timeCheck : function( $toggle ){
 							var self = _util.timeCheck;
 							if( $toggle )
-								self.st = dNow();else
+								self.st = dNow();
+							else
 								return ( self.et = dNow() ) - self.st;
 						}
 					}
@@ -470,29 +473,34 @@
 				//----------------------------------------------------------------------------------------------------------------------------------------------//
 				// prototype
 				(function(){
-					var css, tree, event, getStyle, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cAe = cr.addEvent, cDe = cr.delEvent, cOl = cr.onload, cTe = cr.throwError, pc = dtt.prefixCss, npx = { opacity: true, zIndex: true, "z-index": true };
+					var css, tree, event, getStyle, dtt = Detector, cr = _core, cIs = cr.is, cRet = cr.replaceEventType, cAe = cr.addEvent, cDe = cr.delEvent, cOl = cr.onload, cTe = cr.throwError, pc = dtt.prefixCss, npx = { opacity : true, zIndex : true, "z-index" : true };
 
 					// css
 					(function(){
 						css = {
-							bgColor: function( $s, $v ){
-								if( $v ) $s[ "backgroundColor" ] = $v;else return $s[ "backgroundColor" ];
+							bgColor : function( $s, $v ){
+								if( $v ) $s[ "backgroundColor" ] = $v;
+								else return $s[ "backgroundColor" ];
 							},
 
-							bgImg: function( $s, $v ){
-								if( $v ) $s[ "backgroundImage" ] = "url(" + $v + ")";else return $s[ "backgroundImage" ];
+							bgImg : function( $s, $v ){
+								if( $v ) $s[ "backgroundImage" ] = "url(" + $v + ")";
+								else return $s[ "backgroundImage" ];
 							},
 
-							float: function( $s, $v ){
+							float : function( $s, $v ){
 								$s[ "cssFloat" ] == undefined ? css.float = function( $s, $v ){
-									if( $v ) $s[ "styleFloat" ] = $v;else return $s[ "styleFloat" ];
+									if( $v ) $s[ "styleFloat" ] = $v;
+									else return $s[ "styleFloat" ];
 								} : css.float = function( $s, $v ){
-									if( $v ) $s[ "cssFloat" ] = $v;else return $s[ "cssFloat" ];
+									if( $v ) $s[ "cssFloat" ] = $v;
+									else return $s[ "cssFloat" ];
 								}, css.float( $s, $v );
 							},
 
-							fontSmoothing: function( $s, $v ){
-								if( $v ) $s[ "font-smoothing" ] = $v, $s[ pc + "font-smoothing" ] = $v;else return $s[ "font-smoothing" ];
+							fontSmoothing : function( $s, $v ){
+								if( $v ) $s[ "font-smoothing" ] = $v, $s[ pc + "font-smoothing" ] = $v;
+								else return $s[ "font-smoothing" ];
 							}
 						}
 					})(),
@@ -502,18 +510,19 @@
 						(function(){
 							tree = {
 								// innerHTML
-								innerHTML: function( $msg ){
+								innerHTML : function( $msg ){
 									var self = this;
 									return ( $msg == undefined ) ? self.element.innerHTML : self.element.innerHTML = $msg, self;
 								},
 
 								// text 추가
-								text: (function(){
+								text : (function(){
 									if( Detector.innerText )
 										return function( $msg ){
 											var self = this;
 											if( $msg == undefined )
-												return self.element.innerText;else
+												return self.element.innerText;
+											else
 												return self.element.innerText = $msg, self;
 										}
 									else
@@ -521,18 +530,19 @@
 											// todo br 처리
 											var self = this;
 											if( $msg == undefined )
-												return self.element.textContent;else
+												return self.element.textContent;
+											else
 												return self.element.textContent = $msg, self;
 										}
 								})(),
 
 								// 자식객체 숫자
-								numChildren: function(){
+								numChildren : function(){
 									return this.children.length;
 								},
 
 								// 부모객체에 자식으로 추가
-								addParent: function( $parent ){
+								addParent : function( $parent ){
 									var self = this, body = Doc.body;
 									if( self.parent == $parent ) return self;
 
@@ -541,38 +551,39 @@
 								},
 
 								// 부모객체에 자식객체 제거
-								removeParent: function( $parent ){
+								removeParent : function( $parent ){
 									var self = this, body = Doc.body;
 									self.parent == $parent ? 0 : cTe( "Dk : 제공된 parent는 호출자의 부모이어야 합니다." );
 									if( $parent == body )
-										self.parent = null, $parent.removeChild( self.element );else
+										self.parent = null, $parent.removeChild( self.element );
+									else
 										$parent.tr( "removeChild", self );
 									return self;
 								},
 
 								// 자식객체 추가
-								addChild: function( $child ){
+								addChild : function( $child ){
 									var self = this;
 									$child.parent ? $child.parent.tr( "removeChild", $child ) : 0, $child.parent = self, self.children.push( $child ), self.element.appendChild( $child.element );
 									return self;
 								},
 
 								// 자식객체 해당 인덱스에 추가
-								addChildAt: function( $child, $index ){
+								addChildAt : function( $child, $index ){
 									var self = this, e = self.element, t0 = self.children, i = t0.length, t1 = $child.element, t2;
 									$index < 0 ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : $index = $index > i ? i : $index, $child.parent ? $child.parent.tr( "removeChild", $child ) : 0, $child.parent = self, t2 = t0.splice( $index ), t0.push( $child ), t0 = self.children = t0.concat( t2 ), ( $index >= i ) ? e.appendChild( t1 ) : e.insertBefore( t1, t0[ ++$index ].element );
 									return self;
 								},
 
 								// 해당 인덱스의 객체 반환
-								getChildAt: function( $index ){
+								getChildAt : function( $index ){
 									var self = this, t0 = self.children, i = t0.length;
 									$index < 0 || $index >= i ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : 0;
 									return t0[ $index ];
 								},
 
 								// 해당 객체의 인덱스 반환
-								getChildIndex: function( $child ){
+								getChildIndex : function( $child ){
 									$child ? 0 : cTe( "Dk : 제공된 파라미터 값이 존재하지 않습니다." );
 									var self = this, t0 = self.children, i = t0.length;
 									while( i-- ) if( $child == t0[ i ] ) return i;
@@ -580,7 +591,7 @@
 								},
 
 								// 자식객체 제거
-								removeChild: function( $child ){
+								removeChild : function( $child ){
 									var self = this, t0 = self.children, i = t0.length;
 									$child.parent == self ? 0 : cTe( "Dk : 제공된 child는 호출자의 자식이어야 합니다." );
 									while( i-- ){
@@ -593,14 +604,14 @@
 								},
 
 								// 해당 인덱스의 객체 제거
-								removeChildAt: function( $index ){
+								removeChildAt : function( $index ){
 									var self = this, t0 = self.children, i = t0.length, t1;
 									$index < 0 || $index >= i ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : 0, t1 = t0.splice( $index, 1 ), t1[ 0 ].parent = null, self.element.removeChild( t1[ 0 ].element );
 									return self;
 								},
 
 								// 자식객체 모두 제거 or 해당 인덱스 범위 제거 (slice 개념)
-								removeChildren: function( $bIndex, $eIndex ){
+								removeChildren : function( $bIndex, $eIndex ){
 									var self = this, e = self.element, i, t0 = self.children, t1 = t0.length, t2;
 									( $bIndex < 0 || $eIndex < 0 || $bIndex >= $eIndex || $bIndex >= t1 ) ? cTe( "Dk : 제공된 인덱스가 범위를 벗어났습니다." ) : 0, $bIndex == undefined ? $bIndex = 0 : 0, $eIndex == undefined ? $eIndex = t1 : 0, t2 = t0.splice( $bIndex, $eIndex - $bIndex ), i = t2.length;
 									while( i-- ) t2[ i ].parent = null, e.removeChild( t2[ i ].element );
@@ -624,7 +635,8 @@
 								if( $e.stopPropagation )
 									cancelBubbling = function( $e ){
 										$e.stopPropagation();
-									}, cancelBubbling( $e );else if( W.event )
+									}, cancelBubbling( $e );
+								else if( W.event )
 									cancelBubbling = function(){
 										W.event.cancelBubble = true;
 									}, cancelBubbling();
@@ -633,16 +645,16 @@
 							function localPosition( $dom ){
 								var e = $dom.element, x = e.offsetLeft, y = e.offsetTop, dkDoc = Dk.Doc;
 								while( e.offsetParent ) e = e.offsetParent, x += e.offsetLeft, y += e.offsetTop;
-								return { localX: dkDoc.pageX - x, localY: dkDoc.pageY - y };
+								return { localX : dkDoc.pageX - x, localY : dkDoc.pageY - y };
 							}
 
 							event = {
-								add: function( $d, $k, $v ){
+								add : function( $d, $k, $v ){
 									var self = $d, e = self.element, cb;
 									cb = dispatchEvent( self, $v );
 									self.___eventList[ $k ] = cb, cAe( e, $k, cb );
 								},
-								del: function( $d, $k ){
+								del : function( $d, $k ){
 									var self = $d, e = self.element, el = self.___eventList;
 									cDe( e, $k, el[ $k ] ), delete el[ $k ];
 								}
@@ -652,10 +664,10 @@
 						// get computed style
 						(function(){
 							getStyle = {
-								scrollWidth: function(){
+								scrollWidth : function(){
 									return this.element.scrollWidth;
 								},
-								scrollHeight: function(){
+								scrollHeight : function(){
 									return this.element.scrollHeight;
 								}
 							}
@@ -671,7 +683,7 @@
 
 						Dk.prototype = _prototype = {
 							// property
-							pp: function(){
+							pp : function(){
 								var self = this, a = arguments, i = a.length, k0 = a[ 0 ];
 								if( i == 1 )
 									return self[ k0 ];
@@ -682,7 +694,7 @@
 							},
 
 							// attribute
-							atr: function(){
+							atr : function(){
 								var self = this, e = self.element, a = arguments, i = a.length, k0 = a[ 0 ];
 								if( i == 1 )
 									return e[ k0 ];
@@ -693,7 +705,7 @@
 							},
 
 							// inline style
-							css: function(){
+							css : function(){
 								var self = this, cs = css, e = self.element, s = e.style, a = arguments, i = a.length, k, v, r, t0;
 								if( i == 1 )
 									return k = a[ 0 ], r = cs[ k ] ? cs[ k ]( s ) : s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
@@ -704,7 +716,7 @@
 							},
 
 							// tree
-							tr: function(){
+							tr : function(){
 								var self = this, tr = tree, a = arguments, i = a.length, k, v, r, t0 = cIs;
 								if( i == 1 )
 									return tr[ a[ 0 ] ].call( self );
@@ -715,7 +727,7 @@
 							},
 
 							// event
-							ev: (function(){
+							ev : (function(){
 								var ev = event, t0 = cOl, t1 = cRet;
 								if( dtt.device != "pc" )
 									return function(){
@@ -737,7 +749,7 @@
 							})(),
 
 							// get computed style
-							gcs: (function(){
+							gcs : (function(){
 								return function( $k ){
 									var self = this, gcs = getStyle;
 									return gcs[ $k ] ? gcs[ $k ].call( self ) : parseFloat( gcs.gcs.call( self, $k ) );
@@ -745,7 +757,7 @@
 							})(),
 
 							// styleSheet
-							st: function(){
+							st : function(){
 								var self = this, cs = css, s = self.rules[ self.styleId ].style, a = arguments, i = a.length, k, v, r, t0;
 								if( i == 1 )
 									return k = a[ 0 ], r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
@@ -786,7 +798,7 @@
 								self.___eventList = {}, self.parent = null, self.children = [], self.element = e, self.style = s, self.element.___self = self;
 							},
 
-								Dom.prototype = { id: pt.id, pp: pt.pp, atr: pt.atr, css: pt.css, tr: pt.tr, ev: pt.ev, gcs: pt.gcs },
+								Dom.prototype = { id : pt.id, pp : pt.pp, atr : pt.atr, css : pt.css, tr : pt.tr, ev : pt.ev, gcs : pt.gcs },
 
 								Dk.dom = function( $type ){
 									return new Dom( $type );
@@ -806,11 +818,12 @@
 									self.sheet = sheet, self.rules = rules, self.styleId = rules.length, sheet.insertRule( $key + "{}", self.styleId );
 								},
 
-								Style.prototype = { st: pt.st },
+								Style.prototype = { st : pt.st },
 
 								Dk.style = function( $key ){
 									if( list[ $key ] )
-										return list[ $key ];else
+										return list[ $key ];
+									else
 										return list[ $key ] = new Style( $key );
 								}
 						})()
@@ -828,15 +841,17 @@
 
 					// stats
 					if( W.Stats )
-						stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement ), update = function(){
-							stats.begin();
+						stats = new Stats(), stats.setMode( 0 ), stats.domElement.style.cssText = "position : fixed; z-index : 2; left : 0px", Doc.body.appendChild( stats.domElement ),
+							update = function(){
+								stats.begin();
 
-							var i = list.length;
-							while( i-- ) list[ i ].value( list[ i ].key );
-							raf( update );
+								var i = list.length;
+								while( i-- ) list[ i ].value( list[ i ].key );
+								raf( update );
 
-							stats.end();
-						};else
+								stats.end();
+							};
+					else
 						update = function(){
 							var i = list.length;
 							while( i-- ) list[ i ].value( list[ i ].key );
@@ -883,7 +898,7 @@
 
 						// mouse - mouseX, pageX, speedX, moveX, touchList
 						(function(){
-							var moveF = { mousedown: moveStart, touchstart: moveStart, mouseup: moveStop, touchend: moveStop, mousemove: moveNothing, touchmove: moveNothing }, oldX = 0, oldY = 0, stX, stY;
+							var moveF = { mousedown : moveStart, touchstart : moveStart, mouseup : moveStop, touchend : moveStop, mousemove : moveNothing, touchmove : moveNothing }, oldX = 0, oldY = 0, stX, stY;
 							cAe( Doc, "mousedown", mouseFunc, true ), cAe( Doc, "mouseup", mouseFunc, true ), cAe( Doc, "mousemove", mouseFunc, true );
 
 							function mouseFunc( $e ){
@@ -891,7 +906,7 @@
 									mouseFunc = function( $e ){
 										var mx, my, touchList = [], eTouches = $e.touches, i = eTouches.length, sl = scLeft(), st = scTop(), et = $e.type;
 										mx = eTouches[ 0 ].clientX, my = eTouches[ 0 ].clientY, dkDoc.mouseX = mx, dkDoc.mouseY = my, dkDoc.pageX = mx + sl, dkDoc.pageY = my + st, dkDoc.speedX = mx - oldX, dkDoc.speedY = my - oldY, oldX = mx, oldY = my, moveF[ et ]( mx, my );
-										while( i-- ) touchList[ i ] = { pageX: eTouches[ i ].x + sl, pageY: eTouches[ i ].y + st };
+										while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].x + sl, pageY : eTouches[ i ].y + st };
 										mouse.touchList = touchList;
 									}
 								else
@@ -925,7 +940,8 @@
 								if( W.innerWidth )
 									return function(){
 										return W.innerWidth
-									};else
+									};
+								else
 									return function(){
 										return Doc.documentElement.clientWidth
 									};
@@ -935,7 +951,8 @@
 									if( W.innerHeight )
 										return function(){
 											return W.innerHeight
-										};else
+										};
+									else
 										return function(){
 											return Doc.documentElement.clientHeight
 										};
@@ -992,7 +1009,7 @@
 
 							function update( $e ){
 								var i = sl.length, scl = scLeft(), sct = scTop();
-								while( i-- ) sl[ i ].value( { scrollLeft: scl, scrollTop: sct }, sl[ i ].key );
+								while( i-- ) sl[ i ].value( { scrollLeft : scl, scrollTop : sct }, sl[ i ].key );
 							}
 						})()
 				})(),
