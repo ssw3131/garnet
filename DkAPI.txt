@@ -1,0 +1,71 @@
+Dk.Information
+{name: "Dk garnet", version: "v0.1.0", contact: "ssw3131@daum.net"} 
+
+Dk.loader
+Dk.loader.text( $url, $cb, $obj )
+Dk.loader.json( $url, $cb, $obj )
+Dk.loader.xml( $url, $cb, $obj )
+Dk.loader.js( $arr, $cb )
+Dk.loader.asset( $arr, $cb )
+
+Dk.init( $callBack )
+
+Dk.Detector
+ 
+Dk.core
+Dk.core.replaceEventType
+Dk.core.addEvent( $e, $et, $cb, $cap )
+Dk.core.delEvent( $e, $et, $cb, $cap )
+Dk.core.onload( $d, $cb )
+Dk.core.adManager( $sF, $eF )
+Dk.core.is( $t, $o )
+Dk.core.throwError( $m )
+
+Dk.util
+Dk.util.randomRange( $max, $min )
+Dk.util.randomIntRange( $max, $min )
+Dk.util.randomColor()
+Dk.util.randomColorHex()
+Dk.util.widthScreen()
+Dk.util.heightScreen()
+Dk.util.timeCheck( $toggle )
+
+Dk.gs( arguments )
+
+Dk.plugIn( $plugInArr, $callBack )
+
+Dk.prototype
+Dk.prototype.pp()
+Dk.prototype.atr()
+Dk.prototype.css()
+Dk.prototype.tr()
+Dk.prototype.ev()
+Dk.prototype.gcs( $k )
+Dk.prototype.st()
+Dk.prototype.id( $id )
+
+Dk.dom( $type )
+
+Dk.style( $key )
+
+Dk.getById( $id )
+
+Dk.Loop
+Dk.Loop.add( $k, $v )
+Dk.Loop.del( $k )
+Dk.Loop.getList()
+ 
+Dk.Keyboard
+Dk.Keyboard.add( $k, $v )
+Dk.Keyboard.del( $k )
+Dk.Keyboard.getList()
+ 
+Dk.Doc
+Dk.Doc.width
+Dk.Doc.height
+Dk.Doc.addResize( $k, $v )
+Dk.Doc.delResize( $k )
+Dk.Doc.addWheel( $k, $v )
+Dk.Doc.delWheel( $k )
+Dk.Doc.addScroll( $k, $v )
+Dk.Doc.delScroll( $k )
