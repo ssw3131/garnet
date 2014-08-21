@@ -892,9 +892,10 @@
 						// scrollLeft, scrollTop
 						scLeft = function(){
 							return Doc.documentElement.scrollLeft ? Doc.documentElement.scrollLeft : Doc.body.scrollLeft ? Doc.body.scrollLeft : 0;
-						}, scTop = function(){
-						return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop ? Doc.body.scrollTop : 0;
-					},
+						},
+						scTop = function(){
+							return Doc.documentElement.scrollTop ? Doc.documentElement.scrollTop : Doc.body.scrollTop ? Doc.body.scrollTop : 0;
+						},
 
 						// mouse - mouseX, pageX, speedX, moveX, touchList
 						(function(){
