@@ -20,6 +20,7 @@
 			Dk[ $k = $k.replace( trim, '' ).toUpperCase() ] = $v;
 		},
 
+
 	fn( 'test1', 'test' ),
 	fn( 'test2', 'testTest' ),
 	fn( 'test3', 'TestTest' ),
