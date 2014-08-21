@@ -7,7 +7,7 @@
 	var w = window, doc = document;
 	var dk , fn, sMethod
 	var trim = /^\s*|\s*$/g
-CORE :
+// CORE :
 	if ( !w['console'] ) w['console'] = {log: function () {}}
 	w.dk = dk = {},
 		sMethod = {
@@ -30,8 +30,8 @@ CORE :
 		},
 		fn = dk['fn'] = function ( k, v ) { dk[k.charAt( 0 ).toLowerCase() + k.substring( 1, k.length )] = v},
 		fn['cls'] = function ( k, v ) { k = k.replace( trim, '' ).toLowerCase(), dk[k.charAt( 0 ).toUpperCase() + k.substring( 1, k.length )] = v},
-		fn['obj'] = function ( k, v ) {dk[k.replace( trim, '' ).toUpperCase()] = v}
-FNS :
+		fn['obj'] = function ( k, v ) {dk[k.replace( trim, '' ).toUpperCase()] = v},
+// FNS :
 		fn( 'sList', function ( k, v ) {
 			var list = {}, r = {
 				S: function () {
@@ -43,7 +43,7 @@ FNS :
 					}
 					return v;
 				},
-				update : function () {
+				update: function () {
 					var k, t = list
 					for ( k in t ) t[k]()
 				}
@@ -53,8 +53,8 @@ FNS :
 		fn( 'addEvent', function () {
 			var arg = arguments, t0
 			(t0 = arg[0].addEventListener) ? t0( arg[1], arg[2] ) : w.attachEvent( 'on' + arg[1], arg[2] )
-		} )
-OBJS :
+		} ),
+// OBJS :
 		// 매니저 관련정의
 		fn.obj( 'LOOP', (function () {
 			var r = dk.sList( 'LOOP' )
