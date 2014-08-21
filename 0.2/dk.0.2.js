@@ -42,6 +42,10 @@ FNS :
 						else (v = arguments[i++]) === null ? delete list[k] : list[k] = v
 					}
 					return v;
+				},
+				update : function () {
+					var k, t = list
+					for ( k in t ) t[k]()
 				}
 			}
 			return  r
@@ -54,18 +58,11 @@ OBJS :
 		// 매니저 관련정의
 		fn.obj( 'LOOP', (function () {
 			var r = dk.sList( 'LOOP' )
-			setInterval( function () {
-				var k, t = r.S( 'list' )
-				for ( k in t ) t[k]()
-			}, 16 )
+			setInterval( r['update'], 16 )
 			return r
 		})() ),
 		fn.obj( 'RESIZE', (function () {
 			var r = dk.sList( 'RESIZE' )
-			r['update'] = function () {
-				var k, t = r.S( 'list' )
-				for ( k in t ) t[k]()
-			}
 			dk.addEvent( w, 'resize', r.update )
 			return r
 		})() )
