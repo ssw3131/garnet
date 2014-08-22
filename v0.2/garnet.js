@@ -130,7 +130,6 @@
 			var t=dk.DETECTOR.currentTarget
 			return function dkEvent() {
 				var e=arguments[0]
-				this.name='dkEvent'
 				this.nativeEvent=e, this.keyCode=e.keyCode, this.target=e[t]
 				//TODO  여기다가 우리 이벤트를 정의합니다.
 				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
