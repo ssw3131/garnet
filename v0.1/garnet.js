@@ -167,7 +167,7 @@
 
         //----------------------------------------------------------------------------------------------------------------------------------------------//
         // Detector
-        Dk.loader.js( [ "http://ssw3131.github.io/garnet/bsDetect.js" ], function(){
+        Dk.loader.js( [ "http://ssw3131.github.io/garnet/v0.1/bsDetect.js" ], function(){
             var Detector, bsDetect, _callBack, _core, _util, _prototype;
 
             bsDetect = bs.detectDOM( W, bs.detectWindow( W ) ), Dk.Detector = Detector = {
