@@ -4,12 +4,45 @@
 	<meta charset="UTF-8">
 	<title></title>
 	<script src="garnet.js"></script>
+	<script>
+
+	</script>
 </head>
 <body>
+<div id="stage">
+	<div width="50%" class="ka" id="a0">d50<a id="aa0">a0</a></div>
+	<div width="100%" class="ka" id="a1"><a id="aa1">a1</a>d100</div>
+	<input id="i0" type="radio" value="i0" checked>
+	<div class="ka" id="a2" class="example"><p><a id="aaa">aaaa</a></p></div>
+	<div class="ka" id="a3"><span id="sp3">span3</span></div>
+	<p id="p0" data-test="dk-a">dk-a</p>
+	<p id="p1" data-test="a dk a">a dk a</p>
+	<span id="sp5">span5</span>
+	<div class="ka" id="a4"><span id="sp4">span4</span></div>
+	<p id="p2" data-test="aaadkaa">aaadkaa</p>
+	<p id="p3" data-test="dk">dk</p>
+	<p id="p4" data-test="dk"><span>dskdksd</span></p>
+	<p id="p5" data-test="dk" lang="it">it</p>
+	<span id="sp0">span0</span><span id="sp1">span1</span>
+	<i id="i0"><span id="sp2">span2<b id="b0"></b></span></i>
+	<i id="i1"><b id="b1" data-test="dkaa">dkaa</b></i>
+	<dd id="dd0" data-test="aaadk">aaadk dd0</dd>
+	<input id="c1" type="checkbox" value="c1" checked disabled>
+	<dd id="dd1">dd1</dd>
+	<dd id="dd2">dd2</dd>
+	<dd id="dd3"><dt id="dt1">dt1</dt></dd>
+	<dl id="dl0">dl0<dd id="dd4">dd4</dd></dl>
+	<dl id="dl1"><dd id="dd5">dd5</dd></dl>
+	<dl id="dl2"><dt id="dt0">dt0</dt><dd id="dd6">dd6</dd><dd id="dd7">dd7</dd></dl>
+	<dl id="dl3"><dt id="dt1">dt1</dt></dl>
+	<a id="aa2" href="#" target="_blank">a_blank</a><a target="_self">a_self</a>
+</div>
+<style>
+	p:lang(it){color:#f00}
+</style>
 <script>
-
-	console.log( dk.DETECTOR )
 	console.log( dk )
+	console.log( dk.DETECTOR )
 	dk.LOOP.S( 'loop1', function() {
 		console.log( 'loop1' )
 	} )
@@ -27,16 +60,18 @@
 	console.log( dk.WIN.RESIZE.S( 'this' ) )
 	console.log( dk.WIN.RESIZE.S( 'list' ) )
 
-
-	function test(){
-		this.name = '기본객체'
+	var tester = function( k ) {
+		console.log(k+' : ',dk.query( k ))
 	}
 
-	function test2(){
-		test.prototype.constructor.call(this)
-	}
-	console.log(test.prototype.constructor)
-	console.log(new test2())
+	var testList = ['p:lang(it)','dd:nth-child(even)','dd:nth-of-type(even)','dd:nth-child(odd)','dd:nth-of-type(odd)','dd:nth-child(1)','dd:nth-of-type(1)',
+		'a:link',':root','dt:only-child','dt:only-of-type','dd:last-of-type','dd:last-child',
+		'[target=_blank]','p:empty','input:disabled','input:enabled','input:checked','dd:first-of-type','dd:first-child',
+		'[data-test~=dk]','[data-test~=dk]','[data-test~=dk]','[data-test*=dk]','[data-test$=dk]','[data-test^=dk]','[data-test|=dk]',
+		'[width]','i,dd','div ~ p ~ p','i b','i > b','p + span','#a0','#a0,#a1','#a0,#a1,#a2','.ka','span',
+		'div ~ p','div > p','p > a','div > p > a','i > span > b','i > span','span > b','div.example > p > a','div ~ p ~ p'
+	], i = testList.length;
+	while( i-- ) tester( testList[i] );
 
 
 </script>
