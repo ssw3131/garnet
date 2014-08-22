@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-	<meta charset="UTF-8">
+<head lang="ko">
+	<meta charset="euc-kr">
+	<!--<meta charset="utf-8">-->
 	<title></title>
 	<script src="garnet.js"></script>
 	<script>
@@ -72,6 +73,12 @@
 		'div ~ p','div > p','p > a','div > p > a','i > span > b','i > span','span > b','div.example > p > a','div ~ p ~ p'
 	], i = testList.length;
 	while( i-- ) tester( testList[i] );
+
+	dk.js(jsCallBack,'test1.js','test2.js')
+	function jsCallBack(data){
+		console.log(data)
+		console.log('로딩완료')
+	}
 
 
 </script>
