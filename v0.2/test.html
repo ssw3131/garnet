@@ -9,16 +9,19 @@
 	<script>
 		console.log(dk.DETECTOR)
 		console.log(dk)
-//		dk.LOOP.S('loop1',function(){
-//			console.log('loop1')
-//		})
-
+		dk.LOOP.S('loop1',function(){
+			console.log('loop1')
+		})
 		dk.WIN.RESIZE.S('resize1',function(){
 			console.log('resize1')
 		})
 		dk.WIN.RESIZE.S('resize2',function(){
 			console.log('resize2')
 		})
+
+
+		dk.KEY.S('a',function(){console.log('a')})
+
 		console.log(dk.WIN.RESIZE.S('this'))
 		console.log(dk.WIN.RESIZE.S('list'))
 
