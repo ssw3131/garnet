@@ -6,27 +6,39 @@
 	<script src="garnet.js"></script>
 </head>
 <body>
-	<script>
-		console.log(dk.DETECTOR)
-		console.log(dk)
-		dk.LOOP.S('loop1',function(){
-			console.log('loop1')
-		})
-		dk.WIN.RESIZE.S('resize1',function(){
-			console.log('resize1')
-		})
-		dk.WIN.RESIZE.S('resize2',function(){
-			console.log('resize2')
-		})
+<script>
+
+	console.log( dk.DETECTOR )
+	console.log( dk )
+	dk.LOOP.S( 'loop1', function() {
+		console.log( 'loop1' )
+	} )
+	dk.WIN.RESIZE.S( 'resize1', function() {
+		console.log( 'resize1' )
+	} )
+	dk.WIN.RESIZE.S( 'resize2', function() {
+		console.log( 'resize2' )
+	} )
+
+	dk.KEY.S( 'a', function( e ) {console.log( e, e.nativeEvent )} )
+	dk.KEY.S( 'b', function() {console.log( 'a' )} )
+	dk.KEY.S( 'c', function() {console.log( 'a' )} )
+
+	console.log( dk.WIN.RESIZE.S( 'this' ) )
+	console.log( dk.WIN.RESIZE.S( 'list' ) )
 
 
-		dk.KEY.S('a',function(e){console.log( e, e.nativeEvent)})
-		dk.KEY.S('b',function(){console.log('a')})
-		dk.KEY.S('c',function(){console.log('a')})
+	function test(){
+		this.name = '기본객체'
+	}
 
-		console.log(dk.WIN.RESIZE.S('this'))
-		console.log(dk.WIN.RESIZE.S('list'))
+	function test2(){
+		test.prototype.constructor.call(this)
+	}
+	console.log(test.prototype.constructor)
+	console.log(new test2())
 
-	</script>
+
+</script>
 </body>
 </html>
