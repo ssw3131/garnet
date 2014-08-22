@@ -33,18 +33,21 @@
 		fn['obj'] = function ( k, v ) {dk[k.replace( trim, '' ).toUpperCase()] = v},
 // FNS :
 		fn( 'sList', function ( k, v ) {
-			var list = {}, r = {
+			function sList(){}
+			var r = {
+				list : new sList(),
 				S: function () {
-					var i = 0, j = arguments.length, k, v; //루프용 i,j와 키밸류용 k, v
+					var i = 0, j = arguments.length, k, v;
 					while ( i < j ){
 						k = arguments[i++];
-						if ( i == j ) return k == 'list' ? list : list[k]
-						else (v = arguments[i++]) === null ? delete list[k] : list[k] = v
+						if ( k == 'this') return r.list;
+						if ( k == 'list') return r.list;
+						else (v = arguments[i++]) === null ? delete r.list[k] : r.list[k] = v
 					}
 					return v;
 				},
 				update: function () {
-					var k, t = list
+					var k, t = r.list
 					for ( k in t ) t[k]()
 				}
 			}
@@ -61,9 +64,14 @@
 			setInterval( r['update'], 16 )
 			return r
 		})() ),
-		fn.obj( 'RESIZE', (function () {
-			var r = dk.sList( 'RESIZE' )
-			dk.addEvent( w, 'resize', r.update )
+		fn.obj( 'WIN', (function () {
+			var r = {
+				RESIZE : (function(){
+					var r = dk.sList( 'RESIZE' )
+					dk.addEvent( w, 'resize', r.update )
+					return r
+				})()
+			}
 			return r
 		})() )
 
