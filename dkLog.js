@@ -42,3 +42,5 @@
             if( $width ) es0.width = $width + "px", es1.width = $width + 10 + "px";
         }
 })()
+
+'httsdfgndklglskg~~~~~.' + 'garnet.js'
