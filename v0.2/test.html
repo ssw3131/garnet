@@ -20,7 +20,9 @@
 		})
 
 
-		dk.KEY.S('a',function(){console.log('a')})
+		dk.KEY.S('a',function(e){console.log( e, e.nativeEvent)})
+		dk.KEY.S('b',function(){console.log('a')})
+		dk.KEY.S('c',function(){console.log('a')})
 
 		console.log(dk.WIN.RESIZE.S('this'))
 		console.log(dk.WIN.RESIZE.S('list'))
