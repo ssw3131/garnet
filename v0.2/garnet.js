@@ -10,18 +10,17 @@
 
 // core
 	W.dk=dk={ info: { name: 'Dk garnet', ver: 'v0.2.0', url: 'https://github.com/ssw3131/garnet' } },
-		fn=dk['fn']=function( k, v ) { dk[k.charAt( 0 ).toLowerCase() + k.substring( 1, k.length )]=v},
-		fn['cls']=function( k, v ) { k=k.replace( trim, '' ).toLowerCase(), dk[k.charAt( 0 ).toUpperCase() + k.substring( 1, k.length )]=v},
-		fn['obj']=function( k, v ) {dk[k.replace( trim, '' ).toUpperCase()]=v},
+		fn=dk['method']=function( k, v ) { dk[k.charAt( 0 ).toLowerCase() + k.substring( 1, k.length )]=v},
+		fn['class']=function( k, v ) { k=k.replace( trim, '' ).toLowerCase(), dk[k.charAt( 0 ).toUpperCase() + k.substring( 1, k.length )]=v},
+		fn['static']=function( k, v ) {dk[k.replace( trim, '' ).toUpperCase()]=v},
 
 // detector
-		fn.obj( 'DETECTOR', (function() {
+		fn.static( 'DETECTOR', (function() {
 			var navi=W.navigator, agent=navi.userAgent.toLowerCase(), platform=navi.platform.toLowerCase(), app=navi.appVersion.toLowerCase(),
 				device='pc', os, osv, browser, bv, flash,
 				prefixCss, prefixStyle, transform3D, keyframe=W['CSSRule'],
 				docMode=0,
-				d=DOC.createElement( 'div' ), s=d.style,
-				c=DOC.createElement( 'canvas' ), a=DOC.createElement( 'audio' ), v=DOC.createElement( 'video' ), t0,
+				d=DOC.createElement( 'div' ), s=d.style,c=DOC.createElement( 'canvas' ), a=DOC.createElement( 'audio' ), v=DOC.createElement( 'video' ), t0,
 				ie=function() {
 					if( agent.indexOf( 'msie' ) < 0 && agent.indexOf( 'trident' ) < 0 ) return;
 					if( agent.indexOf( 'iemobile' ) > -1 ) os='winMobile';
@@ -64,13 +63,11 @@
 					else if( agent.indexOf( t0 + '6.3' ) > -1 ) osv='8.1';
 					ie() || chrome() || firefox() || safari() || opera();
 				} else if( platform.indexOf( 'mac' ) > -1 ) {
-					os='mac',
-						t0=/os x ([\d._]+)/.exec( agent )[1].replace( '_', '.' ).split( '.' ),
-						osv=parseFloat( t0[0] + '.' + t0[1] ),
-						safari() || chrome() || firefox() || opera();
+					os='mac',t0=/os x ([\d._]+)/.exec( agent )[1].replace( '_', '.' ).split( '.' ),osv=parseFloat( t0[0] + '.' + t0[1] ),
+					safari() || chrome() || firefox() || opera();
 				} else {
 					os=app.indexOf( 'x11' ) > -1 ? 'unix' : app.indexOf( 'linux' ) > -1 ? 'linux' : 0,
-						chrome() || firefox();
+					chrome() || firefox();
 				}
 			}
 			(function() {
@@ -86,21 +83,16 @@
 			switch( browser ){
 				case'ie':
 					if( bv == -1 ) bv=!c['getContext'] ? 8 : !( 'msTransition' in s ) && !( 'transition' in s ) ? 9 : c.getContext( 'webgl' ) || c.getContext( 'experimental-webgl' ) ? 11 : 10;
-					prefixCss='-ms-', prefixStyle='ms';
-					transform3D=bv > 9 ? 1 : 0;
-					docMode=DOC['documentMode'] || 0;
+					prefixCss='-ms-', prefixStyle='ms', transform3D=bv > 9 ? 1 : 0, docMode=DOC['documentMode'] || 0;
 					break;
 				case'firefox':
-					prefixCss='-moz-', prefixStyle='Moz';
-					transform3D=1;
+					prefixCss='-moz-', prefixStyle='Moz', transform3D=1;
 					break;
 				case'opera':
-					prefixCss='-o-', prefixStyle='O';
-					transform3D=1;
+					prefixCss='-o-', prefixStyle='O', transform3D=1;
 					break;
 				default:
-					prefixCss='-webkit-', prefixStyle='webkit';
-					transform3D=os == 'android' ? ( osv < 4 ? 0 : 1 ) : 1;
+					prefixCss='-webkit-', prefixStyle='webkit', transform3D=os == 'android' ? ( osv < 4 ? 0 : 1 ) : 1;
 			}
 			if( keyframe ) {
 				if( keyframe.WEBKIT_KEYFRAME_RULE ) keyframe='-webkit-keyframes';
@@ -138,7 +130,7 @@
 			var t=dk.DETECTOR.currentTarget
 			return function dkEvent() {
 				var e=arguments[0]
-				this.name = 'dkEvent'
+				this.name='dkEvent'
 				this.nativeEvent=e, this.keyCode=e.keyCode, this.target=e[t]
 				//TODO  여기다가 우리 이벤트를 정의합니다.
 				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
@@ -176,7 +168,7 @@
 		})() ),
 // OBJS :
 		// 매니저 관련정의
-		fn.obj( 'KEY', (function() {
+		fn.static( 'KEY', (function() {
 			var r=dk.sList( 'KEY', 0 ), ev=dk.dkEvent, list=r.list, t0={}, t3={}, t1=("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i=t1.length
 			while( i-- ) t3[t1[i--]]=t1[i].toLowerCase(), t0[t1[i].toLowerCase()]=0
 			dk.addEvent( W, 'keydown', function() {
@@ -186,12 +178,12 @@
 			)
 			return r
 		})() ),
-		fn.obj( 'LOOP', (function() {
+		fn.static( 'LOOP', (function() {
 			var r=dk.sList( 'LOOP', 1 );
 			(function loop() { r['update'](), requestAnimFrame( loop )})();
 			return r
 		})() ),
-		fn.obj( 'WIN', (function() {
+		fn.static( 'WIN', (function() {
 			return {
 				RESIZE: (function() {
 					var r=dk.sList( 'RESIZE', 1 )
