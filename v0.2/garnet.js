@@ -504,31 +504,30 @@
 // FNS :
 		(function() {
 			// TODO 아좍스 이건 주말에 팜... 심도깊게 고민해야겠군 -_-;;
-			function ajax( callback, url/*paramK,paramV*/ ) {
-				var rq = new W['XMLHttpRequest'], pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v
-				for( i = 2; i < j; i++ ){
-					k = arg[i++], v = arg[i]
-					pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),
+			var ajax = function( callback, url/*paramK,paramV*/ ) {
+					var rq = new W['XMLHttpRequest'], pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v
+					for( i = 2; i < j; i++ ){
+						k = arg[i++], v = arg[i]
+						pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),
 //					console.log(pK,pV),
-					params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
-				}
-				rq.open( 'GET', url + (params ? params : ''), true ),console.log(params),
-				rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
-				rq.onreadystatechange = function() {if(rq.readyState==4) rq.status==200 ? ( callback ? (callback( rq.responseText )) : 0) : 0},
-				rq.send( null )
-			}
+							params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
+					}
+					rq.open( 'GET', url + (params ? params : ''), true ), console.log( params ),
+						rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
+						rq.onreadystatechange = function() {if( rq.readyState == 4 ) rq.status == 200 ? ( callback ? (callback( rq.responseText )) : 0) : 0},
+						rq.send( null )
+				},
+				js = function( callBack, url ) {
+					var t = DOC.createElement( 'script' )
+					t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url + (url.charAt( url.length - 1 ) == '=' ? callBack.name : ''),
+						t.onreadystatechange = function() { callBack ? callBack() : 0}
+				};
 
-			function js( callBack, url ) {
-				var t = DOC.createElement( 'script' )
-				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url + (url.charAt( url.length - 1 ) == '=' ? callBack.name : ''),
-				t.onreadystatechange = function() { callBack ? callBack() : 0}
-			}
-
-			fn( 'js', function( callBack, url ) {
+			fn( 'get', ajax ), fn( 'js', function( callBack, url ) {
 				var i = 1, j = arguments.length, len = j - 1
 				while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
-			} ),
-			fn( 'get', ajax )
+			} )
+
 		})(),
 		fn( 'sList', (function() {
 			function dkList() {
