@@ -107,8 +107,19 @@
 	function openAPICallBakcTest2( d ) {
 		console.log( d.channel.q, d )
 	}
+	dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
+	function openAPICallBakcTest3( d ) {
+		console.log( d.channel.q, d )
+	}
 	/// ajax test
 	dk.get( null, 'test2.txt' )
+
+	/// ajax test
+	dk.get( getJSON_test, 'json/json.json' )
+	function getJSON_test(d){
+//		console.log(d)
+		console.log(JSON.parse(d))
+	}
 
 </script>
 </body>
