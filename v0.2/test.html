@@ -86,7 +86,7 @@
 	}
 
 	dk.get(null,'test2.txt')
-	dk.get(getTest,'http://apis.daum.net/search/blog?apikey='+'bffaf40ba59dff1a741998dd1d594e122f4260af'+'&output=json&callback=obj.pongSearch&q=' + encodeURI('로보캅'))
+	dk.js(getTest,'http://apis.daum.net/contents/movie?apikey=bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + '로보캅' + '&output=json&callback=')
 	function getTest(d){
 		console.log(d)
 	}
