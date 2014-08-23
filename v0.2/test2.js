@@ -1,1 +1,1 @@
-console.log('utf-8 잇힝!')
+console.log('eng 한글2!')

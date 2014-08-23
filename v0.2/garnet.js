@@ -1,6 +1,6 @@
 "use strict";
 (function() {
-	var W = window, DOC = document;
+	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
 	var dk, fn, bsSelector, query;
 	var trim = /^\s*|\s*$/g;
 // 보정패치
@@ -504,29 +504,32 @@
 // FNS :
 		(function() {
 			// TODO 아좍스 이건 주말에 팜... 심도깊게 고민해야겠군 -_-;;
-			function ajax( callback, url, type, xml ) {
-				var rq = new W['XMLHttpRequest'] , type
-				type = type ? type : 'GET'
-				rq.onreadystatechange = function() {if( rq.readyState == 4 ) if( rq.status == 200 ) callback ? callback( xml ? rq.responseXML : rq.responseText ) : null}
-				type == 'POST' ? rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" ) : null
-				// 세번째 인자는 false면 동기 / true면 비동기 나는 무조건 비동기처리
-				// 첫번째 인자는 GET, POST, HEAD
-				rq.open( type, url, true )
-				//TODO 센드 파라미터 처리
-				//TODO 인코딩 처리도해야되는군 -_-;;
-				rq.send();
+			var mk;
+//			function ajax( callback, url, type, xml ) {
+//				var rq = new W['XMLHttpRequest'] , type
+//				type = type ? type : 'GET'
+//				rq.onreadystatechange = function() {if( rq.readyState == 4 ) if( rq.status == 200 ) callback ? callback( xml ? rq.responseXML : rq.responseText ) : null}
+//				type == 'POST' ? rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" ) : null
+//				// 세번째 인자는 false면 동기 / true면 비동기 나는 무조건 비동기처리
+//				// 첫번째 인자는 GET, POST, HEAD
+//				rq.open( type, url, true )
+//				//TODO 센드 파라미터 처리
+//				//TODO 인코딩 처리도해야되는군 -_-;;
+//				rq.send();
+//			}
+//
+//			mk = function(m){return function( end, url ){return http( m, end, url, arguments );};},
+//			fn( 'post', mk('POST') ), fn( 'put', mk('PUT') ), fn( 'delete', mk('DELETE') ), fn( 'get', mk('GET') );
+			function js( callBack, src ) {
+				var t = DOC.createElement( 'script' )
+				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = src
+				if( W['addEventListener'] ) t.onload = function() {t.onload = null, callBack ? callBack() : 0};
+				else t.onreadystatechange = function() { callBack ? callBack() : 0}
 			}
-			fn( 'js', (function() {
-				return function js() {
-					var arg = arguments, len = arg.length - 1, step = 1, list = []
-					function mkJS() {
-						var t = document.createElement( "script" );
-						t.type = "text/javascript", t.charset = 'utf-8', document.getElementsByTagName( 'head' )[0].appendChild( t ), t.innerHTML = arguments[0],
-							list.push( arguments[0] ), step++ == len ? arg[0] ? arg[0]( list ) : 0 : ajax( mkJS, arg[step] )
-					}
-					ajax( mkJS, arg[step] )
-				}
-			})() )
+			fn( 'js', function( callBack, src ) {
+				var i = 1, j = arguments.length, len = j - 1
+				while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
+			} )
 		})(),
 		fn( 'sList', (function() {
 			function dkList() {
@@ -582,7 +585,6 @@
 					dk.addEvent( W, 'resize', function() { r['update'].call( r ) } )
 					return r
 				})()
-
 			}
 		})() )
 })();

@@ -1,1 +1,1 @@
-console.log('euc-kr 잇힝!')
+console.log('eng 한글1!')
