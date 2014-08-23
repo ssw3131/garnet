@@ -509,10 +509,10 @@
 				for( i = 2; i < j; i++ ){
 					k = arg[i++], v = arg[i]
 					pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),
-					console.log(pK,pV),
+//					console.log(pK,pV),
 					params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
 				}
-				//console.log(params)
+				console.log(params)
 				rq.open( 'GET', url + (params ? params : ''), true )
 				rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
 				rq.onreadystatechange = function() {(rq.status==200) ? ( callback ? (callback( rq.responseText )) : 0) : 0}
