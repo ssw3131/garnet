@@ -517,19 +517,42 @@
 //				//TODO 인코딩 처리도해야되는군 -_-;;
 //				rq.send();
 //			}
-//
-//			mk = function(m){return function( end, url ){return http( m, end, url, arguments );};},
-//			fn( 'post', mk('POST') ), fn( 'put', mk('PUT') ), fn( 'delete', mk('DELETE') ), fn( 'get', mk('GET') );
-			function js( callBack, src ) {
+
+			function ajax(callback,url/*paramK,paramV*/) {
+				var rq = new W['XMLHttpRequest'],pK,pV,params,arg=arguments,i=2,j=arg.length, k,v
+				for(i=2;i<j;i++){
+					k=arg[i++],v=arg[i++]
+					pK = encodeURIComponent(k),pV = encodeURIComponent(v)
+					console.log(pK,pV)
+				}
+				params = "?" + pK + "=" + pV;
+
+
+
+				//3번째 인자 비동기 처리
+				rq.open('GET',url,true)
+				rq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+				rq.onreadystatechange=function(){
+					rq.readyState == 4 ? callback ? (callback(rq.responseText)) : 0 : 0
+				}
+				rq.send(null)
+
+			}
+
+			function js( callBack, url ) {
 				var t = DOC.createElement( 'script' )
-				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = src
+				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url
 				if( W['addEventListener'] ) t.onload = function() {t.onload = null, callBack ? callBack() : 0};
 				else t.onreadystatechange = function() { callBack ? callBack() : 0}
 			}
-			fn( 'js', function( callBack, src ) {
+
+			fn( 'js', function( callBack, url ) {
 				var i = 1, j = arguments.length, len = j - 1
 				while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
-			} )
+			} ),
+				fn( 'get', function( callBack, src ) {
+					ajax(callBack, src)
+				} )
 		})(),
 		fn( 'sList', (function() {
 			function dkList() {
@@ -539,7 +562,6 @@
 					for( k in t ) t[k]()
 				} : 0
 			}
-
 			dkList.prototype = {
 				S: function() {
 					var i = 0, j = arguments.length, k, v;

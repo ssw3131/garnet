@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head lang="ko">
-	<meta charset="euc-kr">
-	<!--<meta charset="utf-8">-->
+	<!--<meta charset="euc-kr">-->
+	<meta charset="utf-8">
 	<title></title>
 	<script src="garnet.js"></script>
 	<script>
@@ -76,9 +76,22 @@
 
 	dk.js(jsCallBack,'test1.js','test2.js')
 	function jsCallBack(){
-		console.log()
-		console.log('�ε��Ϸ�')
+		console.log('로딩완료')
 	}
+
+	dk.get(getTest,'test1.txt')
+	function getTest(data){
+		console.log('로딩완료',data)
+		document.writeln(data)
+	}
+
+	dk.get(null,'test2.txt')
+	dk.get(getTest,'http://apis.daum.net/search/blog?apikey='+'bffaf40ba59dff1a741998dd1d594e122f4260af'+'&output=json&callback=obj.pongSearch&q=' + encodeURI('로보캅'))
+	function getTest(d){
+		console.log(d)
+	}
+
+
 
 
 </script>
