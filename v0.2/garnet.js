@@ -504,43 +504,24 @@
 // FNS :
 		(function() {
 			// TODO 아좍스 이건 주말에 팜... 심도깊게 고민해야겠군 -_-;;
-			var mk;
-//			function ajax( callback, url, type, xml ) {
-//				var rq = new W['XMLHttpRequest'] , type
-//				type = type ? type : 'GET'
-//				rq.onreadystatechange = function() {if( rq.readyState == 4 ) if( rq.status == 200 ) callback ? callback( xml ? rq.responseXML : rq.responseText ) : null}
-//				type == 'POST' ? rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" ) : null
-//				// 세번째 인자는 false면 동기 / true면 비동기 나는 무조건 비동기처리
-//				// 첫번째 인자는 GET, POST, HEAD
-//				rq.open( type, url, true )
-//				//TODO 센드 파라미터 처리
-//				//TODO 인코딩 처리도해야되는군 -_-;;
-//				rq.send();
-//			}
-
-			function ajax(callback,url/*paramK,paramV*/) {
-				var rq = new W['XMLHttpRequest'],pK,pV,params,arg=arguments,i=2,j=arg.length, k,v
-				for(i=2;i<j;i++){
-					k=arg[i++],v=arg[i]
-					pK = encodeURIComponent(k),pV = encodeURIComponent(v),
-					console.log(pK,pV),
-					params ? (params+="&" + pK + "=" + pV) : (params='?'+ pK + "=" + pV)
+			function ajax( callback, url/*paramK,paramV*/ ) {
+				var rq = new W['XMLHttpRequest'], pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v
+				for( i = 2; i < j; i++ ){
+					k = arg[i++], v = arg[i]
+					pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),//console.log(pK,pV),
+						params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
 				}
-				console.log(params)
-				//3번째 인자 비동기 처리
-				rq.open('GET',url+(params ? params : ''),true)
-				rq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-				rq.onreadystatechange=function(){
-					rq.readyState == 4 ? callback ? (callback(rq.responseText)) : 0 : 0
-				}
-				rq.send(null)
-
+				//console.log(params)
+				rq.open( 'GET', url + (params ? params : ''), true )
+				rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
+				rq.onreadystatechange = function() {(rq.readyState == 4 || rq.status==200) ? (rq.onreadystatechange = null, callback ? (callback( rq.responseText )) : 0) : 0}
+				rq.send( null )
 			}
 
 			function js( callBack, url ) {
 				var t = DOC.createElement( 'script' )
-				console.log('test',url.charAt(url.length-1),callBack.name)
-				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url+(url.charAt(url.length-1) == '=' ? callBack.name : '')
+				console.log( 'test', url.charAt( url.length - 1 ), callBack.name )
+				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url + (url.charAt( url.length - 1 ) == '=' ? callBack.name : '')
 				if( W['addEventListener'] ) t.onload = function() {t.onload = null, callBack ? callBack() : 0};
 				else t.onreadystatechange = function() { callBack ? callBack() : 0}
 			}
@@ -549,7 +530,7 @@
 				var i = 1, j = arguments.length, len = j - 1
 				while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
 			} ),
-				fn( 'get', ajax )
+			fn( 'get', ajax )
 		})(),
 		fn( 'sList', (function() {
 			function dkList() {
@@ -559,6 +540,7 @@
 					for( k in t ) t[k]()
 				} : 0
 			}
+
 			dkList.prototype = {
 				S: function() {
 					var i = 0, j = arguments.length, k, v;
