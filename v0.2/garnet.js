@@ -515,7 +515,7 @@
 				//console.log(params)
 				rq.open( 'GET', url + (params ? params : ''), true )
 				rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
-				rq.onreadystatechange = function() {(rq.readyState == 4 || rq.status==200) ? (rq.onreadystatechange = null, callback ? (callback( rq.responseText )) : 0) : 0}
+				rq.onreadystatechange = function() {(rq.status==200) ? ( callback ? (callback( rq.responseText )) : 0) : 0}
 				rq.send( null )
 			}
 
