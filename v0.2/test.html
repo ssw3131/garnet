@@ -104,10 +104,7 @@
 		console.log( '로딩완료', data )
 	}
 	// openAPI로 연동했을때 callBack처리
-	dk.js( openAPICallBakcTest, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + '로보캅' + '&output=json&callback=' )
-	function openAPICallBakcTest( d ) {
-		console.log( d.channel.q, d )
-	}
+
 	// openAPI로 연동했을때 callBack처리
 	dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + '언어의정원' + '&output=json&callback=' )
 	function openAPICallBakcTest2( d ) {
@@ -120,7 +117,7 @@
 //	ajax test2
 //	이건 웹에서만 가능함
 //	http://ssw3131.github.io/garnet/v0.2/test.html
-		dk.get(openAPICallBakcTest3,'http://apis.daum.net/contents/movie','apikey','bffaf40ba59dff1a741998dd1d594e122f4260af','q' , 'RoboCop' , 'output','json','callback','')
+		dk.get(openAPICallBakcTest3,'test.js','apikey','bffaf40ba59dff1a741998dd1d594e122f4260af','q' , 'RoboCop' , 'output','json','callback','')
 		function openAPICallBakcTest3(d){
 			console.log(d)
 		}

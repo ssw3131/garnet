@@ -523,8 +523,7 @@
 				var t = DOC.createElement( 'script' )
 				console.log( 'test', url.charAt( url.length - 1 ), callBack.name )
 				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url + (url.charAt( url.length - 1 ) == '=' ? callBack.name : '')
-				if( W['addEventListener'] ) t.onload = function() {t.onload = null, callBack ? callBack() : 0};
-				else t.onreadystatechange = function() { callBack ? callBack() : 0}
+				t.onreadystatechange = function() { callBack ? callBack() : 0}
 			}
 
 			fn( 'js', function( callBack, url ) {
