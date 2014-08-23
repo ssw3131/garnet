@@ -521,16 +521,14 @@
 			function ajax(callback,url/*paramK,paramV*/) {
 				var rq = new W['XMLHttpRequest'],pK,pV,params,arg=arguments,i=2,j=arg.length, k,v
 				for(i=2;i<j;i++){
-					k=arg[i++],v=arg[i++]
-					pK = encodeURIComponent(k),pV = encodeURIComponent(v)
-					console.log(pK,pV)
+					k=arg[i++],v=arg[i]
+					pK = encodeURIComponent(k),pV = encodeURIComponent(v),
+					console.log(pK,pV),
+					params ? (params+="&" + pK + "=" + pV) : (params='?'+ pK + "=" + pV)
 				}
-				params = "?" + pK + "=" + pV;
-
-
-
+				console.log(params)
 				//3번째 인자 비동기 처리
-				rq.open('GET',url,true)
+				rq.open('GET',url+(params ? params : ''),true)
 				rq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 				rq.onreadystatechange=function(){
 					rq.readyState == 4 ? callback ? (callback(rq.responseText)) : 0 : 0
@@ -541,7 +539,8 @@
 
 			function js( callBack, url ) {
 				var t = DOC.createElement( 'script' )
-				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url
+				console.log('test',url.charAt(url.length-1),callBack.name)
+				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url+(url.charAt(url.length-1) == '=' ? callBack.name : '')
 				if( W['addEventListener'] ) t.onload = function() {t.onload = null, callBack ? callBack() : 0};
 				else t.onreadystatechange = function() { callBack ? callBack() : 0}
 			}
@@ -550,9 +549,7 @@
 				var i = 1, j = arguments.length, len = j - 1
 				while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
 			} ),
-				fn( 'get', function( callBack, src ) {
-					ajax(callBack, src)
-				} )
+				fn( 'get', ajax )
 		})(),
 		fn( 'sList', (function() {
 			function dkList() {
