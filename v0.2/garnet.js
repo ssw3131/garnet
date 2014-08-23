@@ -508,8 +508,9 @@
 				var rq = new W['XMLHttpRequest'], pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v
 				for( i = 2; i < j; i++ ){
 					k = arg[i++], v = arg[i]
-					pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),//console.log(pK,pV),
-						params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
+					pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),
+					console.log(pK,pV),
+					params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
 				}
 				//console.log(params)
 				rq.open( 'GET', url + (params ? params : ''), true )
