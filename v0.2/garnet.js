@@ -512,7 +512,7 @@
 //					console.log(pK,pV),
 					params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
 				}
-				console.log(params)
+//				console.log(params)
 				rq.open( 'GET', url + (params ? params : ''), true )
 				rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
 				rq.onreadystatechange = function() {(rq.status==200) ? ( callback ? (callback( rq.responseText )) : 0) : 0}
@@ -521,7 +521,6 @@
 
 			function js( callBack, url ) {
 				var t = DOC.createElement( 'script' )
-				console.log( 'test', url.charAt( url.length - 1 ), callBack.name )
 				t.type = 'text/javascript', t.charset = 'utf-8', HEAD.appendChild( t ), t.src = url + (url.charAt( url.length - 1 ) == '=' ? callBack.name : '')
 				t.onreadystatechange = function() { callBack ? callBack() : 0}
 			}
