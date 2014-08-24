@@ -567,7 +567,6 @@
 			return function( k, update ) { return new dkList( k, update )}
 		})() ),
 // OBJS :
-		// 매니저 관련정의
 		dk.static( 'KEY', (function() {
 			var r = dk.sList( 'KEY', 0 ), ev = dk.dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i = t1.length
 			while( i-- ) t3[t1[i--]] = t1[i].toLowerCase(), t0[t1[i].toLowerCase()] = 0
@@ -584,12 +583,12 @@
 			return r
 		})() ),
 		dk.static( 'WIN', (function() {
-			var t0 = {
+			var t2=document.body,t1=document.documentElement,t0 = {
 				width: 0, height: 0, scrollX: 0, scrollY: 0,
 				RESIZE: (function() {
 					var r = dk.sList( 'RESIZE', 1 ), func = function() {
-						t0.width = W.innerWidth ? W.innerWidth : document.documentElement.clientWidth
-						t0.height = W.innerHeight ? W.innerHeight : document.documentElement.clientHeight
+						t0.width = W.innerWidth ? W.innerWidth : t1.clientWidth
+						t0.height = W.innerHeight ? W.innerHeight : t1.clientHeight
 						r['update'].call( r )
 					}
 					setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
@@ -598,14 +597,29 @@
 				SCROLL: (function() {
 					var r = dk.sList( 'SCROLL', 1 )
 					dk.addEvent( W, 'scroll', function() {
-						t0.scrollX = document.body.scrollLeft + document.documentElement.scrollLeft
-						t0.scrollY = document.body.scrollTop + document.documentElement.scrollTop
+						t0.scrollX = t2.scrollLeft + t1.scrollLeft
+						t0.scrollY = t2.scrollTop + t1.scrollTop
 						r['update']()
 					} )
 					return r
 				})()
 			}
-
 			return t0
-		})() )
+		})() ),
+
+		dk.static('REG',(function(){
+			return {
+				isNumeric:function($str){return /^[+-]*[0-9]*\.?\d+$/.test($str)},
+				isStringOnly:function($str){return  /^[^0-9]*$/.test($str)},
+				isIPAddress:function($str){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test($str)},
+				stripHTMLTags:function($str){return $str.replace(/<\/?[^\<\/]+\/?>/g,"")},
+				lineModify: function( $str ) {return  $str.split( "\r\n" ).join( "\n" )},
+				isEmail:function($str){return /^(.+)\@(.+)\.(\w+)$/.test($str)},
+				isURL:function($str){var regExp=/^(https?\:\/\/)?(www\.)?(.+)\.(\w)+/, regExp2=/\./g, regExp3=/www/g;var t0=regExp.test($str), t1;regExp3.test($str) ? t1=($str.match(regExp2).length>1) : t1=($str.match(regExp2).length>=1);return regExp.test($str)&&t1},
+				isPerfectURL:function($str){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test($str)&&$str.match(/\./g).length>1},
+				isKoreanRegistrationNumber:function($str){return /^[0-9]{6}-?[0-9]{7}$/.test($str)},
+				trim:function($text){return $text.replace(/^\s+|\s+$/g,'')},
+				isEmpty:function($str){if(!$str) return true;return  !$str.length}
+			}
+		})())
 })();
