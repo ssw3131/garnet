@@ -94,16 +94,20 @@
 	], i = testList.length;
 	while( i-- ) tester( testList[i] );
 
-	dk.js( jsCallBack, 'test1.js', 'test2.js' )
+	dk.js( jsCallBack, 'test1.js' )
 	function jsCallBack() {
-		console.log( '로딩완료' )
+		console.log( '로딩완료-js콜백테스트' )
 	}
+
+	dk.js( null, 'test1.js', 'test2.js' )
+
 	dk.get( getTest, 'test1.txt' )
 	function getTest( data ) {
 		console.log( '로딩완료', data )
 	}
-	// openAPI로 연동했을때 callBack처리
-	dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + '언어의정원' + '&output=json&callback=' )
+	//	// openAPI로 연동했을때 callBack처리
+	var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( '언어의정원' ) : '언어의정원'
+	dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
 	function openAPICallBakcTest2( d ) {
 		console.log( d.channel.q, d )
 	}
@@ -111,14 +115,13 @@
 	function openAPICallBakcTest3( d ) {
 		console.log( d.channel.q, d )
 	}
-	/// ajax test
+	//		/// ajax test
 	dk.get( null, 'test2.txt' )
 
-	/// ajax test
+	//	/// ajax test
 	dk.get( getJSON_test, 'json/json.json' )
-	function getJSON_test(d){
-//		console.log(d)
-		console.log(JSON.parse(d))
+	function getJSON_test( d ) {
+		console.log( JSON.parse( d ).id )
 	}
 
 </script>
