@@ -583,28 +583,29 @@
 			return r
 		})() ),
 		dk.static( 'WIN', (function() {
-			var t2=document.body,t1=document.documentElement,t0 = {
+			var t1=document.documentElement, t2 = W.innerWidth ? 'inner' : 'client',
+				r = {
 				width: 0, height: 0, scrollX: 0, scrollY: 0,
 				RESIZE: (function() {
-					var r = dk.sList( 'RESIZE', 1 ), func = function() {
-						t0.width = W.innerWidth ? W.innerWidth : t1.clientWidth
-						t0.height = W.innerHeight ? W.innerHeight : t1.clientHeight
-						r['update'].call( r )
+					var t = dk.sList( 'RESIZE', 1 ), func = function() {
+						r.width = W[t2+'Width'],r.height = W[t2+'Height']
+						t['update'].call( t )
 					}
 					setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
-					return r
+					return t
 				})(),
 				SCROLL: (function() {
-					var r = dk.sList( 'SCROLL', 1 )
+					var t = dk.sList( 'SCROLL', 1 )
 					dk.addEvent( W, 'scroll', function() {
-						t0.scrollX = t2.scrollLeft + t1.scrollLeft
-						t0.scrollY = t2.scrollTop + t1.scrollTop
-						r['update']()
+						r.scrollX = document.body.scrollLeft + t1.scrollLeft
+						r.scrollY = document.body.scrollTop + t1.scrollTop
+						t['update']()
 					} )
-					return r
-				})()
+					return t
+				})(),
+				scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
 			}
-			return t0
+			return r
 		})() ),
 
 		dk.static('REG',(function(){
