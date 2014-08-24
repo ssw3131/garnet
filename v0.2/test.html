@@ -56,7 +56,7 @@
 	</dl>
 	<a id="aa2" href="#" target="_blank">a_blank</a><a target="_self">a_self</a>
 </div>
-<div id="result"  style="position:fixed;left:100px">
+<div id="result" style="position:fixed;left:100px">
 	<div id="scroll"></div>
 	<div id="win"></div>
 </div>
@@ -69,11 +69,11 @@
 <script>
 	console.log( dk )
 	console.log( dk.DETECTOR )
-	//	dk.LOOP.S( 'loop1', function() {
-	//		console.log( 'loop1' )
-	//	} )
+	dk.LOOP.S( 'loop1', function() {
+		console.log( 'loop1' )
+	} )
 	dk.WIN.RESIZE.S( 'resize1', function() {
-		console.log( 'resize1','dk.WIN.width : ',dk.WIN.width,' / dk.WIN.height : ',dk.WIN.height )
+		console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
 	} )
 	dk.WIN.RESIZE.S( 'resize2', function() {
 		console.log( 'resize2' )
@@ -130,12 +130,12 @@
 		console.log( JSON.parse( d ).id )
 	}
 
-	dk.WIN.SCROLL.S('scrollTest',function(){
+	dk.WIN.SCROLL.S( 'scrollTest', function() {
 //		console.log('dk.WIN.scrollX : ',dk.WIN.scrollX,' / dk.WIN.scrollY : ',dk.WIN.scrollY)
-		dk.query('#scroll')[0].innerHTML = 'dk.WIN.scrollX : '+dk.WIN.scrollX+' / dk.WIN.scrollY : '+dk.WIN.scrollY
-		dk.query('#win')[0].innerHTML = 'dk.WIN.width : '+dk.WIN.width+' / dk.WIN.height : '+dk.WIN.height
-		dk.WIN.scroll(0,500)
-	})
+		dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+		dk.query( '#win' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+//		dk.WIN.scroll(0,500)
+	} )
 
 
 </script>

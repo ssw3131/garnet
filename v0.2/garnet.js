@@ -1,7 +1,7 @@
 "use strict";
 (function() {
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
-	var dk, fn, bsSelector, query;
+	var dk, fn, bsSelector, query, dkEvent;
 	var trim = /^\s*|\s*$/g;
 // 보정패치
 	if( !W['JSON'] ) W['JSON'] = { parse: function( v ) {return ( 0, eval )( '(' + v + ')' );}};
@@ -11,7 +11,6 @@
 		W.requestAnimFrame = (function() {return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( loop ) {W.setTimeout( loop, 17 )}})();
 
 	function sMethod() {}
-
 	sMethod.prototype = {
 		S: function() {
 			var i = 0, j = arguments.length, k, v; //루프용 i,j와 키밸류용 k, v
@@ -485,14 +484,7 @@
 	})() ),
 
 // EVENT :
-		fn( 'addEvent', (function() {
-			var map = {down: dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up: dk.DETECTOR.mobile ? 'touchend' : 'mouseup'}
-			return function() {
-				var arg = arguments, t0, t1 = arg[1];
-				(t0 = arg[0].addEventListener) ? t0( (t1 = map[arg[1]] ? map[arg[1]] : arg[1]), arg[2] ) : W.attachEvent( 'on' + t1, arg[2] )
-			}
-		})() ),
-		fn( 'dkEvent', (function() {
+		dkEvent = (function() {
 			var t = dk.DETECTOR.currentTarget
 			return function dkEvent() {
 				var e = arguments[0]
@@ -500,7 +492,15 @@
 				//TODO  여기다가 우리 이벤트를 정의합니다.
 				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
 			}
+		})(),
+		fn( 'addEvent', (function() {
+			var map = {down: dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up: dk.DETECTOR.mobile ? 'touchend' : 'mouseup'}
+			return function() {
+				var arg = arguments, t0, t1 = arg[1];
+				(t0 = arg[0].addEventListener) ? t0( (t1 = map[arg[1]] ? map[arg[1]] : arg[1]), arg[2] ) : W.attachEvent( 'on' + t1, arg[2] )
+			}
 		})() ),
+
 // FNS :
 		(function() {
 			var checkXMLHttp = (function() {
@@ -568,7 +568,7 @@
 		})() ),
 // OBJS :
 		dk.static( 'KEY', (function() {
-			var r = dk.sList( 'KEY', 0 ), ev = dk.dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i = t1.length
+			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i = t1.length
 			while( i-- ) t3[t1[i--]] = t1[i].toLowerCase(), t0[t1[i].toLowerCase()] = 0
 			dk.addEvent( W, 'keydown', function() {
 					var t = new ev( arguments[0] )
@@ -583,44 +583,44 @@
 			return r
 		})() ),
 		dk.static( 'WIN', (function() {
-			var t1=document.documentElement, t2 = W.innerWidth ? 'inner' : 'client',
+			var t1 = document.documentElement, t2 = W.innerWidth ? 'inner' : 'client',
 				r = {
-				width: 0, height: 0, scrollX: 0, scrollY: 0,
-				RESIZE: (function() {
-					var t = dk.sList( 'RESIZE', 1 ), func = function() {
-						r.width = W[t2+'Width'],r.height = W[t2+'Height']
-						t['update'].call( t )
-					}
-					setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
-					return t
-				})(),
-				SCROLL: (function() {
-					var t = dk.sList( 'SCROLL', 1 )
-					dk.addEvent( W, 'scroll', function() {
-						r.scrollX = document.body.scrollLeft + t1.scrollLeft
-						r.scrollY = document.body.scrollTop + t1.scrollTop
-						t['update']()
-					} )
-					return t
-				})(),
-				scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
-			}
+					width: 0, height: 0, scrollX: 0, scrollY: 0,
+					RESIZE: (function() {
+						var t = dk.sList( 'RESIZE', 1 ), func = function() {
+							r.width = W[t2 + 'Width'], r.height = W[t2 + 'Height']
+							t['update'].call( t )
+						}
+						setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
+						return t
+					})(),
+					SCROLL: (function() {
+						var t = dk.sList( 'SCROLL', 1 )
+						dk.addEvent( W, 'scroll', function() {
+							r.scrollX = document.body.scrollLeft + t1.scrollLeft
+							r.scrollY = document.body.scrollTop + t1.scrollTop
+							t['update']()
+						} )
+						return t
+					})(),
+					scroll: function() { W.scrollTo( arguments[0], arguments[1] )}
+				}
 			return r
 		})() ),
 
-		dk.static('REG',(function(){
+		dk.static( 'REG', (function() {
 			return {
-				isNumeric:function($str){return /^[+-]*[0-9]*\.?\d+$/.test($str)},
-				isStringOnly:function($str){return  /^[^0-9]*$/.test($str)},
-				isIPAddress:function($str){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test($str)},
-				stripHTMLTags:function($str){return $str.replace(/<\/?[^\<\/]+\/?>/g,"")},
-				lineModify: function( $str ) {return  $str.split( "\r\n" ).join( "\n" )},
-				isEmail:function($str){return /^(.+)\@(.+)\.(\w+)$/.test($str)},
-				isURL:function($str){var regExp=/^(https?\:\/\/)?(www\.)?(.+)\.(\w)+/, regExp2=/\./g, regExp3=/www/g;var t0=regExp.test($str), t1;regExp3.test($str) ? t1=($str.match(regExp2).length>1) : t1=($str.match(regExp2).length>=1);return regExp.test($str)&&t1},
-				isPerfectURL:function($str){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test($str)&&$str.match(/\./g).length>1},
-				isKoreanRegistrationNumber:function($str){return /^[0-9]{6}-?[0-9]{7}$/.test($str)},
-				trim:function($text){return $text.replace(/^\s+|\s+$/g,'')},
-				isEmpty:function($str){if(!$str) return true;return  !$str.length}
+				isNumeric: function( k ) {return /^[+-]*[0-9]*\.?\d+$/.test( k )},
+				isStringOnly: function( k ) {return  /^[^0-9]*$/.test( k )},
+				isIPAddress: function( k ) {return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
+				stripHTMLTags: function( k ) {return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
+				lineModify: function( k ) {return  k.split( "\r\n" ).join( "\n" )},
+				isEmail: function( k ) {return /^(.+)\@(.+)\.(\w+)$/.test( k )},
+				isURL: function( k ) {var regExp = /^(https?\:\/\/)?(www\.)?(.+)\.(\w)+/, regExp2 = /\./g, regExp3 = /www/g,t0 = regExp.test( k ), t1;regExp3.test( k ) ? t1 = (k.match( regExp2 ).length > 1) : t1 = (k.match( regExp2 ).length >= 1);return regExp.test( k ) && t1},
+				isPerfectURL: function( k ) {return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
+				isKoreanRegistrationNumber: function( k ) {return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
+				trim: function( $text ) {return $text.replace( /^\s+|\s+$/g, '' )},
+				isEmpty: function( k ) {if( !k ) return true;return  !k.length}
 			}
-		})())
+		})() )
 })();
