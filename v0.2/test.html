@@ -59,14 +59,21 @@
 <div id="result" style="position:fixed;left:100px">
 	<div id="scroll"></div>
 	<div id="win"></div>
+	<div id="json"></div>
 </div>
-<div id="tween" style="background:#225544;position:absolute;top:0px;width:100px;height:100px"></div>
+<!--<div id="tween" style="background:#225544;position:absolute;top:0px;width:100px;height:100px"></div>-->
 
 
 <style>
 	p:lang(it) {
 		color: #f00
 	}
+	.array { border-left: 1px dotted blue; color:red;font-weight:bold;padding: 5px 0px 5px 5px }
+	.obj { border-left: 1px dotted blue; color:blue;font-weight:bold;padding: 5px 0px 5px 5px }
+	.data {padding: 2px 5px 2px 5px}
+	html{font-size:12px}
+
+
 </style>
 <script>
 	console.log( dk )
@@ -126,11 +133,7 @@
 	//		/// ajax test
 	dk.get( null, 'test2.txt' )
 
-	//	/// ajax test
-	dk.get( getJSON_test, 'json/json.json' )
-	function getJSON_test( d ) {
-		console.log( JSON.parse( d ).id )
-	}
+
 
 	dk.WIN.SCROLL.S( 'scrollTest', function() {
 //		console.log('dk.WIN.scrollX : ',dk.WIN.scrollX,' / dk.WIN.scrollY : ',dk.WIN.scrollY)
@@ -139,6 +142,50 @@
 //		dk.WIN.scroll(0,500)
 	} );
 
+
+	//	/// ajax test
+	dk.get( getJSON_test, 'json/json.json' )
+	function getJSON_test( d ) {
+		var data = JSON.parse( d ),root = dk.query('#json')[0]
+		console.log( data.id )
+		checkValue(data)
+		function checkValue(){
+			var t0 = arguments[0],k
+			if(typeof t0 =='object') parseObj(t0,root)
+		}
+		function parseObj(){
+			var data = arguments[0], parent = arguments[1],k,dom
+			for(k in data){
+				dom = document.createElement('ul')
+				parent.appendChild(dom)
+				if(data[k]['pop']) dom.innerHTML = '<div class="array"><span>+</span> '+k+' : array </div>',parseArray(data[k],dom)
+				else {
+					dom.innerHTML = '<div class="data"><span></span>'+k+' : ' +data[k]+'</div>'
+				}
+
+			}
+		}
+		function parseArray(){
+			var data = arguments[0], parent = arguments[1],dom
+			for(var i=0; i<data.length;i++){
+				dom = document.createElement('ul')
+				parent.appendChild(dom)
+
+				if(data[i]['pop']) dom.innerHTML = '<div class="array"><span>+</span> '+i+' : array</div>',parseArray(data[i],dom)
+				else {
+					console.log('어레이에서 배열아닌거 체크',data[i],typeof data[i])
+					if(typeof data[i] == 'string' || typeof data[i] == 'number'){
+						dom.innerHTML = '<div class="data"><span>+</span> '+i +' : '+ data[i]+'</div>'
+					}else{
+						dom.innerHTML = '<div class="obj"><span>+</span> '+i+' : obj</div>',parseObj(data[i],dom)
+					}
+
+
+				}
+
+			}
+		}
+	}
 
 
 

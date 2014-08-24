@@ -402,8 +402,7 @@
 				os = 'mac', t0 = /os x ([\d._]+)/.exec( agent )[1].replace( '_', '.' ).split( '.' ), osv = parseFloat( t0[0] + '.' + t0[1] ),
 					safari() || chrome() || firefox() || opera();
 			} else{
-				os = app.indexOf( 'x11' ) > -1 ? 'unix' : app.indexOf( 'linux' ) > -1 ? 'linux' : 0,
-					chrome() || firefox();
+				os = app.indexOf( 'x11' ) > -1 ? 'unix' : app.indexOf( 'linux' ) > -1 ? 'linux' : 0, chrome() || firefox();
 			}
 		}
 		(function() {
@@ -418,14 +417,9 @@
 				if( bv == -1 ) bv = !c['getContext'] ? 8 : !( 'msTransition' in s ) && !( 'transition' in s ) ? 9 : c.getContext( 'webgl' ) || c.getContext( 'experimental-webgl' ) ? 11 : 10;
 				prefixCss = '-ms-', prefixStyle = 'ms', transform3D = bv > 9 ? 1 : 0, docMode = DOC['documentMode'] || 0;
 				break;
-			case'firefox':
-				prefixCss = '-moz-', prefixStyle = 'Moz', transform3D = 1;
-				break;
-			case'opera':
-				prefixCss = '-o-', prefixStyle = 'O', transform3D = 1;
-				break;
-			default:
-				prefixCss = '-webkit-', prefixStyle = 'webkit', transform3D = os == 'android' ? ( osv < 4 ? 0 : 1 ) : 1;
+			case'firefox': prefixCss = '-moz-', prefixStyle = 'Moz', transform3D = 1; break;
+			case'opera': prefixCss = '-o-', prefixStyle = 'O', transform3D = 1; break;
+			default: prefixCss = '-webkit-', prefixStyle = 'webkit', transform3D = os == 'android' ? ( osv < 4 ? 0 : 1 ) : 1;
 		}
 		if( keyframe ){
 			if( keyframe.WEBKIT_KEYFRAME_RULE ) keyframe = '-webkit-keyframes';
@@ -548,7 +542,7 @@
 		})() ),
 		dk.static( 'LOOP', (function() {
 			var r = dk.sList( 'LOOP', 1 );
-			//TODO트윈처리
+			//TODO 트윈처리
 			(function loop() { r['update'](), requestAnimFrame( loop )})();
 			return r
 		})() ),
