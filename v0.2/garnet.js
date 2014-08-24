@@ -548,6 +548,7 @@
 		})() ),
 		dk.static( 'LOOP', (function() {
 			var r = dk.sList( 'LOOP', 1 );
+			//TODO트윈처리
 			(function loop() { r['update'](), requestAnimFrame( loop )})();
 			return r
 		})() ),
@@ -576,7 +577,6 @@
 				}
 			return r
 		})() ),
-
 		dk.static( 'REG', (function() {
 			return {
 				isNumeric: function( k ) {return /^[+-]*[0-9]*\.?\d+$/.test( k )},
@@ -592,4 +592,5 @@
 				isEmpty: function( k ) {if( !k ) return true;return  !k.length}
 			}
 		})() )
+
 })();
