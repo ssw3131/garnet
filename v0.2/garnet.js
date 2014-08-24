@@ -503,7 +503,6 @@
 		})() ),
 // FNS :
 		(function() {
-			// TODO 아좍스 이건 주말에 팜... 심도깊게 고민해야겠군 -_-;;
 			var checkXMLHttp = (function() {
 					var t = "MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP".split( ',' ), i = 0, j = t.length
 					if( W['XMLHttpRequest'] ) return function() {return new W['XMLHttpRequest']}
@@ -515,13 +514,13 @@
 						k = arg[i++], v = arg[i]
 						pK = encodeURIComponent( k ), pV = encodeURIComponent( v ),
 //                      console.log(pK,pV),
-						params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
+							params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
 					}
 					rq.open( 'GET', url + (params ? params : ''), true ),
 //					console.log( params ),
-					rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
-					rq.onreadystatechange = function() {if( rq.readyState == 4 ) rq.status == 200 ? (rq.onreadystatechange = null, callback ? (callback( rq.responseText )) : 0) : 0},
-					rq.send( null )
+						rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
+						rq.onreadystatechange = function() {if( rq.readyState == 4 ) rq.status == 200 ? (rq.onreadystatechange = null, callback ? (callback( rq.responseText )) : 0) : 0},
+						rq.send( null )
 				},
 				js = function( callBack, url ) {
 					var t = DOC.createElement( 'script' ), funcName, t0
@@ -535,6 +534,7 @@
 				var i = 1, j = arguments.length, len = j - 1
 				while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
 			} )
+			//TODO post처리
 		})(),
 		fn( 'sList', (function() {
 			function dkList() {
@@ -544,6 +544,7 @@
 					for( k in t ) t[k]()
 				} : 0
 			}
+
 			dkList.prototype = {
 				S: function() {
 					var i = 0, j = arguments.length, k, v;
@@ -583,12 +584,28 @@
 			return r
 		})() ),
 		dk.static( 'WIN', (function() {
-			return {
+			var t0 = {
+				width: 0, height: 0, scrollX: 0, scrollY: 0,
 				RESIZE: (function() {
-					var r = dk.sList( 'RESIZE', 1 )
-					dk.addEvent( W, 'resize', function() { r['update'].call( r ) } )
+					var r = dk.sList( 'RESIZE', 1 ), func = function() {
+						t0.width = W.innerWidth ? W.innerWidth : document.documentElement.clientWidth
+						t0.height = W.innerHeight ? W.innerHeight : document.documentElement.clientHeight
+						r['update'].call( r )
+					}
+					setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
+					return r
+				})(),
+				SCROLL: (function() {
+					var r = dk.sList( 'SCROLL', 1 )
+					dk.addEvent( W, 'scroll', function() {
+						t0.scrollX = document.body.scrollLeft + document.documentElement.scrollLeft
+						t0.scrollY = document.body.scrollTop + document.documentElement.scrollTop
+						r['update']()
+					} )
 					return r
 				})()
 			}
+
+			return t0
 		})() )
 })();

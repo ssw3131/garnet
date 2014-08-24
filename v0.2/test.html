@@ -68,7 +68,7 @@
 	//		console.log( 'loop1' )
 	//	} )
 	dk.WIN.RESIZE.S( 'resize1', function() {
-		console.log( 'resize1' )
+		console.log( 'resize1','dk.WIN.width : ',dk.WIN.width,' / dk.WIN.height : ',dk.WIN.height )
 	} )
 	dk.WIN.RESIZE.S( 'resize2', function() {
 		console.log( 'resize2' )
@@ -123,6 +123,10 @@
 	function getJSON_test( d ) {
 		console.log( JSON.parse( d ).id )
 	}
+
+	dk.WIN.SCROLL.S('scrollTest',function(){
+		console.log(dk.WIN.scrollX,dk.WIN.scrollY)
+	})
 
 </script>
 </body>
