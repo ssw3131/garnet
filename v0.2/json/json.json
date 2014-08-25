@@ -3,7 +3,7 @@
 	"name": "Sang-Taik Jung",
 	"first_name": "Sang-Taik",
 	"last_name": "Jung",
-	"link": "http://www.facebook.com/people/Sang-Taik-Jung/1329121121",
+	"link": "http://www.naver.com",
 	"gender": "male",
 	"locale": "en_US",
 	"arrayTest" : [
@@ -26,6 +26,7 @@
 			}
 		],
 		3,
-		"문자"
+		"문자",
+		"http://www.naver.com"
 	]
 }

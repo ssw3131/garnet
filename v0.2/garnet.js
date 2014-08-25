@@ -575,11 +575,10 @@
 			return {
 				isNumeric: function( k ) {return /^[+-]*[0-9]*\.?\d+$/.test( k )},
 				isStringOnly: function( k ) {return  /^[^0-9]*$/.test( k )},
-				isIPAddress: function( k ) {return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
 				stripHTMLTags: function( k ) {return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
 				lineModify: function( k ) {return  k.split( "\r\n" ).join( "\n" )},
 				isEmail: function( k ) {return /^(.+)\@(.+)\.(\w+)$/.test( k )},
-				isURL: function( k ) {var regExp = /^(https?\:\/\/)?(www\.)?(.+)\.(\w)+/, regExp2 = /\./g, regExp3 = /www/g,t0 = regExp.test( k ), t1;regExp3.test( k ) ? t1 = (k.match( regExp2 ).length > 1) : t1 = (k.match( regExp2 ).length >= 1);return regExp.test( k ) && t1},
+				isIPAddress: function( k ) {return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
 				isPerfectURL: function( k ) {return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
 				isKoreanRegistrationNumber: function( k ) {return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
 				trim: function( $text ) {return $text.replace( /^\s+|\s+$/g, '' )},

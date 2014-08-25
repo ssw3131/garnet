@@ -68,10 +68,28 @@
 	p:lang(it) {
 		color: #f00
 	}
-	.array { border-left: 1px dotted blue; color:red;font-weight:bold;padding: 5px 0px 5px 5px }
-	.obj { border-left: 1px dotted blue; color:blue;font-weight:bold;padding: 5px 0px 5px 5px }
-	.data {padding: 2px 5px 2px 5px}
-	html{font-size:12px}
+
+	.array {
+		border-left: 1px dotted blue;
+		color: red;
+		font-weight: bold;
+		padding: 5px 0px 5px 5px
+	}
+
+	.obj {
+		border-left: 1px dotted blue;
+		color: blue;
+		font-weight: bold;
+		padding: 5px 0px 5px 5px
+	}
+
+	.data {
+		padding: 2px 5px 2px 5px
+	}
+
+	html {
+		font-size: 12px
+	}
 
 
 </style>
@@ -133,8 +151,6 @@
 	//		/// ajax test
 	dk.get( null, 'test2.txt' )
 
-
-
 	dk.WIN.SCROLL.S( 'scrollTest', function() {
 //		console.log('dk.WIN.scrollX : ',dk.WIN.scrollX,' / dk.WIN.scrollY : ',dk.WIN.scrollY)
 		dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
@@ -142,52 +158,51 @@
 //		dk.WIN.scroll(0,500)
 	} );
 
-
 	//	/// ajax test
 	dk.get( getJSON_test, 'json/json.json' )
 	function getJSON_test( d ) {
-		var data = JSON.parse( d ),root = dk.query('#json')[0]
+		var data = JSON.parse( d ), root = dk.query( '#json' )[0]
 		console.log( data.id )
-		checkValue(data)
-		function checkValue(){
-			var t0 = arguments[0],k
-			if(typeof t0 =='object') parseObj(t0,root)
-		}
-		function parseObj(){
-			var data = arguments[0], parent = arguments[1],k,dom
-			for(k in data){
-				dom = document.createElement('ul')
-				parent.appendChild(dom)
-				if(data[k]['pop']) dom.innerHTML = '<div class="array"><span>+</span> '+k+' : array </div>',parseArray(data[k],dom)
-				else {
-					dom.innerHTML = '<div class="data"><span></span>'+k+' : ' +data[k]+'</div>'
-				}
+		checkValue( data )
 
+		function checkValue() {
+			var t0 = arguments[0], k
+			if( typeof t0 == 'object' ) parseObj( t0, root )
+		}
+
+		function parseObj() {
+			var data = arguments[0], parent = arguments[1], k, dom
+			for( k in data ){
+				dom = document.createElement( 'ul' )
+				parent.appendChild( dom )
+				if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
+				else{
+					if( dk.REG.isPerfectURL( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
+					else dom.innerHTML = '<div class="data"><span></span>' + k +' : '+ data[k] + '</a></div>'
+
+				}
 			}
 		}
-		function parseArray(){
-			var data = arguments[0], parent = arguments[1],dom
-			for(var i=0; i<data.length;i++){
-				dom = document.createElement('ul')
-				parent.appendChild(dom)
 
-				if(data[i]['pop']) dom.innerHTML = '<div class="array"><span>+</span> '+i+' : array</div>',parseArray(data[i],dom)
-				else {
-					console.log('어레이에서 배열아닌거 체크',data[i],typeof data[i])
-					if(typeof data[i] == 'string' || typeof data[i] == 'number'){
-						dom.innerHTML = '<div class="data"><span>+</span> '+i +' : '+ data[i]+'</div>'
-					}else{
-						dom.innerHTML = '<div class="obj"><span>+</span> '+i+' : obj</div>',parseObj(data[i],dom)
+		function parseArray() {
+			var data = arguments[0], parent = arguments[1], dom
+			for( var i = 0; i < data.length; i++ ){
+				dom = document.createElement( 'ul' )
+				parent.appendChild( dom )
+
+				if( data[i]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
+				else{
+					console.log( '어레이에서 배열아닌거 체크', data[i], typeof data[i] )
+					if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
+						if( dk.REG.isPerfectURL( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
+						else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
+					} else{
+						dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
 					}
-
-
 				}
-
 			}
 		}
 	}
-
-
 
 
 </script>
