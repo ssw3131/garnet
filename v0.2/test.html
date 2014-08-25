@@ -145,17 +145,17 @@
 //		// 파서 테스트용
 //		///////////////////////////////////////////////////////////////
 		function parseObj() {
-			var data = arguments[0], parent = arguments[1], k, dom
-			for( k in data ){
-				dom = document.createElement( 'li' )
-				parent.appendChild( dom )
-				if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
-				else{
-					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
-					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</a></div>'
-
-				}
-			}
+//			var data = arguments[0], parent = arguments[1], k, dom
+//			for( k in data ){
+//				dom = document.createElement( 'li' )
+//				parent.appendChild( dom )
+//				if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
+//				else{
+//					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
+//					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</a></div>'
+//
+//				}
+//			}
 		}
 
 		function parseArray() {
