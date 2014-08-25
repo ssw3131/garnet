@@ -27,15 +27,14 @@
 
 		html {
 			font-size: 12px;
-			background-color: #222;
-			margin: 0px;
-			padding: 0px;
+			background-color:#222;
+			margin:0px;
+			padding:0px;
 		}
 
-		li {
+		li{
 			margin-left: 20px;
 		}
-
 		.testBox {
 			box-shadow: 0 0 10px #999 inset, 0 1px 1px rgba(0, 0, 0, 0.1);
 			border-radius: 10px;
@@ -43,7 +42,7 @@
 			background: #eee;
 			float: left;
 			margin: 8px 8px 0px 0px;
-			padding: 10px;
+			padding:10px;
 			max-height: 300px;
 
 		}
@@ -51,12 +50,12 @@
 		.title {
 			border-radius: 5px;
 			box-shadow: 0 0 3px #ccc inset, 1px 1px 1px rgba(0, 0, 0, 0.1);
-			border: 1px solid #fff;
-			background-color: #222;
-			padding: 10px;
-			margin: 0px 0px 10px 0px;
-			color: #fff;
-			text-shadow: 0 -1px 0 #000;
+			border:1px solid #fff;
+			background-color:#222;
+			padding:10px;
+			margin:0px 0px 10px 0px;
+			color:#fff;
+			text-shadow:0 -1px 0 #000;
 		}
 
 
@@ -112,25 +111,14 @@
 		<a id="aa2" href="#" target="_blank">a_blank</a><a target="_self">a_self</a>
 	</div>
 	<div class='testBox'>
-		<div class="title">loopTest</div>
-		<div id="loop" class="data"></div>
-		<div class="title">resizeTest</div>
-		<div id="resize" class="data"></div>
-		<div class="title">scrollText</div>
-		<div id="scroll" class="data"></div>
+		<div class="title">loopTest</div><div id="loop"  class="data"></div>
+		<div class="title">resizeTest</div><div id="resize" class="data" ></div>
+		<div class="title">scrollText</div><div id="scroll" class="data" ></div>
 	</div>
-	<div id="detect" class='testBox'>
-		<div class="title">디텍터</div>
-	</div>
-	<div id="json" class='testBox'>
-		<div class="title">jsonTest</div>
-	</div>
-	<div id="xml" class='testBox'>
-		<div class="title">xmlTest</div>
-	</div>
-	<div id="jsonp" class='testBox'>
-		<div class="title">jsonpTest</div>
-	</div>
+	<div id="detect" class='testBox'><div class="title">디텍터</div></div>
+	<div id="json" class='testBox'><div class="title">jsonTest</div></div>
+	<div id="xml" class='testBox'><div class="title">xmlTest</div></div>
+	<div id="jsonp" class='testBox'><div class="title">jsonpTest</div></div>
 </div>
 <div style="clear:both"></div>
 
@@ -142,143 +130,138 @@
 	///////////////////////////////////////////////////////////////
 	// 파서 테스트용
 	///////////////////////////////////////////////////////////////
-	function testAll() {
-		function parseObj() {
-			var data = arguments[0], parent = arguments[1], k, dom
-			for( k in data ){
-				dom = document.createElement( 'li' )
-				parent.appendChild( dom )
-				if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
-				else{
-					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
-					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</a></div>'
+	function parseObj() {
+		var data = arguments[0], parent = arguments[1], k, dom
+		for( k in data ){
+			dom = document.createElement( 'li' )
+			parent.appendChild( dom )
+			if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
+			else{
+				if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
+				else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</a></div>'
 
-				}
 			}
 		}
+	}
 
-		function parseArray() {
-			var data = arguments[0], parent = arguments[1], dom
-			for( var i = 0; i < data.length; i++ ){
-				dom = document.createElement( 'ul' )
-				parent.appendChild( dom )
-				if( data[i]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
-				else{
+	function parseArray() {
+		var data = arguments[0], parent = arguments[1], dom
+		for( var i = 0; i < data.length; i++ ){
+			dom = document.createElement( 'ul' )
+			parent.appendChild( dom )
+			if( data[i]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
+			else{
 //					console.log( '어레이에서 배열아닌거 체크', data[i], typeof data[i] )
-					if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
-						if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
-						else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
-					} else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
-				}
+				if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
+					if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
+					else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
+				} else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
 			}
 		}
+	}
+	parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
+	var loopTest = 0
+	dk.LOOP.S( 'loop1', function() {
+		dk.query('#loop' )[0].innerHTML =loopTest++
+	} )
+	dk.WIN.RESIZE.S( 'resize1', function() {
+		console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
+		dk.query('#resize' )[0].innerHTML ='dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+		dk.query('#scroll' )[0].innerHTML ='dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+	} )
+	dk.WIN.RESIZE.S( 'resize2', function() {
+		console.log( 'resize2' )
+	} )
 
-		parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
-		var loopTest = 0
-		dk.LOOP.S( 'loop1', function() {
-			dk.query( '#loop' )[0].innerHTML = loopTest++
-		} )
-		dk.WIN.RESIZE.S( 'resize1', function() {
-			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
-			dk.query( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
-			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
-		} )
-		dk.WIN.RESIZE.S( 'resize2', function() {
-			console.log( 'resize2' )
-		} )
+	dk.KEY.S( 'a', function( e ) {console.log( e, e.nativeEvent )} )
+	dk.KEY.S( 'b', function() {console.log( 'a' )} )
+	dk.KEY.S( 'c', function() {console.log( 'a' )} )
 
-		dk.KEY.S( 'a', function( e ) {console.log( e, e.nativeEvent )} )
-		dk.KEY.S( 'b', function() {console.log( 'a' )} )
-		dk.KEY.S( 'c', function() {console.log( 'a' )} )
+	console.log( dk.WIN.RESIZE.S( 'this' ) )
+	console.log( dk.WIN.RESIZE.S( 'list' ) )
 
-		console.log( dk.WIN.RESIZE.S( 'this' ) )
-		console.log( dk.WIN.RESIZE.S( 'list' ) )
+	var tester = function( k ) {
+		console.log( k + ' : ', dk.query( k ) )
 
-		var tester = function( k ) {
-			console.log( k + ' : ', dk.query( k ) )
+	}
 
-		}
+	var testList = ['p:lang(it)', 'dd:nth-child(even)', 'dd:nth-of-type(even)', 'dd:nth-child(odd)', 'dd:nth-of-type(odd)', 'dd:nth-child(1)', 'dd:nth-of-type(1)',
+		'a:link', ':root', 'dt:only-child', 'dt:only-of-type', 'dd:last-of-type', 'dd:last-child',
+		'[target=_blank]', 'p:empty', 'input:disabled', 'input:enabled', 'input:checked', 'dd:first-of-type', 'dd:first-child',
+		'[data-test~=dk]', '[data-test~=dk]', '[data-test~=dk]', '[data-test*=dk]', '[data-test$=dk]', '[data-test^=dk]', '[data-test|=dk]',
+		'[width]', 'i,dd', 'div ~ p ~ p', 'i b', 'i > b', 'p + span', '#a0', '#a0,#a1', '#a0,#a1,#a2', '.ka', 'span',
+		'div ~ p', 'div > p', 'p > a', 'div > p > a', 'i > span > b', 'i > span', 'span > b', 'div.example > p > a', 'div ~ p ~ p'
+	], i = testList.length;
+	while( i-- ) tester( testList[i] );
 
-		var testList = ['p:lang(it)', 'dd:nth-child(even)', 'dd:nth-of-type(even)', 'dd:nth-child(odd)', 'dd:nth-of-type(odd)', 'dd:nth-child(1)', 'dd:nth-of-type(1)',
-			'a:link', ':root', 'dt:only-child', 'dt:only-of-type', 'dd:last-of-type', 'dd:last-child',
-			'[target=_blank]', 'p:empty', 'input:disabled', 'input:enabled', 'input:checked', 'dd:first-of-type', 'dd:first-child',
-			'[data-test~=dk]', '[data-test~=dk]', '[data-test~=dk]', '[data-test*=dk]', '[data-test$=dk]', '[data-test^=dk]', '[data-test|=dk]',
-			'[width]', 'i,dd', 'div ~ p ~ p', 'i b', 'i > b', 'p + span', '#a0', '#a0,#a1', '#a0,#a1,#a2', '.ka', 'span',
-			'div ~ p', 'div > p', 'p > a', 'div > p > a', 'i > span > b', 'i > span', 'span > b', 'div.example > p > a', 'div ~ p ~ p'
-		], i = testList.length;
-		while( i-- ) tester( testList[i] );
+	dk.js( jsCallBack, 'test1.js' )
+	function jsCallBack() {
+		console.log( '로딩완료-js콜백테스트' )
+	}
 
-		dk.js( jsCallBack, 'test1.js' )
-		function jsCallBack() {
-			console.log( '로딩완료-js콜백테스트' )
-		}
+	dk.js( null, 'test1.js', 'test2.js' )
 
-		dk.js( null, 'test1.js', 'test2.js' )
+	dk.get( getTest, 'test1.txt' )
+	function getTest( data ) {
+		console.log( '로딩완료', data )
+	}
+	//	// openAPI로 연동했을때 callBack처리
+	var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( '언어의정원' ) : '언어의정원'
+	dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
+	function openAPICallBakcTest2( d ) {
+		console.log( d.channel.q, d )
+	}
+	dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
+	function openAPICallBakcTest3( d ) {
+		console.log( d.channel.q, d )
+		parseObj( d.channel,dk.query('#jsonp')[0])
+	}
+	//		/// ajax test
+	dk.get( null, 'test2.txt' )
 
-		dk.get( getTest, 'test1.txt' )
-		function getTest( data ) {
-			console.log( '로딩완료', data )
-		}
-
-		//	// openAPI로 연동했을때 callBack처리
-		var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( '언어의정원' ) : '언어의정원'
-		dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
-		function openAPICallBakcTest2( d ) {
-			console.log( d.channel.q, d )
-		}
-
-		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
-		function openAPICallBakcTest3( d ) {
-			console.log( d.channel.q, d )
-			parseObj( d.channel, dk.query( '#jsonp' )[0] )
-		}
-
-		//		/// ajax test
-		dk.get( null, 'test2.txt' )
-
-		dk.WIN.SCROLL.S( 'scrollTest', function() {
-			console.log( 'dk.WIN.scrollX : ', dk.WIN.scrollX, ' / dk.WIN.scrollY : ', dk.WIN.scrollY )
-			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
-			dk.query( '#win' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+	dk.WIN.SCROLL.S( 'scrollTest', function() {
+		console.log('dk.WIN.scrollX : ',dk.WIN.scrollX,' / dk.WIN.scrollY : ',dk.WIN.scrollY)
+		dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+//		dk.query( '#win' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
 //		dk.WIN.scroll(0,500)
-		} );
+	} );
 
-		// get을 이용한 제이슨/xml로딩 및 파싱테스트
-		dk.get( getJSON_test, 'json/json.json' )
-		function getJSON_test( d ) {
-			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
-			parseObj( data, root )
-		}
 
-		dk.get( getXMLtest, 'json/test.xml' )
-		function getXMLtest() {
-			var root = dk.query( '#xml' )[0], data = arguments[0]
+
+
+
+	// get을 이용한 제이슨/xml로딩 및 파싱테스트
+	dk.get( getJSON_test, 'json/json.json' )
+	function getJSON_test( d ) {
+		var data = JSON.parse( d ), root = dk.query( '#json' )[0]
+		parseObj( data, root )
+	}
+	dk.get( getXMLtest, 'json/test.xml' )
+	function getXMLtest() {
+		var root = dk.query( '#xml' )[0], data = arguments[0]
 //		root.innerText = data
-			data = parseToObject( data )
-			parseObj( data, root )
-			function parseToObject() {
-				var r = {}
-				checkValue( arguments[0], r )
-				function checkValue() {
-					var i = 0, data = arguments[0], parent = arguments[1], len = data.childNodes.length, node, t0
-					while( i < len ){
-						var info = {}
-						node = data.childNodes[i++]
-						if( node.nodeType == 1 ){
-							!parent[node.nodeName] ? t0 = parent[node.nodeName] = [] : 0,
-									t0.push( info ), checkValue( node, info )
-						} else if( node.nodeType == 3 || node.nodeType == 4 ) /\S/.test( node.nodeValue ) ? parent['value'] = node.nodeValue : 0
-					}
+		data = parseToObject( data )
+		parseObj( data, root )
+		function parseToObject() {
+			var r = {}
+			checkValue( arguments[0], r )
+			function checkValue() {
+				var i = 0, data = arguments[0], parent = arguments[1], len = data.childNodes.length, node, t0
+				while( i < len ){
+					var info = {}
+					node = data.childNodes[i++]
+					if( node.nodeType == 1 ){
+						!parent[node.nodeName] ? t0 = parent[node.nodeName] = [] : 0,
+								t0.push( info ), checkValue( node, info )
+					} else if( node.nodeType == 3 || node.nodeType == 4 ) /\S/.test( node.nodeValue ) ? parent['value'] = node.nodeValue : 0
 				}
-
-				return r
 			}
 
+			return r
 		}
 
 	}
 
-	setTimeout(testAll,2000)
 </script>
 </body>
 </html>
