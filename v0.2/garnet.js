@@ -483,7 +483,12 @@
 					rq.open( 'GET', url + (params ? params : ''), true ),
 //					console.log( params ),
 					rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
-					rq.onreadystatechange = function() {if( rq.readyState == 4 ) rq.status == 200 ? (rq.onreadystatechange = null, callback ? (callback( rq.responseText )) : 0) : 0},
+					rq.onreadystatechange = function() {if( rq.readyState == 4 ) rq.status == 200 ? (rq.onreadystatechange = null, callback ? (callback(
+						rq.responseXML ? ((function(){
+							var i, data = rq.responseXML, len = data.childNodes.length
+							for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
+						})()) : rq.responseText
+					)) : 0) : 0},
 					rq.send( null )
 				},
 				js = function( callBack, url ) {
@@ -573,16 +578,15 @@
 		})() ),
 		dk.static( 'REG', (function() {
 			return {
-				isNumeric: function( k ) {return /^[+-]*[0-9]*\.?\d+$/.test( k )},
-				isStringOnly: function( k ) {return  /^[^0-9]*$/.test( k )},
+				numeric: function( k ) {return /^[+-]*[0-9]*\.?\d+$/.test( k )},
+				stringOnly: function( k ) {return  /^[^0-9]*$/.test( k )},
 				stripHTMLTags: function( k ) {return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
 				lineModify: function( k ) {return  k.split( "\r\n" ).join( "\n" )},
-				isEmail: function( k ) {return /^(.+)\@(.+)\.(\w+)$/.test( k )},
-				isIPAddress: function( k ) {return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
-				isPerfectURL: function( k ) {return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
-				isKoreanRegistrationNumber: function( k ) {return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
-				trim: function( $text ) {return $text.replace( /^\s+|\s+$/g, '' )},
-				isEmpty: function( k ) {if( !k ) return true;return  !k.length}
+				Email: function( k ) {return /^(.+)\@(.+)\.(\w+)$/.test( k )},
+				ip: function( k ) {return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
+				url: function( k ) {return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
+				KoreanRegistrationNumber: function( k ) {return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
+				empty: function( k ) {if( !k ) return true;return  !k.length}
 			}
 		})() )
 

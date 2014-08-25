@@ -27,6 +27,7 @@
 		],
 		3,
 		"문자",
-		"http://www.naver.com"
+		"http://www.naver.com",
+		"128.0.0.1"
 	]
 }
