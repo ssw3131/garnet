@@ -538,14 +538,18 @@
 								},
 								rq.send( null )
 						},
-						js = function( callBack, url ) {
-							var t = DOC.createElement( 'script' ), funcName, t0
-							callBack ? (t0 = url.charAt( url.length - 1 ), funcName = /function\s([^(]{1,})\(/.exec( callBack.toString() )[1]) : 0
-							t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t0 == '=' ? funcName : ''), HEAD.appendChild( t )
-							if( t0 != '=' ) t.onreadystatechange = function() {
-								if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
+						js = (function() {
+							var UUID = 0
+							return function( callBack, url ) {
+								var t = DOC.createElement( 'script' ), t0, t1,id = UUID++
+								 callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
+								if( t1 ) W['____callbacks' + id] = function() { callBack.apply( null, arguments ), delete W['____callbacks' + id]}
+								t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
+								if( !t1 ) t.onreadystatechange = function() {
+									if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
+								}
 							}
-						};
+						})();
 					fn( 'get', ajax ), fn( 'js', function( callBack, url ) {
 						var i = 1, j = arguments.length, len = j - 1
 						while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
