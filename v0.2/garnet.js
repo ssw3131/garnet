@@ -451,6 +451,7 @@
 
 // EVENT :
 		dkEvent = (function() {
+			alert(dk.DETECTOR.currentTarget)
 			var t = dk.DETECTOR.currentTarget
 			return function dkEvent() {
 				var e = arguments[0]
