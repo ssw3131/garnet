@@ -141,9 +141,6 @@
 
 <script>
 	dk( function() {
-		setInterval(function(){
-			dk.query('#loop')[0].innerHTML=Math.random()
-		},16)
 //		///////////////////////////////////////////////////////////////
 //		// 파서 테스트용
 //		///////////////////////////////////////////////////////////////
@@ -178,18 +175,18 @@
 //		}
 //
 //		parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
-//		var loopTest = 0
-//		dk.LOOP.S( 'loop1', function() {
-//			dk.query( '#loop' )[0].innerHTML = loopTest++
-//		} )
-//		dk.WIN.RESIZE.S( 'resize1', function() {
-//			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
-//			dk.query( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
-//			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
-//		} )
-//		dk.WIN.RESIZE.S( 'resize2', function() {
-//			console.log( 'resize2' )
-//		} )
+		var loopTest = 0
+		dk.LOOP.S( 'loop1', function() {
+			dk.query( '#loop' )[0].innerHTML = loopTest++
+		} )
+		dk.WIN.RESIZE.S( 'resize1', function() {
+			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
+			dk.query( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+		} )
+		dk.WIN.RESIZE.S( 'resize2', function() {
+			console.log( 'resize2' )
+		} )
 //
 //		dk.KEY.S( 'a', function( e ) {console.log( e, e.nativeEvent )} )
 //		dk.KEY.S( 'b', function() {console.log( 'a' )} )
