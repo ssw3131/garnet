@@ -451,7 +451,6 @@
 
 // EVENT :
 		dkEvent = (function() {
-			alert(dk.DETECTOR.currentTarget)
 			var t = dk.DETECTOR.currentTarget
 			return function dkEvent() {
 				var e = arguments[0]
@@ -463,6 +462,7 @@
 		fn( 'addEvent', (function() {
 			var map = {down: dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up: dk.DETECTOR.mobile ? 'touchend' : 'mouseup'}
 			return function() {
+				alert(arguments[0])
 				var arg = arguments, t0, t1 = arg[1];
 				(t0 = arg[0].addEventListener) ? t0( (t1 = map[arg[1]] ? map[arg[1]] : arg[1]), arg[2] ) : W.attachEvent( 'on' + t1, arg[2] )
 			}
