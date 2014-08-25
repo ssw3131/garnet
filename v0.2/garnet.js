@@ -454,7 +454,7 @@
 			var t = dk.DETECTOR.currentTarget
 			return function dkEvent() {
 				var e = arguments[0]
-				this.nativeEvent = e, this.keyCode = e.keyCode, this.target = e[t]
+				this.nativeEvent = e, this.target = e[t]
 				//TODO  여기다가 우리 이벤트를 정의합니다.
 				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
 			}
@@ -462,7 +462,6 @@
 		fn( 'addEvent', (function() {
 			var map = {down: dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up: dk.DETECTOR.mobile ? 'touchend' : 'mouseup'}
 			return function() {
-				alert(arguments[0])
 				var arg = arguments, t0, t1 = arg[1];
 				(t0 = arg[0].addEventListener) ? t0( (t1 = map[arg[1]] ? map[arg[1]] : arg[1]), arg[2] ) : W.attachEvent( 'on' + t1, arg[2] )
 			}
@@ -541,6 +540,7 @@
 			while( i-- ) t3[t1[i--]] = t1[i].toLowerCase(), t0[t1[i].toLowerCase()] = 0
 			dk.addEvent( W, 'keydown', function() {
 					var t = new ev( arguments[0] )
+					t.keyCode = arguments[0].keyCode,
 					list[t3[t.keyCode]] ? list[t3[t.keyCode]]( t ) : 0
 				}
 			)
