@@ -223,17 +223,20 @@
 
 		//	// openAPI로 연동했을때 callBack처리
 		var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( '언어의정원' ) : '언어의정원'
-		function openAPICallBakcTest2( d ) {
-			console.log( d.channel.q, d )
-		}
-		dk.js( null, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback='+'openAPICallBakcTest2' )
-		function openAPICallBakcTest3( d ) {
-			console.log( d.channel.q, d )
-			parseObj( d.channel, dk.query( '#jsonp' )[0] )
-		}
+//		function openAPICallBakcTest2( d ) {
+//			console.log( d.channel.q, d )
+//		}
+//		dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
 
-		dk.js( null, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback='+'openAPICallBakcTest3' )
-	//		/// ajax test
+
+//		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
+//		function openAPICallBakcTest3( d ) {
+//			console.log('이러지마')
+//			console.log( d.channel.q, d )
+//			parseObj( d.channel, dk.query( '#jsonp' )[0] )
+//		}
+
+		//		/// ajax test
 		dk.get( null, 'test2.txt' )
 
 		dk.WIN.SCROLL.S( 'scrollTest', function() {
@@ -244,13 +247,13 @@
 		} );
 
 		// get을 이용한 제이슨/xml로딩 및 파싱테스트
-		dk.get( getJSON_test, 'json/json.json' )
+//		dk.get( getJSON_test, 'json/json.json' )
 		function getJSON_test( d ) {
 			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
 			parseObj( data, root )
 		}
 
-		dk.get( getXMLtest, 'json/test.xml' )
+//		dk.get( getXMLtest, 'json/test.xml' )
 		function getXMLtest() {
 			var root = dk.query( '#xml' )[0], data = arguments[0]
 //		root.innerText = data
@@ -275,7 +278,8 @@
 			}
 
 		}
-	} )
+	} );
+
 
 </script>
 </body>

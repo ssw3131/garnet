@@ -1,5 +1,5 @@
-"use strict";
-(function() {
+;(function() {
+	"use strict";
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
 	var dk, fn, bsSelector, query, dkEvent, HOST;
 	var trim = /^\s*|\s*$/g;
@@ -539,10 +539,10 @@
 								rq.send( null )
 						},
 						js = function( callBack, url ) {
-							var t = DOC.createElement( 'script' )
-							t.type = 'text/javascript', t.charset = 'utf-8', t.src = url , HEAD.appendChild( t )
-							if( callBack ) t.onreadystatechange = function() {
-								console.log( t.src, '실행' )
+							var t = DOC.createElement( 'script' ), funcName, t0
+							callBack ? (t0 = url.charAt( url.length - 1 ), funcName = /function\s([^(]{1,})\(/.exec( callBack.toString() )[1]) : 0
+							t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t0 == '=' ? funcName : ''), HEAD.appendChild( t )
+							if( t0 != '=' ) t.onreadystatechange = function() {
 								if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
 							}
 						};
@@ -644,11 +644,19 @@
 		};
 		return dk
 	})();
-	(function(){
-		var d=document
-		var check=setInterval(function(){
-			switch(d.readyState){case'complete':case'interactive':case'loaded':break;default:return}
-			if(d&&d.getElementsByTagName&&d.getElementById&&d.body&&d.readyState) clearInterval(check), HOST ? HOST() : null
-		},17)
+
+	(function() {
+		var d = document
+		var check = setInterval( function() {
+			switch( d.readyState ){
+				case'complete':
+				case'interactive':
+				case'loaded':
+					break;
+				default:
+					return
+			}
+			if( d && d.getElementsByTagName && d.getElementById && d.body && d.readyState ) clearInterval( check ), HOST ? HOST() : null
+		}, 1 )
 	})()
 })();
