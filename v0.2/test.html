@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head lang="ko">
-	<meta charset="euc-kr">
-	<!--<meta charset="utf-8">-->
+	<!--<meta charset="euc-kr">-->
+	<meta charset="utf-8">
 	<title></title>
 	<script src="garnet.js"></script>
 
@@ -27,14 +27,15 @@
 
 		html {
 			font-size: 12px;
-			background-color:#222;
-			margin:0px;
-			padding:0px;
+			background-color: #222;
+			margin: 0px;
+			padding: 0px;
 		}
 
-		li{
+		li {
 			margin-left: 20px;
 		}
+
 		.testBox {
 			box-shadow: 0 0 10px #999 inset, 0 1px 1px rgba(0, 0, 0, 0.1);
 			border-radius: 10px;
@@ -42,7 +43,7 @@
 			background: #eee;
 			float: left;
 			margin: 8px 8px 0px 0px;
-			padding:10px;
+			padding: 10px;
 			max-height: 300px;
 
 		}
@@ -50,12 +51,12 @@
 		.title {
 			border-radius: 5px;
 			box-shadow: 0 0 3px #ccc inset, 1px 1px 1px rgba(0, 0, 0, 0.1);
-			border:1px solid #fff;
-			background-color:#222;
-			padding:10px;
-			margin:0px 0px 10px 0px;
-			color:#fff;
-			text-shadow:0 -1px 0 #000;
+			border: 1px solid #fff;
+			background-color: #222;
+			padding: 10px;
+			margin: 0px 0px 10px 0px;
+			color: #fff;
+			text-shadow: 0 -1px 0 #000;
 		}
 
 
@@ -65,7 +66,7 @@
 <div style="top:0px;">
 	<div id="console"></div>
 	<div id="stage" class='testBox'>
-		<div class="title">Äõ¸®Å×½ºÆ®¿ë</div>
+		<div class="title">ì¿¼ë¦¬í…ŒìŠ¤íŠ¸ìš©</div>
 		<div width="50%" class="ka" id="a0">d50<a id="aa0">a0</a></div>
 		<div width="100%" class="ka" id="a1"><a id="aa1">a1</a>d100</div>
 		<input id="i0" type="radio" value="i0" checked>
@@ -112,14 +113,25 @@
 		<a id="aa2" href="#" target="_blank">a_blank</a><a target="_self">a_self</a>
 	</div>
 	<div class='testBox'>
-		<div class="title">loopTest</div><div id="loop"  class="data"></div>
-		<div class="title">resizeTest</div><div id="resize" class="data" ></div>
-		<div class="title">scrollText</div><div id="scroll" class="data" ></div>
+		<div class="title">loopTest</div>
+		<div id="loop" class="data"></div>
+		<div class="title">resizeTest</div>
+		<div id="resize" class="data"></div>
+		<div class="title">scrollText</div>
+		<div id="scroll" class="data"></div>
 	</div>
-	<div id="detect" class='testBox'><div class="title">µğÅØÅÍ</div></div>
-	<div id="json" class='testBox'><div class="title">jsonTest</div></div>
-	<div id="xml" class='testBox'><div class="title">xmlTest</div></div>
-	<div id="jsonp" class='testBox'><div class="title">jsonpTest</div></div>
+	<div id="detect" class='testBox'>
+		<div class="title">ë””í…í„°</div>
+	</div>
+	<div id="json" class='testBox'>
+		<div class="title">jsonTest</div>
+	</div>
+	<div id="xml" class='testBox'>
+		<div class="title">xmlTest</div>
+	</div>
+	<div id="jsonp" class='testBox'>
+		<div class="title">jsonpTest</div>
+	</div>
 </div>
 <div style="clear:both"></div>
 
@@ -128,9 +140,9 @@
 
 
 <script>
-	dk(function(){
+	dk( function() {
 		///////////////////////////////////////////////////////////////
-		// ÆÄ¼­ Å×½ºÆ®¿ë
+		// íŒŒì„œ í…ŒìŠ¤íŠ¸ìš©
 		///////////////////////////////////////////////////////////////
 		function parseObj() {
 			var data = arguments[0], parent = arguments[1], k, dom
@@ -153,7 +165,7 @@
 				parent.appendChild( dom )
 				if( data[i]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
 				else{
-//					console.log( '¾î·¹ÀÌ¿¡¼­ ¹è¿­¾Æ´Ñ°Å Ã¼Å©', data[i], typeof data[i] )
+//					console.log( 'ì–´ë ˆì´ì—ì„œ ë°°ì—´ì•„ë‹Œê±° ì²´í¬', data[i], typeof data[i] )
 					if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
 						if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
 						else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
@@ -161,15 +173,16 @@
 				}
 			}
 		}
+
 		parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
 		var loopTest = 0
 		dk.LOOP.S( 'loop1', function() {
-			dk.query('#loop' )[0].innerHTML =loopTest++
+			dk.query( '#loop' )[0].innerHTML = loopTest++
 		} )
 		dk.WIN.RESIZE.S( 'resize1', function() {
 			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
-			dk.query('#resize' )[0].innerHTML ='dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
-			dk.query('#scroll' )[0].innerHTML ='dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+			dk.query( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
 		} )
 		dk.WIN.RESIZE.S( 'resize2', function() {
 			console.log( 'resize2' )
@@ -198,46 +211,45 @@
 
 		dk.js( jsCallBack, 'test1.js' )
 		function jsCallBack() {
-			console.log( '·Îµù¿Ï·á-jsÄİ¹éÅ×½ºÆ®' )
+			console.log( 'ë¡œë”©ì™„ë£Œ-jsì½œë°±í…ŒìŠ¤íŠ¸' )
 		}
 
-		dk.js( null, 'test1.js', 'test2.js' )
+//		dk.js( null, 'test1.js', 'test2.js' )
 
 		dk.get( getTest, 'test1.txt' )
 		function getTest( data ) {
-			console.log( '·Îµù¿Ï·á', data )
+			console.log( 'ë¡œë”©ì™„ë£Œ', data )
 		}
-		//	// openAPI·Î ¿¬µ¿ÇßÀ»¶§ callBackÃ³¸®
-		var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( '¾ğ¾îÀÇÁ¤¿ø' ) : '¾ğ¾îÀÇÁ¤¿ø'
-		dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
+
+		//	// openAPIë¡œ ì—°ë™í–ˆì„ë•Œ callBackì²˜ë¦¬
+		var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( 'ì–¸ì–´ì˜ì •ì›' ) : 'ì–¸ì–´ì˜ì •ì›'
 		function openAPICallBakcTest2( d ) {
 			console.log( d.channel.q, d )
 		}
-		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
+		dk.js( null, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback='+'openAPICallBakcTest2' )
 		function openAPICallBakcTest3( d ) {
 			console.log( d.channel.q, d )
-			parseObj( d.channel,dk.query('#jsonp')[0])
+			parseObj( d.channel, dk.query( '#jsonp' )[0] )
 		}
-		//		/// ajax test
+
+		dk.js( null, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback='+'openAPICallBakcTest3' )
+	//		/// ajax test
 		dk.get( null, 'test2.txt' )
 
 		dk.WIN.SCROLL.S( 'scrollTest', function() {
-			console.log('dk.WIN.scrollX : ',dk.WIN.scrollX,' / dk.WIN.scrollY : ',dk.WIN.scrollY)
+			console.log( 'dk.WIN.scrollX : ', dk.WIN.scrollX, ' / dk.WIN.scrollY : ', dk.WIN.scrollY )
 			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
 //		dk.query( '#win' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
 //		dk.WIN.scroll(0,500)
 		} );
 
-
-
-
-
-		// getÀ» ÀÌ¿ëÇÑ Á¦ÀÌ½¼/xml·Îµù ¹× ÆÄ½ÌÅ×½ºÆ®
+		// getì„ ì´ìš©í•œ ì œì´ìŠ¨/xmlë¡œë”© ë° íŒŒì‹±í…ŒìŠ¤íŠ¸
 		dk.get( getJSON_test, 'json/json.json' )
 		function getJSON_test( d ) {
 			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
 			parseObj( data, root )
 		}
+
 		dk.get( getXMLtest, 'json/test.xml' )
 		function getXMLtest() {
 			var root = dk.query( '#xml' )[0], data = arguments[0]
@@ -263,7 +275,7 @@
 			}
 
 		}
-	})
+	} )
 
 </script>
 </body>
