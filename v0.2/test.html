@@ -144,37 +144,37 @@
 //		///////////////////////////////////////////////////////////////
 //		// 파서 테스트용
 //		///////////////////////////////////////////////////////////////
-//		function parseObj() {
-//			var data = arguments[0], parent = arguments[1], k, dom
-//			for( k in data ){
-//				dom = document.createElement( 'li' )
-//				parent.appendChild( dom )
-//				if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
-//				else{
-//					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
-//					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</a></div>'
-//
-//				}
-//			}
-//		}
-//
-//		function parseArray() {
-//			var data = arguments[0], parent = arguments[1], dom
-//			for( var i = 0; i < data.length; i++ ){
-//				dom = document.createElement( 'ul' )
-//				parent.appendChild( dom )
-//				if( data[i]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
-//				else{
-////					console.log( '어레이에서 배열아닌거 체크', data[i], typeof data[i] )
-//					if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
-//						if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
-//						else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
-//					} else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
-//				}
-//			}
-//		}
-//
-//		parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
+		function parseObj() {
+			var data = arguments[0], parent = arguments[1], k, dom
+			for( k in data ){
+				dom = document.createElement( 'li' )
+				parent.appendChild( dom )
+				if( data[k]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
+				else{
+					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
+					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</a></div>'
+
+				}
+			}
+		}
+
+		function parseArray() {
+			var data = arguments[0], parent = arguments[1], dom
+			for( var i = 0; i < data.length; i++ ){
+				dom = document.createElement( 'ul' )
+				parent.appendChild( dom )
+				if( data[i]['pop'] ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
+				else{
+//					console.log( '어레이에서 배열아닌거 체크', data[i], typeof data[i] )
+					if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
+						if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
+						else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
+					} else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
+				}
+			}
+		}
+
+		parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
 		var loopTest = 0
 		dk.LOOP.S( 'loop1', function() {
 			dk.query( '#loop' )[0].innerHTML = loopTest++
