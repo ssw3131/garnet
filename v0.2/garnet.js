@@ -18,7 +18,6 @@
 			};
 		} )
 
-
 // core
 
 	W.dk = dk = (function() {
@@ -555,25 +554,41 @@
 					fn( 'get', ajax ), fn( 'js', function( callBack, url ) {
 						var i = 1, j = arguments.length, len = j - 1
 						while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
-					} )
+					} ),
+						fn( 'img', (function() {
+							return function( callback, src /* src,src */ ) {
+								var i = arguments.length, list = []
+								while( i-- > 1 ){
+									var dom = document.createElement( 'img' )
+									dom.src = arguments[i]
+									list.push( dom )
+									if( i == 1 ) dom.onload = function() {
+										callback( list )
+									}
+								}
+
+							}
+						})() )
 					//TODO post처리
 				})(),
 				fn( 'sList', (function() {
 					function dkList() {
-						var i,j, t;
-						this.list = {},this._list=[], this.name = arguments[0]
+						var i, j, t;
+						this.list = {}, this._list = [], this.name = arguments[0]
 						this.update = arguments[1] ? function() {
-							t = this._list,i=t.length,j=i%8
+							t = this._list, i = t.length, j = i % 8
 							while( i-- > j ) t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i]()
 							while( j-- ) t[j]()
 						} : 0
 					}
-					function reset(){
-						var k, t0 = arguments[0],t1=t0.list,t2 = t0._list
+
+					function reset() {
+						var k, t0 = arguments[0], t1 = t0.list, t2 = t0._list
 						t2 = []
-						for( k in t1 ) t2.push(t1[k])
-						t0._list= t2
+						for( k in t1 ) t2.push( t1[k] )
+						t0._list = t2
 					}
+
 					dkList.prototype = {
 						S: function() {
 							var i = 0, j = arguments.length, k, v;
@@ -590,7 +605,7 @@
 									typeof this[k] == 'function' ? this[k]( v ) : this.list[k] = v
 								}
 							}
-							reset(this)
+							reset( this )
 							return v;
 						}
 					}
@@ -612,9 +627,9 @@
 					var r = dk.sList( 'LOOP', 1 );
 					//TODO 트윈처리
 //					(function loop() { r['update'](), requestAnimFrame( loop )})();
-					setInterval(function(){
+					setInterval( function() {
 						r['update']()
-					},16)
+					}, 16 )
 					return r
 				})() ),
 				dk.static( 'WIN', (function() {
