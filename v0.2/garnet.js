@@ -1,6 +1,4 @@
-;
-(function(){
-	console.log('dikii5');
+;(function(){
 	"use strict";
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
 	var dk, fn, bsSelector, query, dkEvent, HOST;
