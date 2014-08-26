@@ -296,7 +296,7 @@
 
 		}
 
-		
+
 
 		dk.img(getImageTest,'imgs/01.jpg','imgs/02.jpg','imgs/03.jpg','imgs/04.jpg','imgs/01.jpg','imgs/02.jpg','imgs/03.jpg','imgs/04.jpg')
 		function getImageTest(d){
@@ -305,8 +305,8 @@
 				var img = d[i]
 				img.style.zIndex = 100
 				img.style.position='absolute'
-				img.style.top =Math.random()*1000+'px'
-				img.style.left = Math.random()*1000+'px'
+				img.style.top =Math.random()*dk.WIN.width+'px'
+				img.style.left = Math.random()*dk.WIN.height+'px'
 				document.body.appendChild(img)
 			}
 
