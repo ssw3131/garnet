@@ -545,7 +545,7 @@
 							return function( callBack, url ) {
 								var t = DOC.createElement( 'script' ), t0, t1, id = UUID++
 								callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
-								if( t1 ) W['____callbacks' + id] = function() { callBack.apply( null, arguments ), delete W['____callbacks' + id]}
+								if( t1 ) W['____callbacks' + id] = function() { callBack.apply( null, arguments ), W['____callbacks' + id]=null}
 								t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
 								if( !t1 ) t.onreadystatechange = function() {
 									if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
