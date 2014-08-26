@@ -164,7 +164,7 @@
 		function parseArray() {
 			var data = arguments[0], parent = arguments[1], dom
 			for( var i = 0; i < data.length; i++ ){
-				dom = document.createElement( 'li' )
+				dom = document.createElement( 'ul' )
 				parent.appendChild( dom )
 				if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
 					if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
