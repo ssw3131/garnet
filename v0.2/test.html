@@ -306,8 +306,8 @@
 				var img = d[i]
 				img.style.zIndex = 100
 				img.style.position='absolute'
-				img.style.top =Math.random()*dk.WIN.width+'px'
-				img.style.left = Math.random()*dk.WIN.height+'px'
+				img.style.top =(Math.random()*dk.WIN.height-img.width)+'px'
+				img.style.left = (Math.random()*dk.WIN.width-img.height)+'px'
 				document.body.appendChild(img)
 			}
 
