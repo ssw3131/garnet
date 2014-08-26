@@ -229,7 +229,7 @@
 
 		dk.get( getTest, 'test1.txt' )
 		function getTest( data ) {
-			console.log( '로딩완료', data )
+			console.log( '로딩완료-test1.txt', data )
 		}
 
 //
@@ -263,6 +263,7 @@
 //		// get을 이용한 제이슨/xml로딩 및 파싱테스트
 		dk.get( getJSON_test, 'json/json.json' )
 		function getJSON_test( d ) {
+			console.log(d)
 			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
 			dk.parseObj( data, root )
 		}
@@ -271,7 +272,7 @@
 		dk.get( getXMLtest, 'json/test.xml' )
 		function getXMLtest() {
 			var root = dk.query( '#xml' )[0], data = arguments[0]
-			console.log( data )
+			console.log( arguments[0] )
 //		root.innerText = data
 			data = parseToObject( data )
 			dk.parseObj( data, root )

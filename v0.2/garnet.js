@@ -530,8 +530,8 @@
 //					console.log( params ),
 								rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
 								rq.onreadystatechange = function() {
-									if( rq.readyState == 4 ) rq.status == 200 ? (rq.onreadystatechange = null, callback ? (callback(
-										rq.responseXML ? ((function() {
+									if( rq.readyState == 4 ) rq.status == 200 ? (console.log(rq.responseXML),rq.onreadystatechange = null, callback ? (callback(
+										rq.responseXML.documentElement ? ((function() {
 											var i, data = rq.responseXML, len = data.childNodes.length
 											for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
 										})()) : rq.responseText
