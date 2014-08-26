@@ -129,6 +129,9 @@
 	<div id="jsonp" class='testBox'>
 		<div class="title">jsonpTest</div>
 	</div>
+	<div id="jsonp2" class='testBox'>
+		<div class="title">jsonpTest2</div>
+	</div>
 </div>
 <div style="clear:both"></div>
 
@@ -238,6 +241,7 @@
 
 		function openAPICallBakcTest2( d ) {
 			console.log( d.channel.q, d )
+			dk.parseObj( d.channel, dk.query( '#jsonp' )[0] )
 		}
 
 		dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
@@ -245,7 +249,7 @@
 		function openAPICallBakcTest3( d ) {
 			console.log( '이러지마' )
 			console.log( d.channel.q, d )
-			dk.parseObj( d.channel, dk.query( '#jsonp' )[0] )
+			dk.parseObj( d.channel, dk.query( '#jsonp2' )[0] )
 		}
 
 		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )

@@ -24,7 +24,6 @@
 		function dk() {
 			HOST = arguments[0]
 			function sMethod() {}
-
 			sMethod.prototype = {
 				S: function() {
 					var i = 0, j = arguments.length, k, v; //루프용 i,j와 키밸류용 k, v
@@ -516,36 +515,42 @@
 // FNS :
 				(function() {
 					var checkXMLHttp = (function() {
-							var t = "MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP".split( ',' ), i = 0, j = t.length
+							var t = "MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP".split( ',' ), i = 0, j = t.length
 							if( W['XMLHttpRequest'] ) return function() {return new W['XMLHttpRequest']}
 							while( i < j ) if( new ActiveXObject( t[i++] ) ) return function() { new ActiveXObject( t[i] )}
 						})(),
-						ajax = function( callback, url/*paramK,paramV*/ ) {
-							var rq = checkXMLHttp(), pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v;
+						param =function(){
+							var pK, pV, params, arg = arguments[0], i = 2, j = arg.length, k, v;
 							for( i = 2; i < j; i++ ){
 								pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
 									params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
 							}
-							rq.open( 'GET', url + (params ? params : ''), true ),
+							return params
+						},
+						ajax = function( callback, url/*paramK,paramV*/ ) {
+							var rq = checkXMLHttp(),params
+							params=param(arguments)
+							rq.open( 'GET', url, true ),
 //					console.log( params ),
 								rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
 								rq.onreadystatechange = function() {
-									console.log(dk.DETECTOR.browser=='ie' , dk.DETECTOR.browserVer<10)
-									if( rq.readyState == 4 ) rq.status == 200 ? (console.log(rq.responseXML),rq.onreadystatechange = null, callback ? (callback(
-										((dk.DETECTOR.browser=='ie' && dk.DETECTOR.browserVer<10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function() {
+									if( rq.readyState == 4 ) rq.status == 200 ? (console.log( rq.responseXML ), rq.onreadystatechange = null, callback ? (callback(
+										((dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function() {
 											var i, data = rq.responseXML, len = data.childNodes.length
 											for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
 										})()) : rq.responseText
 									)) : 0) : 0
 								},
-								rq.send( null )
+
+								rq.send( params ? params : null )
 						},
 						js = (function() {
 							var UUID = 0
 							return function( callBack, url ) {
 								var t = DOC.createElement( 'script' ), t0, t1, id = UUID++
+								//TODO js에서도 URI 인코딩을 어케할지 결정해야겠군
 								callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
-								if( t1 ) W['____callbacks' + id] = function() { callBack.apply( null, arguments ), W['____callbacks' + id]=null}
+								if( t1 ) W['____callbacks' + id] = function() { callBack.apply( null, arguments ), W['____callbacks' + id] = null}
 								t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
 								if( !t1 ) t.onreadystatechange = function() {
 									if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
@@ -555,8 +560,7 @@
 					fn( 'get', ajax ), fn( 'js', function( callBack, url ) {
 						var i = 1, j = arguments.length, len = j - 1
 						while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
-					} ),
-						fn( 'img', (function() {
+					} ),fn( 'img', (function() {
 							return function( callback, src /* src,src */ ) {
 								var i = arguments.length, list = []
 								while( i-- > 1 ){
@@ -634,7 +638,7 @@
 					return r
 				})() ),
 				dk.static( 'WIN', (function() {
-					var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client',t3=(dk.DETECTOR.browser=='ie' && dk.DETECTOR.browserVer<9)  ? t1 : W,
+					var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
 						r = {
 							width: 0, height: 0, scrollX: 0, scrollY: 0,
 							RESIZE: (function() {
