@@ -521,7 +521,7 @@
 							while( i < j ) if( new ActiveXObject( t[i++] ) ) return function() { new ActiveXObject( t[i] )}
 						})(),
 						ajax = function( callback, url/*paramK,paramV*/ ) {
-							var rq = checkXMLHttp(), pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v
+							var rq = checkXMLHttp(), pK, pV, params, arg = arguments, i = 2, j = arg.length, k, v;
 							for( i = 2; i < j; i++ ){
 								pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
 									params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
@@ -530,8 +530,9 @@
 //					console.log( params ),
 								rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
 								rq.onreadystatechange = function() {
+									console.log(dk.DETECTOR.browser=='ie' , dk.DETECTOR.browserVer<10)
 									if( rq.readyState == 4 ) rq.status == 200 ? (console.log(rq.responseXML),rq.onreadystatechange = null, callback ? (callback(
-										rq.responseXML.documentElement ? ((function() {
+										((dk.DETECTOR.browser=='ie' && dk.DETECTOR.browserVer<10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function() {
 											var i, data = rq.responseXML, len = data.childNodes.length
 											for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
 										})()) : rq.responseText
