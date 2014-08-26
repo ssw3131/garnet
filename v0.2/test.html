@@ -152,7 +152,17 @@
 				dom = document.createElement( 'ul' )
 				parent.appendChild( dom )
 //				console.log(typeof data[k])
-				if( data[k] instanceof Array ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', dk.parseArray( data[k], dom )
+				if( data[k] instanceof Array ){
+					dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', dk.parseArray( data[k], dom )
+					dk.addEvent( dom, 'mousedown', function( e ) {
+						console.log( e.currentTarget )
+						e.cancelBubble = true
+						e.currentTarget.style.overflow='hidden'
+						if( e.currentTarget.style.height != '20px' ) e.currentTarget .style.height = '20px'
+						else e.currentTarget .style.height = '100%'
+					})
+
+				}
 				else if( typeof data[k] == 'string' || typeof data[k] == 'number' ){
 					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
 					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</div>'
@@ -177,21 +187,18 @@
 		dk.parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
 		var loopTest = 0
 		dk.LOOP.S( 'loop1', function() {
-			dk.query( '#loop' )[0].innerHTML = ''+loopTest++
+			dk.query( '#loop' )[0].innerHTML = '' + loopTest++
 		} )
 
-		for(var i=0; i<5;i++){
-			dk.LOOP.S( 'test'+i,(function(){
-				var aa =i
+		for( var i = 0; i < 5; i++ ){
+			dk.LOOP.S( 'test' + i, (function() {
+				var aa = i
 				return function() {
 //					console.log( 'test'+aa)
 				}
 			})() )
 
 		}
-
-
-
 
 		dk.WIN.RESIZE.S( 'resize1', function() {
 			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
@@ -247,12 +254,12 @@
 		dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
 
 		function openAPICallBakcTest3( d ) {
-			console.log( '이러지마' )
 			console.log( d.channel.q, d )
 			dk.parseObj( d.channel, dk.query( '#jsonp2' )[0] )
 		}
 
 		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
+
 //
 //		//		/// ajax test
 		dk.get( null, 'test2.txt' )
@@ -267,7 +274,7 @@
 //		// get을 이용한 제이슨/xml로딩 및 파싱테스트
 		dk.get( getJSON_test, 'json/json.json' )
 		function getJSON_test( d ) {
-			console.log(d)
+			console.log( d )
 			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
 			dk.parseObj( data, root )
 		}
@@ -301,22 +308,21 @@
 
 		}
 
-
-
-		dk.img(getImageTest,'imgs/01.jpg','imgs/02.jpg','imgs/03.jpg','imgs/04.jpg','imgs/01.jpg','imgs/02.jpg','imgs/03.jpg','imgs/04.jpg')
-		function getImageTest(d){
-			console.log('이미지로드!',d)
-			for(var i =0; i< d.length;i++){
+		dk.img( getImageTest, 'imgs/01.jpg', 'imgs/02.jpg', 'imgs/03.jpg', 'imgs/04.jpg', 'imgs/01.jpg', 'imgs/02.jpg', 'imgs/03.jpg', 'imgs/04.jpg' )
+		function getImageTest( d ) {
+			console.log( '이미지로드!', d )
+			for( var i = 0; i < d.length; i++ ){
 				var img = d[i]
 				img.style.zIndex = 100
-				img.style.position='absolute'
-				img.style.top =(Math.random()*dk.WIN.height-img.width)+'px'
-				img.style.left = (Math.random()*dk.WIN.width-img.height)+'px'
-				document.body.appendChild(img)
+				img.style.position = 'absolute'
+				img.style.top = (Math.random() * dk.WIN.height - img.width) + 'px'
+				img.style.left = (Math.random() * dk.WIN.width - img.height) + 'px'
+				document.body.appendChild( img )
 			}
 
 		}
-		window['____callbacks' + 'test'] = function(){}
+
+		window['____callbacks' + 'test'] = function() {}
 	} );
 
 

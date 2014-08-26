@@ -509,7 +509,7 @@
 					var map = {down: dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up: dk.DETECTOR.mobile ? 'touchend' : 'mouseup'}
 					return function() {
 						var arg = arguments, t0, t1 = arg[1];
-						(t0 = arg[0].addEventListener) ? t0( (t1 = map[arg[1]] ? map[arg[1]] : arg[1]), arg[2] ) : W.attachEvent( 'on' + t1, arg[2] )
+						W.addEventListener ? arg[0].addEventListener( (t1 = map[arg[1]] ? map[arg[1]] : arg[1]), arg[2] ) : W.attachEvent( 'on' + t1, arg[2] )
 					}
 				})() ),
 // FNS :
@@ -561,19 +561,19 @@
 						var i = 1, j = arguments.length, len = j - 1
 						while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
 					} ),fn( 'img', (function() {
-							return function( callback, src /* src,src */ ) {
-								var i = arguments.length, list = []
-								while( i-- > 1 ){
-									var dom = document.createElement( 'img' )
-									dom.src = arguments[i]
-									list.push( dom )
-									if( i == 1 ) dom.onload = function() {
-										callback( list )
-									}
+						return function( callback, src /* src,src */ ) {
+							var i = arguments.length, list = []
+							while( i-- > 1 ){
+								var dom = document.createElement( 'img' )
+								dom.src = arguments[i]
+								list.push( dom )
+								if( i == 1 ) dom.onload = function() {
+									callback( list )
 								}
-
 							}
-						})() )
+
+						}
+					})() )
 					//TODO post처리
 				})(),
 				fn( 'sList', (function() {
