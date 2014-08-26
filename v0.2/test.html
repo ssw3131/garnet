@@ -154,14 +154,6 @@
 //				console.log(typeof data[k])
 				if( data[k] instanceof Array ){
 					dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', dk.parseArray( data[k], dom )
-					dk.addEvent( dom, 'mousedown', function( e ) {
-						console.log( e.currentTarget )
-						e.cancelBubble = true
-						e.currentTarget.style.overflow='hidden'
-						if( e.currentTarget.style.height != '20px' ) e.currentTarget .style.height = '20px'
-						else e.currentTarget .style.height = '100%'
-					})
-
 				}
 				else if( typeof data[k] == 'string' || typeof data[k] == 'number' ){
 					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
@@ -172,9 +164,19 @@
 		} )
 		dk.method( 'parseArray', function() {
 					var data = arguments[0], parent = arguments[1], dom
+
 					for( var i = 0; i < data.length; i++ ){
 						dom = document.createElement( 'ul' )
 						parent.appendChild( dom )
+
+						dk.addEvent( dom, 'mousedown', function( e ) {
+							console.log( e.currentTarget )
+							e.cancelBubble = true
+							e.currentTarget.style.overflow='hidden'
+							if( e.currentTarget.style.height != '20px' ) e.currentTarget .style.height = '20px'
+							else e.currentTarget .style.height = '100%'
+						})
+
 						if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
 							if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
 							else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
