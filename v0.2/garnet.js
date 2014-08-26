@@ -611,7 +611,10 @@
 				dk.static( 'LOOP', (function() {
 					var r = dk.sList( 'LOOP', 1 );
 					//TODO 트윈처리
-					(function loop() { r['update'](), requestAnimFrame( loop )})();
+//					(function loop() { r['update'](), requestAnimFrame( loop )})();
+					setInterval(function(){
+						r['update'].call(r)
+					},16)
 					return r
 				})() ),
 				dk.static( 'WIN', (function() {
