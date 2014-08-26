@@ -634,12 +634,12 @@
 					return r
 				})() ),
 				dk.static( 'WIN', (function() {
-					var t1 = document.documentElement, t2 = W.innerWidth ? 'inner' : 'client',
+					var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client',t3=(dk.DETECTOR.browser=='ie' && dk.DETECTOR.browserVer<9)  ? t1 : W,
 						r = {
 							width: 0, height: 0, scrollX: 0, scrollY: 0,
 							RESIZE: (function() {
 								var t = dk.sList( 'RESIZE', 1 ), func = function() {
-									r.width = W[t2 + 'Width'], r.height = W[t2 + 'Height']
+									r.width = t3[t2 + 'Width'], r.height = t3[t2 + 'Height']
 									t['update'].call( t )
 								}
 								setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
