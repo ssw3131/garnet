@@ -560,13 +560,20 @@
 				})(),
 				fn( 'sList', (function() {
 					function dkList() {
-						this.list = {}, this.name = arguments[0]
+						var i,j, t;
+						this.list = {},this._list=[], this.name = arguments[0]
 						this.update = arguments[1] ? function() {
-							var k, t = this.list
-							for( k in t ) t[k]()
+							t = this._list,i=t.length,j=i%8
+							while( i-- > j ) t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i]()
+							while( j-- ) t[j]()
 						} : 0
 					}
-
+					function reset(){
+						var k, t0 = arguments[0],t1=t0.list,t2 = t0._list
+						t2 = []
+						for( k in t1 ) t2.push(t1[k])
+						t0._list= t2
+					}
 					dkList.prototype = {
 						S: function() {
 							var i = 0, j = arguments.length, k, v;
@@ -583,6 +590,7 @@
 									typeof this[k] == 'function' ? this[k]( v ) : this.list[k] = v
 								}
 							}
+							reset(this)
 							return v;
 						}
 					}

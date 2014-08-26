@@ -174,8 +174,22 @@
 		dk.parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
 		var loopTest = 0
 		dk.LOOP.S( 'loop1', function() {
-			dk.query( '#loop' )[0].innerHTML = loopTest++
+			dk.query( '#loop' )[0].innerHTML = ''+loopTest++
 		} )
+
+		for(var i=0; i<5;i++){
+			dk.LOOP.S( 'test'+i,(function(){
+				var aa =i
+				return function() {
+					console.log( 'test'+aa)
+				}
+			})() )
+
+		}
+
+
+
+
 		dk.WIN.RESIZE.S( 'resize1', function() {
 			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
 			dk.query( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
