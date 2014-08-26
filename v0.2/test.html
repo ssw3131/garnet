@@ -6,7 +6,7 @@
 	<title></title>
 	<script src="garnet.js"></script>
 	<meta name="viewport"
-	      content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi"/>
+	      content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
 	<style>
 		.array {
 			border-left: 1px dotted blue;
@@ -32,8 +32,6 @@
 			margin: 0px;
 			padding: 0px;
 		}
-
-
 
 		.testBox {
 			box-shadow: 0 0 10px #999 inset, 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -140,42 +138,40 @@
 
 <script>
 
-//	alert('테스트용 파서 뭔가 있다!!')
+	//	alert('테스트용 파서 뭔가 있다!!')
 	dk( function() {
 //		///////////////////////////////////////////////////////////////
-//		// 파서 테스트용
+//		// 파서 테스트용 외부정의로 테스트
 //		///////////////////////////////////////////////////////////////
-		function parseObj() {
+		dk.method( 'parseObj', function() {
 			var data = arguments[0], parent = arguments[1], k, dom
 			for( k in data ){
 				dom = document.createElement( 'ul' )
 				parent.appendChild( dom )
 //				console.log(typeof data[k])
-				if( data[k] instanceof Array) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom ),console.log('array 해석')
+				if( data[k] instanceof Array ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', dk.parseArray( data[k], dom )
 				else if( typeof data[k] == 'string' || typeof data[k] == 'number' ){
-					 console.log('문자/숫자 해석')
 					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
 					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</div>'
-				} else parseObj( data[k], dom ), console.log('obj 해석')
-
+				} else dk.parseObj( data[k], dom ), console.log( 'obj 해석' )
 
 			}
-		}
+		} )
+		dk.method( 'parseArray', function() {
+					var data = arguments[0], parent = arguments[1], dom
+					for( var i = 0; i < data.length; i++ ){
+						dom = document.createElement( 'ul' )
+						parent.appendChild( dom )
+						if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
+							if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
+							else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
+						} else if( data[i] instanceof Array ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', dk.parseArray( data[i], dom )
+						else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', dk.parseObj( data[i], dom )
+					}
+				}
+		)
 
-		function parseArray() {
-			var data = arguments[0], parent = arguments[1], dom
-			for( var i = 0; i < data.length; i++ ){
-				dom = document.createElement( 'ul' )
-				parent.appendChild( dom )
-				if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
-					if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
-					else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
-				} else if( data[i] instanceof Array) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
-				else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
-			}
-		}
-
-		parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
+		dk.parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
 		var loopTest = 0
 		dk.LOOP.S( 'loop1', function() {
 			dk.query( '#loop' )[0].innerHTML = loopTest++
@@ -235,7 +231,7 @@
 		function openAPICallBakcTest3( d ) {
 			console.log( '이러지마' )
 			console.log( d.channel.q, d )
-			parseObj( d.channel, dk.query( '#jsonp' )[0] )
+			dk.parseObj( d.channel, dk.query( '#jsonp' )[0] )
 		}
 
 		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
@@ -254,17 +250,17 @@
 		dk.get( getJSON_test, 'json/json.json' )
 		function getJSON_test( d ) {
 			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
-			parseObj( data, root )
+			dk.parseObj( data, root )
 		}
 
 //
 		dk.get( getXMLtest, 'json/test.xml' )
 		function getXMLtest() {
 			var root = dk.query( '#xml' )[0], data = arguments[0]
-			console.log(data)
+			console.log( data )
 //		root.innerText = data
 			data = parseToObject( data )
-			parseObj( data, root )
+			dk.parseObj( data, root )
 			function parseToObject() {
 				var r = {}
 				checkValue( arguments[0], r )
@@ -279,7 +275,8 @@
 						} else if( node.nodeType == 3 || node.nodeType == 4 ) /\S/.test( node.nodeValue ) ? parent['value'] = node.nodeValue : 0
 					}
 				}
-				console.log(r)
+
+				console.log( r )
 				return r
 			}
 
