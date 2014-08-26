@@ -32,9 +32,7 @@
 			padding: 0px;
 		}
 
-		li, ul, ol {
-			text-align: left;
-		}
+
 
 		.testBox {
 			box-shadow: 0 0 10px #999 inset, 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -141,7 +139,7 @@
 
 <script>
 
-	alert('테스트용 파서 뭔가 있다!!')
+//	alert('테스트용 파서 뭔가 있다!!')
 	dk( function() {
 //		///////////////////////////////////////////////////////////////
 //		// 파서 테스트용
@@ -152,13 +150,14 @@
 				dom = document.createElement( 'ul' )
 				parent.appendChild( dom )
 //				console.log(typeof data[k])
-				if( typeof data[k] == 'array' ) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom )
-				else{
-					if( typeof data[k] == 'string' || typeof data[k] == 'number' ){
-						if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
-						else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</div>'
-					} else parseObj( data[k], dom )
-				}
+				if( data[k] instanceof Array) dom.innerHTML = '<div class="array"><span>+</span> ' + k + ' : array </div>', parseArray( data[k], dom ),console.log('array 해석')
+				else if( typeof data[k] == 'string' || typeof data[k] == 'number' ){
+					 console.log('문자/숫자 해석')
+					if( dk.REG.url( data[k] ) || dk.REG.ip( data[k] ) ) dom.innerHTML = '<div class="data"><span></span> ' + k + ' : <a href="' + data[k] + '">' + data[k] + '</a></div>'
+					else dom.innerHTML = '<div class="data"><span></span>' + k + ' : ' + data[k] + '</div>'
+				} else parseObj( data[k], dom ), console.log('obj 해석')
+
+
 			}
 		}
 
@@ -167,14 +166,11 @@
 			for( var i = 0; i < data.length; i++ ){
 				dom = document.createElement( 'li' )
 				parent.appendChild( dom )
-				if( typeof data[i] == 'array' ) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
-				else{
-//					console.log( '어레이에서 배열아닌거 체크', data[i], typeof data[i] )
-					if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
-						if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
-						else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
-					} else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
-				}
+				if( typeof data[i] == 'string' || typeof data[i] == 'number' ){
+					if( dk.REG.url( data[i] ) || dk.REG.ip( data[i] ) ) dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : <a href="' + data[i] + '">' + data[i] + '</a></div>'
+					else dom.innerHTML = '<div class="data"><span>+</span> ' + i + ' : ' + data[i] + '</div>'
+				} else if( data[i] instanceof Array) dom.innerHTML = '<div class="array"><span>+</span> ' + i + ' : array</div>', parseArray( data[i], dom )
+				else dom.innerHTML = '<div class="obj"><span>+</span> ' + i + ' : obj</div>', parseObj( data[i], dom )
 			}
 		}
 
@@ -264,6 +260,7 @@
 		dk.get( getXMLtest, 'json/test.xml' )
 		function getXMLtest() {
 			var root = dk.query( '#xml' )[0], data = arguments[0]
+			console.log(data)
 //		root.innerText = data
 			data = parseToObject( data )
 			parseObj( data, root )
@@ -281,7 +278,7 @@
 						} else if( node.nodeType == 3 || node.nodeType == 4 ) /\S/.test( node.nodeValue ) ? parent['value'] = node.nodeValue : 0
 					}
 				}
-
+				console.log(r)
 				return r
 			}
 

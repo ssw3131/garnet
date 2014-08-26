@@ -1,4 +1,5 @@
-;(function() {
+;
+(function() {
 	"use strict";
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
 	var dk, fn, bsSelector, query, dkEvent, HOST;
@@ -16,32 +17,33 @@
 				a
 			};
 		} )
-	function sMethod() {}
 
-	sMethod.prototype = {
-		S: function() {
-			var i = 0, j = arguments.length, k, v; //루프용 i,j와 키밸류용 k, v
-			while( i < j ){
-				k = arguments[i++];
-				if( i == j ){
-					if( k == 'this' ) return this;
-					return typeof this[k] == 'function' ? this[k]() : this[k]
-				}
-				else{
-					v = arguments[i++]
-					if( v === null ) delete this[k];
-					typeof this[k] == 'function' ? this[k]( v ) : this[k] = v
-				}
-			}
-			return this; //TODO 재질은 this로가고 메쉬류는 v로가야하는겐가!!
-		}
-	}
 
 // core
 
 	W.dk = dk = (function() {
 		function dk() {
 			HOST = arguments[0]
+			function sMethod() {}
+
+			sMethod.prototype = {
+				S: function() {
+					var i = 0, j = arguments.length, k, v; //루프용 i,j와 키밸류용 k, v
+					while( i < j ){
+						k = arguments[i++];
+						if( i == j ){
+							if( k == 'this' ) return this;
+							return typeof this[k] == 'function' ? this[k]() : this[k]
+						}
+						else{
+							v = arguments[i++]
+							if( v === null ) delete this[k];
+							typeof this[k] == 'function' ? this[k]( v ) : this[k] = v
+						}
+					}
+					return this; //TODO 재질은 this로가고 메쉬류는 v로가야하는겐가!!
+				}
+			}
 			dk['method'] = fn = function( k, v ) { dk[k.charAt( 0 ).toLowerCase() + k.substring( 1, k.length )] = v},
 				dk['class'] = function( k, v ) { k = k.replace( trim, '' ).toLowerCase(), dk[k.charAt( 0 ).toUpperCase() + k.substring( 1, k.length )] = v},
 				dk['static'] = function( k, v ) {dk[k.replace( trim, '' ).toUpperCase()] = v},
@@ -541,8 +543,8 @@
 						js = (function() {
 							var UUID = 0
 							return function( callBack, url ) {
-								var t = DOC.createElement( 'script' ), t0, t1,id = UUID++
-								 callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
+								var t = DOC.createElement( 'script' ), t0, t1, id = UUID++
+								callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
 								if( t1 ) W['____callbacks' + id] = function() { callBack.apply( null, arguments ), delete W['____callbacks' + id]}
 								t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
 								if( !t1 ) t.onreadystatechange = function() {
