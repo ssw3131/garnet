@@ -613,7 +613,7 @@
 					//TODO 트윈처리
 //					(function loop() { r['update'](), requestAnimFrame( loop )})();
 					setInterval(function(){
-						r['update'].call(r)
+						r['update']()
 					},16)
 					return r
 				})() ),
