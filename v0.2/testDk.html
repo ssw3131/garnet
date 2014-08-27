@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="garnet.js"></script>
+    <style>
+        * {
+        min-height: 50px;
+        }
+        * {
+            outline: coral dotted 1px;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div id="test">
+        <div class="menu"></div>
+        <div class="menu"></div>
+    </div>
+</nav>
+<span></span>
+<span></span>
+
+<div id="test1">
+    <div class="test"></div>
+</div>
+<div id="test2">
+    <div class="test"></div>
+    <div class="test"></div>
+    <div class="test"></div>
+</div>
+<script>
+    dk( function(){
+        var body = document.body;
+
+        var t0 = dk.Dom();
+        dk.Dom.fn( 'logEl', function(){
+            log( this.el );
+        })
+        t0.logEl();
+
+        log( dk.Dom.fn( 'logEl', null ) );
+
+//        testTag();
+//        testSelctor();
+//        testElement();
+//        testCache();
+
+        function testTag(){
+            var a0 = dk.Dom( '<div></div>' );
+            var a1 = dk.Dom( '<div style="height: 100px; background-color: #000000;"></div>' );
+            var a2 = dk.Dom( '<button><p>test</p></button>' );
+            var a3 = dk.Dom( '<div' );
+            var a4 = dk.Dom();
+            body.appendChild( a0.el );
+            body.appendChild( a1.el );
+            body.appendChild( a2.el );
+            body.appendChild( a3.el );
+            body.appendChild( a4.el );
+            log( a0 );
+            log( a1 );
+            log( a2 );
+            log( a3 );
+            log( a4 );
+        }
+
+        function testSelctor(){
+            var a0 = dk.Dom( '#test' );
+            var a1 = dk.Dom( 'div .test' );
+            var a2 = dk.Dom( 'body nav div .menu' );
+            log( a0 );
+            log( a1 );
+            log( a2 );
+        }
+
+        function testElement(){
+            var a0 = dk.Dom( document.getElementById( 'test' ) );
+            var a1 = dk.Dom( document.getElementsByTagName( 'span' ) );
+            var a2 = dk.Dom( [ document.getElementById( 'test1' ), document.getElementById( 'test2' ) ] );
+            log( a0 );
+            log( a1 );
+            log( a2 );
+        }
+
+        function testCache(){
+            log( dk.Dom( '#test' ) );
+            var test1 = dk.Dom( '#test', null );
+            log( test1 );
+        }
+    } )
+   /* setTimeout( function(){
+        dk( function(){
+            log( 'test' )
+        })
+    }, 1000 )*/
+</script>
+</body>
+</html>

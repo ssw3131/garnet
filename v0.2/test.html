@@ -146,7 +146,7 @@
 //		///////////////////////////////////////////////////////////////
 //		// 파서 테스트용 외부정의로 테스트
 //		///////////////////////////////////////////////////////////////
-		dk.method( 'parseObj', function() {
+		dk.fn( 'parseObj', function() {
 			var data = arguments[0], parent = arguments[1], k, dom
 			for( k in data ){
 				dom = document.createElement( 'ul' )
@@ -162,7 +162,7 @@
 
 			}
 		} )
-		dk.method( 'parseArray', function() {
+		dk.fn( 'parseArray', function() {
 					var data = arguments[0], parent = arguments[1], dom
 
 					for( var i = 0; i < data.length; i++ ){
@@ -186,10 +186,10 @@
 				}
 		)
 
-		dk.parseObj( dk.DETECTOR, dk.query( '#detect' )[0] )
+		dk.parseObj( dk.DETECTOR, dk.selector( '#detect' )[0] )
 		var loopTest = 0
 		dk.LOOP.S( 'loop1', function() {
-			dk.query( '#loop' )[0].innerHTML = '' + loopTest++
+			dk.selector( '#loop' )[0].innerHTML = '' + loopTest++
 		} )
 
 		for( var i = 0; i < 5; i++ ){
@@ -204,8 +204,8 @@
 
 		dk.WIN.RESIZE.S( 'resize1', function() {
 			console.log( 'resize1', 'dk.WIN.width : ', dk.WIN.width, ' / dk.WIN.height : ', dk.WIN.height )
-			dk.query( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
-			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+			dk.selector( '#resize' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+			dk.selector( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
 		} )
 		dk.WIN.RESIZE.S( 'resize2', function() {
 			console.log( 'resize2' )
@@ -219,7 +219,7 @@
 		console.log( dk.WIN.RESIZE.S( 'list' ) )
 
 		var tester = function( k ) {
-			console.log( k + ' : ', dk.query( k ) )
+			console.log( k + ' : ', dk.selector( k ) )
 
 		}
 
@@ -250,14 +250,14 @@
 
 		function openAPICallBakcTest2( d ) {
 			console.log( d.channel.q, d )
-			dk.parseObj( d.channel, dk.query( '#jsonp' )[0] )
+			dk.parseObj( d.channel, dk.selector( '#jsonp' )[0] )
 		}
 
 		dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
 
 		function openAPICallBakcTest3( d ) {
 			console.log( d.channel.q, d )
-			dk.parseObj( d.channel, dk.query( '#jsonp2' )[0] )
+			dk.parseObj( d.channel, dk.selector( '#jsonp2' )[0] )
 		}
 
 		dk.js( openAPICallBakcTest3, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + 'RoboCop' + '&output=json&callback=' )
@@ -268,8 +268,8 @@
 //
 		dk.WIN.SCROLL.S( 'scrollTest', function() {
 			console.log( 'dk.WIN.scrollX : ', dk.WIN.scrollX, ' / dk.WIN.scrollY : ', dk.WIN.scrollY )
-			dk.query( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
-//		dk.query( '#win' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
+			dk.selector( '#scroll' )[0].innerHTML = 'dk.WIN.scrollX : ' + dk.WIN.scrollX + ' / dk.WIN.scrollY : ' + dk.WIN.scrollY
+//		dk.selector( '#win' )[0].innerHTML = 'dk.WIN.width : ' + dk.WIN.width + ' / dk.WIN.height : ' + dk.WIN.height
 //		dk.WIN.scroll(0,500)
 		} );
 //
@@ -277,14 +277,14 @@
 		dk.get( getJSON_test, 'json/json.json' )
 		function getJSON_test( d ) {
 			console.log( d )
-			var data = JSON.parse( d ), root = dk.query( '#json' )[0]
+			var data = JSON.parse( d ), root = dk.selector( '#json' )[0]
 			dk.parseObj( data, root )
 		}
 
 //
 		dk.get( getXMLtest, 'json/test.xml' )
 		function getXMLtest() {
-			var root = dk.query( '#xml' )[0], data = arguments[0]
+			var root = dk.selector( '#xml' )[0], data = arguments[0]
 			console.log( arguments[0] )
 //		root.innerText = data
 			data = parseToObject( data )

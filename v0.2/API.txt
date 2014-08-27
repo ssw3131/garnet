@@ -1,0 +1,25 @@
+dk( function(){} );
+
+dk.fn( $k, $v )
+dk.class( $k, $v )
+dk.static( $k, $v )
+
+dk.INFO
+
+dk.DETECTOR
+
+dk.selector( query, doc, r )
+
+dk.Dom
+                   // text
+                   dk.Dom( '<div></div>' );
+                   dk.Dom( '<div' );
+                   dk.Dom();
+                   // selector
+                   dk.Dom( '#test' );
+                   // element
+                   dk.Dom( document.createElement( 'div' ) );
+                   // cache
+                   dk.Dom( '#test', null );
+
+                   dk.Dom.fn( $k, $v )
