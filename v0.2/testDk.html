@@ -35,18 +35,11 @@
     dk( function(){
         var body = document.body;
 
-        var t0 = dk.Dom();
-        dk.Dom.fn( 'logEl', function(){
-            log( this.el );
-        })
-        t0.logEl();
-
-        log( dk.Dom.fn( 'logEl', null ) );
-
 //        testTag();
 //        testSelctor();
 //        testElement();
 //        testCache();
+        testS();
 
         function testTag(){
             var a0 = dk.Dom( '<div></div>' );
@@ -88,6 +81,24 @@
             log( dk.Dom( '#test' ) );
             var test1 = dk.Dom( '#test', null );
             log( test1 );
+        }
+
+        function testS(){
+            var a0 = dk.Dom().S( 'width', 500, 'height', '200px', 'bgColor', '#000000', 'opacity', 1, '@width', 100 );
+            body.appendChild( a0.el );
+            log( 'width : ' + a0.S( 'width' ) );
+            log( '@width : ' + a0.S( '@width' ) );
+            log( 'opacity : ' + a0.S( 'opacity' ) );
+            log( 'bgColor : ' + a0.S( 'bgColor' ) );
+            log( 'height : ' + a0.S( 'height' ) );
+            a0.S( 'height', null );
+            log( 'height : ' + a0.S( 'height' ) );
+            a0.bgColor( '#999999' );
+            log( 'bgColor : ' + a0.bgColor() );
+
+            var a1 = dk.Dom( '<div></div>')
+            a1.css( 'width', 500, 'height', '200px', 'opacity', 0.5 );
+            body.appendChild( a1.el );
         }
     } )
    /* setTimeout( function(){

@@ -1,7 +1,7 @@
 ;
 (function(){
 	'use strict';
-	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
+	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
 	var dk, fn, selector, dkEvent;
 	var trim = /^\s*|\s*$/g;
 
@@ -43,35 +43,37 @@
 		})(),
 
 // dk :
-		W.dk = dk = function( $host ){
-			var check = setInterval( function(){
-				switch( DOC.readyState ){
-					case'complete':
-					case'interactive':
-					case'loaded':
-						break;
-					default:
-						return
-				}
-				if( DOC && DOC.getElementsByTagName && DOC.getElementById && DOC.body && DOC.readyState ) clearInterval( check ), $host ? $host() : null
-			}, 10 );
-		},
+		W.dk = dk = (function( $doc ){
+			return function( $host ){
+				var check = setInterval( function(){
+					switch( $doc.readyState ){
+						case'complete':
+						case'interactive':
+						case'loaded':
+							break;
+						default:
+							return
+					}
+					if( $doc && $doc.getElementsByTagName && $doc.getElementById && $doc.body && $doc.readyState ) clearInterval( check ), $host ? $host() : null
+				}, 10 );
+			}
+		})( DOC ),
 
 // CORE :
 		dk.fn = fn = function( $k, $v ){ dk[ $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ) ] = $v },
-		dk.class = function( $k, $v ){ $k = $k.replace( trim, '' ).toLowerCase(), dk[ $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ) ] = $v },
+		dk.cls = function( $k, $v ){ $k = $k.replace( trim, '' ).toLowerCase(), dk[ $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ) ] = $v },
 		dk.static = function( $k, $v ){ dk[ $k.replace( trim, '' ).toUpperCase() ] = $v },
 
 // INFO :
 		dk.static( 'INFO', { name : "Dk garnet", version : "v0.2.0", github : "https://github.com/ssw3131/garnet.git" } ),
 
 // DETECTOR :
-		dk.static( 'DETECTOR', (function(){
-			var navi = W.navigator, agent = navi.userAgent.toLowerCase(), platform = navi.platform.toLowerCase(), app = navi.appVersion.toLowerCase(),
+		dk.static( 'DETECTOR', (function( $w, $doc ){
+			var navi = $w.navigator, agent = navi.userAgent.toLowerCase(), platform = navi.platform.toLowerCase(), app = navi.appVersion.toLowerCase(),
 				device = 'pc', os, osv, browser, bv, flash,
-				prefixCss, prefixStyle, transform3D, keyframe = W['CSSRule'],
+				prefixCss, prefixStyle, transform3D, keyframe = $w['CSSRule'],
 				docMode = 0,
-				d = DOC.createElement( 'div' ), s = d.style, c = DOC.createElement( 'canvas' ), a = DOC.createElement( 'audio' ), v = DOC.createElement( 'video' ), t0,
+				d = $doc.createElement( 'div' ), s = d.style, c = $doc.createElement( 'canvas' ), a = $doc.createElement( 'audio' ), v = $doc.createElement( 'video' ), t0,
 				ie = function(){
 					if( agent.indexOf( 'msie' ) < 0 && agent.indexOf( 'trident' ) < 0 ) return;
 					if( agent.indexOf( 'iemobile' ) > -1 ) os = 'winMobile';
@@ -130,7 +132,7 @@
 			switch( browser ){
 				case'ie':
 					if( bv == -1 ) bv = !c['getContext'] ? 8 : !( 'msTransition' in s ) && !( 'transition' in s ) ? 9 : c.getContext( 'webgl' ) || c.getContext( 'experimental-webgl' ) ? 11 : 10;
-					prefixCss = '-ms-', prefixStyle = 'ms', transform3D = bv > 9 ? 1 : 0, docMode = DOC['documentMode'] || 0;
+					prefixCss = '-ms-', prefixStyle = 'ms', transform3D = bv > 9 ? 1 : 0, docMode = $doc['documentMode'] || 0;
 					break;
 				case'firefox':
 					prefixCss = '-moz-', prefixStyle = 'Moz', transform3D = 1;
@@ -162,15 +164,202 @@
 				videoTeora : v && v[ 'canPlayType' ] && v.canPlayType( 'video/ogg; codecs="theora,vorbis"' ).indexOf( 'no' ) == -1 ? 1 : 0,
 				insertBefore : 'insertBefore' in d ? 1 : 0,
 				innerText : 'innerText' in d ? 1 : 0, textContent : 'textContent' in d ? 1 : 0,
-				touchBool : 'ontouchstart' in W ? 1 : 0,
+				touchBool : 'ontouchstart' in $w ? 1 : 0,
 				currentTarget : browser == "firefox" ? "target" : "srcElement",
 				wheelEvent : browser == "firefox" ? "DOMMouseScroll" : "mousewheel",
 				isLocalhost : location.host.indexOf( "localhost" ) < 0 ? 0 : 1
 			}
+		})( W, DOC ) ),
+
+// EVENT :
+		dkEvent = (function(){
+			var t = dk.DETECTOR.currentTarget
+			return function(){
+				var e = arguments[ 0 ];
+				this.nativeEvent = e, this.target = e[ t ]
+				//TODO  여기다가 우리 이벤트를 정의합니다.
+				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
+			}
+		})(),
+		fn( 'addEvent', (function(){
+			var map = { down : dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up : dk.DETECTOR.mobile ? 'touchend' : 'mouseup' };
+			return function(){
+				var arg = arguments, t0, t1 = arg[ 1 ];
+				W.addEventListener ? arg[ 0 ].addEventListener( ( t1 = map[ arg[ 1 ] ] ? map[ arg[ 1 ] ] : arg[ 1 ]), arg[ 2 ] ) : W.attachEvent( 'on' + t1, arg[ 2 ] )
+			}
+		})() ),
+
+// FNS :
+		(function(){
+			var checkXMLHttp = (function(){
+					var t = "MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP".split( ',' ), i = 0, j = t.length
+					if( W['XMLHttpRequest'] ) return function(){return new W['XMLHttpRequest']}
+					while( i < j ) if( new ActiveXObject( t[i++] ) ) return function(){ new ActiveXObject( t[i] )}
+				})(),
+				param = function(){
+					var pK, pV, params, arg = arguments[0], i = 2, j = arg.length, k, v;
+					for( i = 2; i < j; i++ ){
+						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
+							params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
+					}
+					return params
+				},
+				ajax = function( callback, url/*paramK,paramV*/ ){
+					var rq = checkXMLHttp(), params
+					params = param( arguments )
+					rq.open( 'GET', url, true ),
+						rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
+						rq.onreadystatechange = function(){
+							if( rq.readyState == 4 ) rq.status == 200 ? (console.log( rq.responseXML ), rq.onreadystatechange = null, callback ? (callback(
+								((dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function(){
+									var i, data = rq.responseXML, len = data.childNodes.length
+									for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
+								})()) : rq.responseText
+							)) : 0) : 0
+						},
+
+						rq.send( params ? params : null )
+				},
+				js = (function(){
+					var UUID = 0
+					return function( callBack, url ){
+						var t = DOC.createElement( 'script' ), t0, t1, id = UUID++
+						//TODO js에서도 URI 인코딩을 어케할지 결정해야겠군
+						callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
+						if( t1 ) W['____callbacks' + id] = function(){ callBack.apply( null, arguments ), W['____callbacks' + id] = null}
+						t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
+						if( !t1 ) t.onreadystatechange = function(){
+							if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
+						}
+					}
+				})();
+			//TODO post처리
+			fn( 'get', ajax ),
+				fn( 'js', function( callBack, url ){
+					var i = 1, j = arguments.length, len = j - 1;
+					while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
+				} ),
+				fn( 'img', (function(){
+					return function( callback, src /* src,src */ ){
+						var i = arguments.length, list = [];
+						while( i-- > 1 ){
+							var dom = document.createElement( 'img' );
+							dom.src = arguments[i]
+							list.push( dom )
+							if( i == 1 ) dom.onload = function(){
+								callback( list )
+							}
+						}
+
+					}
+				})() );
+		})(),
+		fn( 'sList', (function(){
+			function dkList(){
+				var i, j, t;
+				this.list = {}, this._list = [], this.name = arguments[0]
+				this.update = arguments[1] ? function(){
+					t = this._list, i = t.length, j = i % 8
+					while( i-- > j ) t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i]()
+					while( j-- ) t[j]()
+				} : 0
+			}
+
+			function reset(){
+				var k, t0 = arguments[0], t1 = t0.list, t2 = t0._list
+				t2 = []
+				for( k in t1 ) t2.push( t1[k] )
+				t0._list = t2
+			}
+
+			dkList.prototype = {
+				S : function(){
+					var i = 0, j = arguments.length, k, v;
+					while( i < j ){
+						k = arguments[i++];
+						if( i == j ){
+							if( k == 'this' ) return this;
+							else if( k == 'list' ) return this.list;
+							return typeof this[k] == 'function' ? this[k]() : this.list[k]
+						}
+						else{
+							v = arguments[i++]
+							if( v === null ) delete this[k];
+							typeof this[k] == 'function' ? this[k]( v ) : this.list[k] = v
+						}
+					}
+					reset( this )
+					return v;
+				}
+			}
+			return function( k, update ){ return new dkList( k, update )}
+		})() ),
+
+// OBJS :
+		dk.static( 'KEY', (function(){
+			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i = t1.length
+			while( i-- ) t3[t1[i--]] = t1[i].toLowerCase(), t0[t1[i].toLowerCase()] = 0
+			dk.addEvent( W, 'keydown', function(){
+					var t = new ev( arguments[0] )
+					t.keyCode = arguments[0].keyCode,
+						list[t3[t.keyCode]] ? list[t3[t.keyCode]]( t ) : 0
+				}
+			)
+			return r
+		})() ),
+		dk.static( 'LOOP', (function(){
+			var r = dk.sList( 'LOOP', 1 );
+			//TODO 트윈처리
+//					(function loop() { r['update'](), requestAnimFrame( loop )})();
+			setInterval( function(){
+				r['update']()
+			}, 16 )
+			return r
+		})() ),
+		dk.static( 'WIN', (function(){
+			var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
+				r = {
+					width : 0, height : 0, scrollX : 0, scrollY : 0,
+					RESIZE : (function(){
+						var t = dk.sList( 'RESIZE', 1 ), func = function(){
+							r.width = t3[t2 + 'Width'], r.height = t3[t2 + 'Height']
+							t['update'].call( t )
+						}
+						setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
+						return t
+					})(),
+					SCROLL : (function(){
+						var t = dk.sList( 'SCROLL', 1 )
+						dk.addEvent( W, 'scroll', function(){
+							r.scrollX = document.body.scrollLeft + t1.scrollLeft
+							r.scrollY = document.body.scrollTop + t1.scrollTop
+							t['update']()
+						} )
+						return t
+					})(),
+					scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
+				}
+			return r
+		})() ),
+		dk.static( 'REG', (function(){
+			return {
+				numeric : function( k ){return /^[+-]*[0-9]*\.?\d+$/.test( k )},
+				stringOnly : function( k ){return  /^[^0-9]*$/.test( k )},
+				stripHTMLTags : function( k ){return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
+				lineModify : function( k ){return  k.split( "\r\n" ).join( "\n" )},
+				Email : function( k ){return /^(.+)\@(.+)\.(\w+)$/.test( k )},
+				ip : function( k ){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
+				url : function( k ){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
+				KoreanRegistrationNumber : function( k ){return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
+				empty : function( k ){
+					if( !k ) return true;
+					return  !k.length
+				}
+			}
 		})() ),
 
 // SELECTOR :
-		fn( 'selector', selector = (function(){
+		fn( 'selector', selector = (function( $doc ){
 			function bsSelector( doc, trim, domData ){
 				'use strict';
 				var compare = {
@@ -178,7 +367,7 @@
 						'#' : function( el, token ){
 							return token.substr( 1 ) == el.id;
 						},
-						// class
+						// cls
 						'.' : function( el, token ){
 							var t0, k;
 							return !( t0 = el.className ) ? 0 : ( k = token.substr( 1 ), t0.indexOf( ' ' ) > -1 ? k == t0 : t0.split( ' ' ).indexOf( k ) > -1 );
@@ -516,199 +705,12 @@
 					return r;
 				};
 			};
-			return bsSelector( document, /^\s*|\s*$/g );
-		})() ),
-
-// EVENT :
-		dkEvent = (function(){
-			var t = dk.DETECTOR.currentTarget
-			return function(){
-				var e = arguments[ 0 ];
-				this.nativeEvent = e, this.target = e[ t ]
-				//TODO  여기다가 우리 이벤트를 정의합니다.
-				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
-			}
-		})(),
-		fn( 'addEvent', (function(){
-			var map = { down : dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up : dk.DETECTOR.mobile ? 'touchend' : 'mouseup' };
-			return function(){
-				var arg = arguments, t0, t1 = arg[ 1 ];
-				W.addEventListener ? arg[ 0 ].addEventListener( ( t1 = map[ arg[ 1 ] ] ? map[ arg[ 1 ] ] : arg[ 1 ]), arg[ 2 ] ) : W.attachEvent( 'on' + t1, arg[ 2 ] )
-			}
-		})() ),
-
-// FNS :
-		(function(){
-			var checkXMLHttp = (function(){
-					var t = "MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP".split( ',' ), i = 0, j = t.length
-					if( W['XMLHttpRequest'] ) return function(){return new W['XMLHttpRequest']}
-					while( i < j ) if( new ActiveXObject( t[i++] ) ) return function(){ new ActiveXObject( t[i] )}
-				})(),
-				param = function(){
-					var pK, pV, params, arg = arguments[0], i = 2, j = arg.length, k, v;
-					for( i = 2; i < j; i++ ){
-						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
-							params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
-					}
-					return params
-				},
-				ajax = function( callback, url/*paramK,paramV*/ ){
-					var rq = checkXMLHttp(), params
-					params = param( arguments )
-					rq.open( 'GET', url, true ),
-						rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
-						rq.onreadystatechange = function(){
-							if( rq.readyState == 4 ) rq.status == 200 ? (console.log( rq.responseXML ), rq.onreadystatechange = null, callback ? (callback(
-								((dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function(){
-									var i, data = rq.responseXML, len = data.childNodes.length
-									for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
-								})()) : rq.responseText
-							)) : 0) : 0
-						},
-
-						rq.send( params ? params : null )
-				},
-				js = (function(){
-					var UUID = 0
-					return function( callBack, url ){
-						var t = DOC.createElement( 'script' ), t0, t1, id = UUID++
-						//TODO js에서도 URI 인코딩을 어케할지 결정해야겠군
-						callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
-						if( t1 ) W['____callbacks' + id] = function(){ callBack.apply( null, arguments ), W['____callbacks' + id] = null}
-						t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
-						if( !t1 ) t.onreadystatechange = function(){
-							if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
-						}
-					}
-				})();
-			//TODO post처리
-			fn( 'get', ajax ),
-				fn( 'js', function( callBack, url ){
-					var i = 1, j = arguments.length, len = j - 1;
-					while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
-				} ),
-				fn( 'img', (function(){
-					return function( callback, src /* src,src */ ){
-						var i = arguments.length, list = [];
-						while( i-- > 1 ){
-							var dom = document.createElement( 'img' );
-							dom.src = arguments[i]
-							list.push( dom )
-							if( i == 1 ) dom.onload = function(){
-								callback( list )
-							}
-						}
-
-					}
-				})() );
-		})(),
-		fn( 'sList', (function(){
-			function dkList(){
-				var i, j, t;
-				this.list = {}, this._list = [], this.name = arguments[0]
-				this.update = arguments[1] ? function(){
-					t = this._list, i = t.length, j = i % 8
-					while( i-- > j ) t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i]()
-					while( j-- ) t[j]()
-				} : 0
-			}
-
-			function reset(){
-				var k, t0 = arguments[0], t1 = t0.list, t2 = t0._list
-				t2 = []
-				for( k in t1 ) t2.push( t1[k] )
-				t0._list = t2
-			}
-
-			dkList.prototype = {
-				S : function(){
-					var i = 0, j = arguments.length, k, v;
-					while( i < j ){
-						k = arguments[i++];
-						if( i == j ){
-							if( k == 'this' ) return this;
-							else if( k == 'list' ) return this.list;
-							return typeof this[k] == 'function' ? this[k]() : this.list[k]
-						}
-						else{
-							v = arguments[i++]
-							if( v === null ) delete this[k];
-							typeof this[k] == 'function' ? this[k]( v ) : this.list[k] = v
-						}
-					}
-					reset( this )
-					return v;
-				}
-			}
-			return function( k, update ){ return new dkList( k, update )}
-		})() ),
-
-// OBJS :
-		dk.static( 'KEY', (function(){
-			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i = t1.length
-			while( i-- ) t3[t1[i--]] = t1[i].toLowerCase(), t0[t1[i].toLowerCase()] = 0
-			dk.addEvent( W, 'keydown', function(){
-					var t = new ev( arguments[0] )
-					t.keyCode = arguments[0].keyCode,
-						list[t3[t.keyCode]] ? list[t3[t.keyCode]]( t ) : 0
-				}
-			)
-			return r
-		})() ),
-		dk.static( 'LOOP', (function(){
-			var r = dk.sList( 'LOOP', 1 );
-			//TODO 트윈처리
-//					(function loop() { r['update'](), requestAnimFrame( loop )})();
-			setInterval( function(){
-				r['update']()
-			}, 16 )
-			return r
-		})() ),
-		dk.static( 'WIN', (function(){
-			var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
-				r = {
-					width : 0, height : 0, scrollX : 0, scrollY : 0,
-					RESIZE : (function(){
-						var t = dk.sList( 'RESIZE', 1 ), func = function(){
-							r.width = t3[t2 + 'Width'], r.height = t3[t2 + 'Height']
-							t['update'].call( t )
-						}
-						setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
-						return t
-					})(),
-					SCROLL : (function(){
-						var t = dk.sList( 'SCROLL', 1 )
-						dk.addEvent( W, 'scroll', function(){
-							r.scrollX = document.body.scrollLeft + t1.scrollLeft
-							r.scrollY = document.body.scrollTop + t1.scrollTop
-							t['update']()
-						} )
-						return t
-					})(),
-					scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
-				}
-			return r
-		})() ),
-		dk.static( 'REG', (function(){
-			return {
-				numeric : function( k ){return /^[+-]*[0-9]*\.?\d+$/.test( k )},
-				stringOnly : function( k ){return  /^[^0-9]*$/.test( k )},
-				stripHTMLTags : function( k ){return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
-				lineModify : function( k ){return  k.split( "\r\n" ).join( "\n" )},
-				Email : function( k ){return /^(.+)\@(.+)\.(\w+)$/.test( k )},
-				ip : function( k ){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
-				url : function( k ){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
-				KoreanRegistrationNumber : function( k ){return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
-				empty : function( k ){
-					if( !k ) return true;
-					return  !k.length
-				}
-			}
-		})() ),
+			return bsSelector( $doc, /^\s*|\s*$/g );
+		})( DOC ) ),
 
 // CLASS :
-		dk.class( 'Dom', (function(){
-			var uuList = {}, query = dk.query;
+		dk.cls( 'Dom', (function( $doc, $selector ){
+			var uuList = {}, maker = $doc.createElement( 'div' ), fn = Dom.prototype;
 
 			function Dom( $e ){
 				var self = this, s = $e.style;
@@ -729,25 +731,23 @@
 			}
 
 			function parser( $str ){
-				var t0;
-				if( $str.indexOf( '>' ) < 0 ) return DOC.createElement( $str.substring( 1, $str.length ) );
-				else return t0 = DOC.createElement( 'div' ), t0.innerHTML = $str, t0.firstChild;
+				if( $str.indexOf( '>' ) < 0 ) return $doc.createElement( $str.substring( 1, $str.length ) );
+				else return ( maker.innerHTML = $str, maker ).firstChild;
 			}
 
 			function factory( $k, $v ){
-				if( $k === undefined ){
-					return new Dom( DOC.createElement( 'div' ) );
-				}else if( typeof $k === 'string' ){ // 문자열
-					if( $k.charAt( 0 ) == '<' ) return new Dom( parser( $k ) ); // 태그
+				if( $k === undefined ) return new Dom( $doc.createElement( 'div' ) );
+				if( typeof $k === 'string' ){ // 문자열
 					if( $v === null ) return destroyDom( $k ); // 돔제거
-					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = listDom( query( $k ) ); // 캐싱, 쿼리
+					if( $k.charAt( 0 ) == '<' ) return new Dom( parser( $k ) ); // 태그문자
+					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = listDom( $selector( $k ) ); // 캐싱, 쿼리
 				}else{ // element
-					return $k.length ? listDom( $k ) : new Dom( $k );
+					return $k.nodeType === 1 ? new Dom( $k ) : $k.length > 0 ? listDom( $k ) : null;
 				}
 			}
 
 			factory.fn = function(){
-				var i = 0, j = arguments.length, k, v, fn = Dom.prototype;
+				var i = 0, j = arguments.length, k, v;
 				while( i < j ){
 					k = arguments[ i++ ];
 					if( i == j ) return fn[ k ];
@@ -756,5 +756,42 @@
 			}
 
 			return factory;
-		})() );
+		})( DOC, selector ) ),
+
+		(function( $fn, $detector ){
+			var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 };
+			$fn( 'S', function(){
+				var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
+				while( i < j ){
+					k = arguments[ i++ ];
+					if( i == j ) return typeof this[ k ] == 'function' ? this[ k ]() :
+							k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+						( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+					else  v = arguments[ i++ ],
+							typeof this[ k ] == 'function' ? this[ k ]( v ) :
+							k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+						s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+				}
+				return this;
+			} ),
+				// css만...
+				$fn( 'css', function(){
+					var prefixCss = dk.DETECTOR.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 }
+					var i = 0, j = arguments.length, k, v, s = this.style, r, t0;
+					while( i < j ){
+						k = arguments[ i++ ];
+						if( i == j ) return r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
+						else  v = arguments[ i++ ], s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+					}
+					return this;
+				} ),
+				$fn( 'bgColor', function( $v ){
+					if( $v ) this.style[ "backgroundColor" ] = $v;
+					else return this.style[ "backgroundColor" ];
+				} ),
+				$fn( 'bgImg', function( $v ){
+					if( $v ) this.style[ "backgroundImage" ] = "url(" + $v + ")";
+					else return this.style[ "backgroundImage" ];
+				} )
+		})( dk.Dom.fn, dk.DETECTOR )
 })();
