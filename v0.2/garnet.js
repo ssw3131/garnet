@@ -2,14 +2,14 @@
 (function(){
 	'use strict';
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
-	var dk, fn, selector, dkEvent;
+	var dk, err, dkEvent, proto;
 	var trim = /^\s*|\s*$/g;
 
 // 보정패치 :
 	W.console = W[ 'console' ] ? W[ 'console' ] : { log : function(){} },
 		W.log = W[ 'log' ] ? W[ 'log' ] : function( $log ){ W.console.log( $log ) },
 		W.JSON = W[ 'JSON' ] ? W[ 'JSON' ] : { parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); } },
-		Date.now = W[ 'performance' ] ? W[ 'performance' ] : ( Date.now || function(){ return +new Date } ),
+		Date.now = Date.now * 1 || function(){ return +new Date },
 		W.requestAnimFrame = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){W.setTimeout( $loop, 17 ) } })(),
 		(function( f ){ W.setTimeout = f( W.setTimeout ), W.setInterval = f( W.setInterval ) })( function( f ){
 			return function( $a, $b ){
@@ -59,10 +59,25 @@
 			}
 		})( DOC ),
 
+// error :
+		err = function( $log ){
+			log( $log );
+		},
+
 // CORE :
-		dk.fn = fn = function( $k, $v ){ dk[ $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ) ] = $v },
-		dk.cls = function( $k, $v ){ $k = $k.replace( trim, '' ).toLowerCase(), dk[ $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ) ] = $v },
-		dk.static = function( $k, $v ){ dk[ $k.replace( trim, '' ).toUpperCase() ] = $v },
+		dk.fn = function( $k, $v ){
+			var k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length );
+			dk [ k ] ? err( 'dk.fn에 이미 ' + k + '값이 존재합니다' ) : dk[ k ] = $v;
+		},
+		dk.cls = function( $k, $v ){
+			var k = $k.replace( trim, '' ).toLowerCase();
+			k = k.charAt( 0 ).toUpperCase() + k.substring( 1, k.length ),
+				dk [ k ] ? err( 'dk.cls에 이미 ' + k + '값이 존재합니다' ) : dk[ k ] = $v;
+		},
+		dk.static = function( $k, $v ){
+			var k = $k.replace( trim, '' ).toUpperCase();
+			dk [ k ] ? err( 'dk.static에 이미 ' + k + '값이 존재합니다' ) : dk[ k ] = $v;
+		},
 
 // INFO :
 		dk.static( 'INFO', { name : "Dk garnet", version : "v0.2.0", github : "https://github.com/ssw3131/garnet.git" } ),
@@ -181,7 +196,7 @@
 				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
 			}
 		})(),
-		fn( 'addEvent', (function(){
+		dk.fn( 'addEvent', (function(){
 			var map = { down : dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up : dk.DETECTOR.mobile ? 'touchend' : 'mouseup' };
 			return function(){
 				var arg = arguments, t0, t1 = arg[ 1 ];
@@ -234,12 +249,12 @@
 					}
 				})();
 			//TODO post처리
-			fn( 'get', ajax ),
-				fn( 'js', function( callBack, url ){
+			dk.fn( 'get', ajax ),
+				dk.fn( 'js', function( callBack, url ){
 					var i = 1, j = arguments.length, len = j - 1;
 					while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
 				} ),
-				fn( 'img', (function(){
+				dk.fn( 'img', (function(){
 					return function( callback, src /* src,src */ ){
 						var i = arguments.length, list = [];
 						while( i-- > 1 ){
@@ -254,7 +269,7 @@
 					}
 				})() );
 		})(),
-		fn( 'sList', (function(){
+		dk.fn( 'sList', (function(){
 			function dkList(){
 				var i, j, t;
 				this.list = {}, this._list = [], this.name = arguments[0]
@@ -359,7 +374,7 @@
 		})() ),
 
 // SELECTOR :
-		fn( 'selector', selector = (function( $doc ){
+		dk.fn( 'selector', (function( $doc ){
 			function bsSelector( doc, trim, domData ){
 				'use strict';
 				var compare = {
@@ -709,8 +724,8 @@
 		})( DOC ) ),
 
 // CLASS :
-		dk.cls( 'Dom', (function( $doc, $selector ){
-			var uuList = {}, maker = $doc.createElement( 'div' ), fn = Dom.prototype;
+		dk.cls( 'Dom', (function( $doc, $selector, $proto ){
+			var uuList = {}, maker = $doc.createElement( 'div' ), domProto = Dom.prototype;
 
 			function Dom( $e ){
 				var self = this, s = $e.style;
@@ -750,33 +765,32 @@
 				var i = 0, j = arguments.length, k, v;
 				while( i < j ){
 					k = arguments[ i++ ];
-					if( i == j ) return fn[ k ];
-					else v = arguments[ i++ ], v === null ? delete fn[ k ] : fn[ k ] = v;
+					if( i == j ) return domProto[ k ];
+					else v = arguments[ i++ ], v === null ? delete domProto[ k ] : domProto[ k ] = v;
 				}
-			}
+			};
 
 			return factory;
-		})( DOC, selector ) ),
+		})( DOC, dk.selector, proto ) ),
 
-		(function( $fn, $detector ){
+		proto = (function( $detector ){
 			var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 };
-			$fn( 'S', function(){
-				var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
-				while( i < j ){
-					k = arguments[ i++ ];
-					if( i == j ) return typeof this[ k ] == 'function' ? this[ k ]() :
-							k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
-						( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
-					else  v = arguments[ i++ ],
-							typeof this[ k ] == 'function' ? this[ k ]( v ) :
-							k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
-						s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
-				}
-				return this;
-			} ),
-				// css만...
-				$fn( 'css', function(){
-					var prefixCss = dk.DETECTOR.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 }
+			return {
+				S : function(){
+					var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
+					while( i < j ){
+						k = arguments[ i++ ];
+						if( i == j ) return typeof this[ k ] == 'function' ? this[ k ]() :
+								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+							( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+						else  v = arguments[ i++ ],
+								typeof this[ k ] == 'function' ? this[ k ]( v ) :
+								k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+							s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+					}
+					return this;
+				},
+				css : function(){
 					var i = 0, j = arguments.length, k, v, s = this.style, r, t0;
 					while( i < j ){
 						k = arguments[ i++ ];
@@ -784,14 +798,27 @@
 						else  v = arguments[ i++ ], s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
 					}
 					return this;
-				} ),
-				$fn( 'bgColor', function( $v ){
+				},
+				// css
+				bgColor : function( $v ){
 					if( $v ) this.style[ "backgroundColor" ] = $v;
 					else return this.style[ "backgroundColor" ];
-				} ),
-				$fn( 'bgImg', function( $v ){
+				},
+				bgImg : function( $v ){
 					if( $v ) this.style[ "backgroundImage" ] = "url(" + $v + ")";
 					else return this.style[ "backgroundImage" ];
-				} )
-		})( dk.Dom.fn, dk.DETECTOR )
+				}
+			}
+		})( dk.DETECTOR ),
+
+		(function( $domFn, $proto ){
+			function make(){
+				var i = 0, j = arguments.length, k;
+				while( i < j ){
+					k = arguments[ i++ ];
+					$domFn( k, $proto[ k ] )
+				}
+			}
+			make( 'S', 'css', 'bgColor', 'bgImg ' );
+		})( dk.Dom.fn, proto )
 })();

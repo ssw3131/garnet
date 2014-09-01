@@ -99,13 +99,36 @@
             var a1 = dk.Dom( '<div></div>')
             a1.css( 'width', 500, 'height', '200px', 'opacity', 0.5 );
             body.appendChild( a1.el );
+
+            log( dk.Dom.fn( 'bgColor' ) );
         }
-    } )
+    } );
    /* setTimeout( function(){
         dk( function(){
             log( 'test' )
         })
     }, 1000 )*/
+/*    (function(){
+        var time0, time1, leng = 10000000, i = leng;
+
+        var obj = { test : { test : function(){}}}
+        function test(){}
+
+        time0 = Date.now();
+        while( i-- ){
+            typeof test == 'function';
+        }
+        time1 = Date.now();
+        log( time1 - time0 );
+
+        i = leng;
+        time0 = Date.now();
+        while( i-- ){
+            obj[ 'test' ].test
+        }
+        time1 = Date.now();
+        log( time1 - time0 );
+    })()*/
 </script>
 </body>
 </html>
