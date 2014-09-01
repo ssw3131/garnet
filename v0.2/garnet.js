@@ -19,29 +19,6 @@
 			};
 		} ),
 
-		// sMethod
-		(function(){
-			function sMethod(){};
-			sMethod.prototype = {
-				S : function(){
-					var i = 0, j = arguments.length, k, v;
-					while( i < j ){
-						k = arguments[i++];
-						if( i == j ){
-							if( k == 'this' ) return this;
-							return typeof this[k] == 'function' ? this[k]() : this[k]
-						}
-						else{
-							v = arguments[i++]
-							if( v === null ) delete this[k];
-							typeof this[k] == 'function' ? this[k]( v ) : this[k] = v
-						}
-					}
-					return this;
-				}
-			}
-		})(),
-
 // dk :
 		W.dk = dk = (function( $doc ){
 			return function( $host ){
@@ -59,24 +36,23 @@
 			}
 		})( DOC ),
 
-// error :
+// ERROR :
 		err = function( $log ){
 			log( $log );
 		},
 
 // CORE :
 		dk.fn = function( $k, $v ){
-			var k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length );
-			dk [ k ] ? err( 'dk.fn에 이미 ' + k + '값이 존재합니다' ) : dk[ k ] = $v;
+			$k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ),
+				dk [ $k ] ? err( 'dk.fn에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 		dk.cls = function( $k, $v ){
-			var k = $k.replace( trim, '' ).toLowerCase();
-			k = k.charAt( 0 ).toUpperCase() + k.substring( 1, k.length ),
-				dk [ k ] ? err( 'dk.cls에 이미 ' + k + '값이 존재합니다' ) : dk[ k ] = $v;
+			$k = $k.replace( trim, '' ).toLowerCase(), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
+				dk [ $k ] ? err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 		dk.static = function( $k, $v ){
-			var k = $k.replace( trim, '' ).toUpperCase();
-			dk [ k ] ? err( 'dk.static에 이미 ' + k + '값이 존재합니다' ) : dk[ k ] = $v;
+			$k = $k.replace( trim, '' ).toUpperCase(),
+				dk [ $k ] ? err( 'dk.static에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 
 // INFO :
@@ -171,6 +147,7 @@
 				prefixCss : prefixCss, prefixStyle : prefixStyle,
 				transform3D : transform3D, transform : ( prefixStyle + 'Transform' in s || 'transform' in s ) ? 1 : 0, transition : ( prefixStyle + 'Transition' in s || 'transition' in s ) ? 1 : 0,
 				keyframe : keyframe ? 1 : 0,
+				float : 'cssFloat' in s ? 'cssFloat' : 'styleFloat',
 				canvas : c ? 1 : 0, canvasText : c && c['getContext'] && c.getContext( '2d' ).fillText ? 1 : 0,
 				audio : a ? 1 : 0, video : v ? 1 : 0,
 				videoPoster : v && 'poster' in v ? 1 : 0,
@@ -187,22 +164,35 @@
 		})( W, DOC ) ),
 
 // EVENT :
-		dkEvent = (function(){
-			var t = dk.DETECTOR.currentTarget
-			return function(){
-				var e = arguments[ 0 ];
-				this.nativeEvent = e, this.target = e[ t ]
-				//TODO  여기다가 우리 이벤트를 정의합니다.
-				//TODO 사실 이건 팩토리가 도입되어 풀링처리를 해야됨
+		dkEvent = (function( $detector ){
+			var t0 = $detector.currentTarget;
+			return function( $e ){
+				return {
+					nativeEvent : $e,
+					nativeTarget : $e[ t0 ]
+				}
 			}
-		})(),
-		dk.fn( 'addEvent', (function(){
-			var map = { down : dk.DETECTOR.mobile ? 'touchstart' : 'mousedown', up : dk.DETECTOR.mobile ? 'touchend' : 'mouseup' };
-			return function(){
-				var arg = arguments, t0, t1 = arg[ 1 ];
-				W.addEventListener ? arg[ 0 ].addEventListener( ( t1 = map[ arg[ 1 ] ] ? map[ arg[ 1 ] ] : arg[ 1 ]), arg[ 2 ] ) : W.attachEvent( 'on' + t1, arg[ 2 ] )
-			}
-		})() ),
+		})( dk.DETECTOR ),
+
+		(function( $detector ){
+			var map = $detector.mobile ? { down : "touchstart", move : "touchmove", up : "touchend" } : { down : "mousedown", move : "mousemove", up : "mouseup" };
+
+			dk.fn( 'addEvent', (function(){
+				return W.addEventListener ? function( $el, $et, $cb, $cap ){
+					$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
+				} : function( $el, $et, $cb ){
+					$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( "on" + $et, $cb ); // ie8 이하 capture 불가능
+				}
+			})() ),
+
+				dk.fn( 'delEvent', (function(){
+					return W.removeEventListener ? function( $el, $et, $cb, $cap ){
+						$et = map[ $et ] ? map[ $et ] : $et, $el.removeEventListener( $et, $cb, $cap );
+					} : function( $el, $et, $cb ){
+						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( "on" + $et, $cb ); // ie8 이하 capture 불가능
+					}
+				})() )
+		})( dk.DETECTOR ),
 
 // FNS :
 		(function(){
@@ -312,12 +302,12 @@
 
 // OBJS :
 		dk.static( 'KEY', (function(){
-			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ("BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123").split( "," ), i = t1.length
-			while( i-- ) t3[t1[i--]] = t1[i].toLowerCase(), t0[t1[i].toLowerCase()] = 0
-			dk.addEvent( W, 'keydown', function(){
-					var t = new ev( arguments[0] )
-					t.keyCode = arguments[0].keyCode,
-						list[t3[t.keyCode]] ? list[t3[t.keyCode]]( t ) : 0
+			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t1.length;
+			while( i-- ) t3[ t1[ i-- ] ] = t1[ i ].toLowerCase(), t0[ t1[ i ].toLowerCase() ] = 0;
+			dk.addEvent( W, 'keydown', function( $e ){
+					var t = ev( $e );
+					t.keyCode = $e.keyCode,
+						list[ t3[ t.keyCode ] ] ? list[ t3[ t.keyCode ] ]( t ) : 0;
 				}
 			)
 			return r
@@ -724,14 +714,32 @@
 		})( DOC ) ),
 
 // CLASS :
-		dk.cls( 'Dom', (function( $doc, $selector, $proto ){
-			var uuList = {}, maker = $doc.createElement( 'div' ), domProto = Dom.prototype;
+		dk.cls( 'Dom', (function( $doc, $selector, $detector ){
+			var uuList = {}, maker = $doc.createElement( 'div' ), domProto = {};
 
-			function Dom( $e ){
-				var self = this, s = $e.style;
-				/*self.parent = null, self.children = [], */
-				self.el = $e, self.style = s;
+			function Dom( $el ){
+				var s = $el.style;
+				/*this.parent = null, this.children = [], */
+				this.el = $el, this.style = s;
 			}
+
+			Dom.prototype.S = (function(){
+				var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 };
+				return function(){
+					var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
+					while( i < j ){
+						k = arguments[ i++ ];
+						if( i == j ) return domProto[ k ] ? domProto[ k ].call( this ) :
+								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+							( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+						else  v = arguments[ i++ ],
+							domProto[ k ] ? domProto[ k ].call( this, v ) :
+									k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+								s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+					}
+					return this;
+				}
+			})();
 
 			function destroyDom( $k ){
 				// todo 돔트리 제거, 이벤트 제거
@@ -771,54 +779,63 @@
 			};
 
 			return factory;
-		})( DOC, dk.selector, proto ) ),
+		})( DOC, dk.selector, dk.DETECTOR ) ),
 
-		proto = (function( $detector ){
-			var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 };
+		proto = (function( $detector, $doc ){
+			var prefixCss = $detector.prefixCss, float = $detector.float;
 			return {
-				S : function(){
-					var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
-					while( i < j ){
-						k = arguments[ i++ ];
-						if( i == j ) return typeof this[ k ] == 'function' ? this[ k ]() :
-								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
-							( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
-						else  v = arguments[ i++ ],
-								typeof this[ k ] == 'function' ? this[ k ]( v ) :
-								k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
-							s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+				css : {
+					bgColor : function( $v ){
+						var s = this.style;
+						if( $v ) s[ 'backgroundColor' ] = $v;
+						else return s[ 'backgroundColor' ];
+					},
+					bgImg : function( $v ){
+						var s = this.style;
+						if( $v ) s[ 'backgroundImage' ] = 'url(' + $v + ')';
+						else return s[ 'backgroundImage' ];
+					},
+					float : function( $v ){
+						var s = this.style;
+						if( $v ) s[ float ] = $v;
+						else return s[ float ];
+					},
+					fontSmoothing : function( $v ){
+						var s = this.style;
+						if( $v ) s[ 'font-smoothing' ] = $v, s[ prefixCss + 'font-smoothing' ] = $v;
+						else return s[ 'font-smoothing' ];
 					}
-					return this;
 				},
-				css : function(){
-					var i = 0, j = arguments.length, k, v, s = this.style, r, t0;
-					while( i < j ){
-						k = arguments[ i++ ];
-						if( i == j ) return r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0;
-						else  v = arguments[ i++ ], s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+				tree : {
+					'>' : function( $v ){ this.el.appendChild( $v.el ); },
+					'<' : function( $v ){ $v == 'body' ? $doc.body.appendChild( this.el ) : $v.el.appendChild( this.el ); },
+					'html' : function( $v ){ return ( $v === undefined ) ? this.el.innerHTML : this.el.innerHTML = $v; }
+				},
+				event : {
+					'click' : function( $v ){
+						var self = this, el = self.el;
+						if( $v ){
+							dk.addEvent( el, 'click', function( $e ){
+									var t = dkEvent( $e );
+									t.target = self;
+									$v( t );
+								}
+							)
+						}else{
+						}
 					}
-					return this;
-				},
-				// css
-				bgColor : function( $v ){
-					if( $v ) this.style[ "backgroundColor" ] = $v;
-					else return this.style[ "backgroundColor" ];
-				},
-				bgImg : function( $v ){
-					if( $v ) this.style[ "backgroundImage" ] = "url(" + $v + ")";
-					else return this.style[ "backgroundImage" ];
 				}
-			}
-		})( dk.DETECTOR ),
+			};
+		})( dk.DETECTOR, DOC ),
 
 		(function( $domFn, $proto ){
-			function make(){
-				var i = 0, j = arguments.length, k;
-				while( i < j ){
-					k = arguments[ i++ ];
-					$domFn( k, $proto[ k ] )
+			function make( $t0 ){
+				var k;
+				for( k in $t0 ){
+					$domFn( k, $t0[ k ] );
 				}
 			}
-			make( 'S', 'css', 'bgColor', 'bgImg ' );
-		})( dk.Dom.fn, proto )
+
+			make( $proto.css ), make( $proto.tree ), make( $proto.event );
+		})( dk.Dom.fn, proto );
 })();

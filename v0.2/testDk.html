@@ -39,7 +39,8 @@
 //        testSelctor();
 //        testElement();
 //        testCache();
-        testS();
+//        testS();
+        testEvent();
 
         function testTag(){
             var a0 = dk.Dom( '<div></div>' );
@@ -85,38 +86,41 @@
 
         function testS(){
             var a0 = dk.Dom().S( 'width', 500, 'height', '200px', 'bgColor', '#000000', 'opacity', 1, '@width', 100 );
-            body.appendChild( a0.el );
+            a0.S( '<', 'body' );
             log( 'width : ' + a0.S( 'width' ) );
             log( '@width : ' + a0.S( '@width' ) );
             log( 'opacity : ' + a0.S( 'opacity' ) );
             log( 'bgColor : ' + a0.S( 'bgColor' ) );
             log( 'height : ' + a0.S( 'height' ) );
-            a0.S( 'height', null );
-            log( 'height : ' + a0.S( 'height' ) );
-            a0.bgColor( '#999999' );
-            log( 'bgColor : ' + a0.bgColor() );
 
-            var a1 = dk.Dom( '<div></div>')
-            a1.css( 'width', 500, 'height', '200px', 'opacity', 0.5 );
-            body.appendChild( a1.el );
+            var a1 = dk.Dom( '<div></div>' ).S( 'height', 100 );
+            a1.S( '<', a0 );
+            a1.S( 'height', null );
+            log( 'height : ' + a1.S( 'height' ) );
+        }
 
-            log( dk.Dom.fn( 'bgColor' ) );
+        function testEvent(){
+            var a0 = dk.Dom().S( 'width', 500, 'height', 200, 'bgColor', '#000000' );
+            a0.S( '<', 'body' );
+            a0.S( 'click', function( $e ){
+                log( $e );
+                a0.S( 'click', null );
+            })
         }
     } );
-   /* setTimeout( function(){
-        dk( function(){
-            log( 'test' )
-        })
-    }, 1000 )*/
-/*    (function(){
-        var time0, time1, leng = 10000000, i = leng;
+/*    dk( function(){
+
+        var time0, time1, leng = 100000, i = leng;
 
         var obj = { test : { test : function(){}}}
         function test(){}
+        var t0 = dk.Dom();
+        t0.S( '<', 'body' );
 
         time0 = Date.now();
         while( i-- ){
-            typeof test == 'function';
+//            typeof test == 'function';
+//            t0.S( '@width', '100px' );
         }
         time1 = Date.now();
         log( time1 - time0 );
@@ -124,11 +128,13 @@
         i = leng;
         time0 = Date.now();
         while( i-- ){
-            obj[ 'test' ].test
+//            obj[ 'test' ].test;
+            t0.el.setAttribute( 'data', '1000px2' );
+//            t0.el[ 'data' ] = 1000;
         }
         time1 = Date.now();
         log( time1 - time0 );
-    })()*/
+    })*/
 </script>
 </body>
 </html>
