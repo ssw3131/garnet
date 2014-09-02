@@ -56,7 +56,7 @@
 		},
 
 // INFO :
-		dk.static( 'INFO', { name : "Dk garnet", version : "v0.2.0", github : "https://github.com/ssw3131/garnet.git" } ),
+		dk.static( 'INFO', { name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git' } ),
 
 // DETECTOR :
 		dk.static( 'DETECTOR', (function( $w, $doc ){
@@ -117,7 +117,7 @@
 				var plug = navi.plugins, t0;
 				if( browser == 'ie' ) try{ t0 = new ActiveXObject( 'ShockwaveFlash.ShockwaveFlash' ).GetVariable( '$version' ).substr( 4 ).split( ',' ), flash = parseFloat( t0[0] + '.' + t0[1] ); }catch( e ){ }
 				else if( ( t0 = plug['Shockwave Flash 2.0'] ) || ( t0 = plug['Shockwave Flash'] ) ) t0 = t0.description.split( ' ' )[2].split( '.' ), flash = parseFloat( t0[0] + '.' + t0[1] );
-				else if( agent.indexOf( 'webtv' ) > -1 ) flash = agent.indexOf( 'webtv/2.6' ) > -1 ? 4 : agent.indexOf( "webtv/2.5" ) > -1 ? 3 : 2;
+				else if( agent.indexOf( 'webtv' ) > -1 ) flash = agent.indexOf( 'webtv/2.6' ) > -1 ? 4 : agent.indexOf( 'webtv/2.5' ) > -1 ? 3 : 2;
 			})();
 			// dom
 			switch( browser ){
@@ -157,9 +157,9 @@
 				insertBefore : 'insertBefore' in d ? 1 : 0,
 				innerText : 'innerText' in d ? 1 : 0, textContent : 'textContent' in d ? 1 : 0,
 				touchBool : 'ontouchstart' in $w ? 1 : 0,
-				currentTarget : browser == "firefox" ? "target" : "srcElement",
-				wheelEvent : browser == "firefox" ? "DOMMouseScroll" : "mousewheel",
-				isLocalhost : location.host.indexOf( "localhost" ) < 0 ? 0 : 1
+				currentTarget : browser == 'firefox' ? 'target' : 'srcElement',
+				wheelEvent : browser == 'firefox' ? 'DOMMouseScroll' : 'mousewheel',
+				isLocalhost : location.host.indexOf( 'localhost' ) < 0 ? 0 : 1
 			}
 		})( W, DOC ) ),
 
@@ -175,21 +175,22 @@
 		})( dk.DETECTOR ),
 
 		(function( $detector ){
-			var map = $detector.mobile ? { down : "touchstart", move : "touchmove", up : "touchend" } : { down : "mousedown", move : "mousemove", up : "mouseup" };
+			var map;
+			map = $detector.mobile ? { down : 'touchstart', move : 'touchmove', up : 'touchend' } : { down : 'mousedown', move : 'mousemove', up : 'mouseup' },
 
-			dk.fn( 'addEvent', (function(){
-				return W.addEventListener ? function( $el, $et, $cb, $cap ){
-					$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
-				} : function( $el, $et, $cb ){
-					$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( "on" + $et, $cb ); // ie8 이하 capture 불가능
-				}
-			})() ),
+				dk.fn( 'addEvent', (function(){
+					return W.addEventListener ? function( $el, $et, $cb, $cap ){
+						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
+					} : function( $el, $et, $cb ){
+						$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
+					}
+				})() ),
 
 				dk.fn( 'delEvent', (function(){
 					return W.removeEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.removeEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( "on" + $et, $cb ); // ie8 이하 capture 불가능
+						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() )
 		})( dk.DETECTOR ),
@@ -197,7 +198,7 @@
 // FNS :
 		(function(){
 			var checkXMLHttp = (function(){
-					var t = "MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP".split( ',' ), i = 0, j = t.length
+					var t = 'MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP'.split( ',' ), i = 0, j = t.length
 					if( W['XMLHttpRequest'] ) return function(){return new W['XMLHttpRequest']}
 					while( i < j ) if( new ActiveXObject( t[i++] ) ) return function(){ new ActiveXObject( t[i] )}
 				})(),
@@ -205,7 +206,7 @@
 					var pK, pV, params, arg = arguments[0], i = 2, j = arg.length, k, v;
 					for( i = 2; i < j; i++ ){
 						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
-							params ? (params += "&" + pK + "=" + pV) : (params = '?' + pK + "=" + pV)
+							params ? (params += '&' + pK + '=' + pV) : (params = '?' + pK + '=' + pV)
 					}
 					return params
 				},
@@ -213,7 +214,7 @@
 					var rq = checkXMLHttp(), params
 					params = param( arguments )
 					rq.open( 'GET', url, true ),
-						rq.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" ),
+						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
 						rq.onreadystatechange = function(){
 							if( rq.readyState == 4 ) rq.status == 200 ? (console.log( rq.responseXML ), rq.onreadystatechange = null, callback ? (callback(
 								((dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function(){
@@ -234,7 +235,7 @@
 						if( t1 ) W['____callbacks' + id] = function(){ callBack.apply( null, arguments ), W['____callbacks' + id] = null}
 						t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
 						if( !t1 ) t.onreadystatechange = function(){
-							if( t.readyState == "loaded" || t.readyState == "complete" ) t.onreadystatechange = null, callBack ? callBack() : 0
+							if( t.readyState == 'loaded' || t.readyState == 'complete' ) t.onreadystatechange = null, callBack ? callBack() : 0
 						}
 					}
 				})();
@@ -714,77 +715,17 @@
 		})( DOC ) ),
 
 // CLASS :
-		dk.cls( 'Dom', (function( $doc, $selector, $detector ){
-			var uuList = {}, maker = $doc.createElement( 'div' ), domProto = {};
-
-			function Dom( $el ){
-				var s = $el.style;
-				/*this.parent = null, this.children = [], */
-				this.el = $el, this.style = s;
-			}
-
-			Dom.prototype.S = (function(){
-				var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, "z-index" : 1 };
-				return function(){
-					var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
-					while( i < j ){
-						k = arguments[ i++ ];
-						if( i == j ) return domProto[ k ] ? domProto[ k ].call( this ) :
-								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
-							( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
-						else  v = arguments[ i++ ],
-							domProto[ k ] ? domProto[ k ].call( this, v ) :
-									k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
-								s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
-					}
-					return this;
+		proto = {
+			connect : function( $fn/*, ...*/ ){
+				var i = arguments.length, k, param = [];
+				while( i-- > 1 ){
+					for( k in arguments[ i ] ) param.push( k ), param.push( arguments[ i ][ k ] );
 				}
-			})();
-
-			function destroyDom( $k ){
-				// todo 돔트리 제거, 이벤트 제거
-				delete uuList[ $k ];
-			}
-
-			function listDom( $arr ){
-				var r = [], i = $arr.length;
-				if( i == 1 ) r = new Dom( $arr[ --i ] );
-				else while( i-- ) r[ i ] = new Dom( $arr[ i ] );
-				return r;
-			}
-
-			function parser( $str ){
-				if( $str.indexOf( '>' ) < 0 ) return $doc.createElement( $str.substring( 1, $str.length ) );
-				else return ( maker.innerHTML = $str, maker ).firstChild;
-			}
-
-			function factory( $k, $v ){
-				if( $k === undefined ) return new Dom( $doc.createElement( 'div' ) );
-				if( typeof $k === 'string' ){ // 문자열
-					if( $v === null ) return destroyDom( $k ); // 돔제거
-					if( $k.charAt( 0 ) == '<' ) return new Dom( parser( $k ) ); // 태그문자
-					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = listDom( $selector( $k ) ); // 캐싱, 쿼리
-				}else{ // element
-					return $k.nodeType === 1 ? new Dom( $k ) : $k.length > 0 ? listDom( $k ) : null;
-				}
-			}
-
-			factory.fn = function(){
-				var i = 0, j = arguments.length, k, v;
-				while( i < j ){
-					k = arguments[ i++ ];
-					if( i == j ) return domProto[ k ];
-					else v = arguments[ i++ ], v === null ? delete domProto[ k ] : domProto[ k ] = v;
-				}
-			};
-
-			return factory;
-		})( DOC, dk.selector, dk.DETECTOR ) ),
-
-		proto = (function( $detector, $doc ){
-			var prefixCss = $detector.prefixCss, float = $detector.float;
-			return {
-				css : {
+				$fn.apply( undefined, param );
+			},
+			css : (function( $detector ){
+				var prefixCss = $detector.prefixCss, float = $detector.float;
+				return {
 					bgColor : function( $v ){
 						var s = this.style;
 						if( $v ) s[ 'backgroundColor' ] = $v;
@@ -805,37 +746,152 @@
 						if( $v ) s[ 'font-smoothing' ] = $v, s[ prefixCss + 'font-smoothing' ] = $v;
 						else return s[ 'font-smoothing' ];
 					}
-				},
-				tree : {
+				}
+			})( dk.DETECTOR ),
+			tree : (function( $doc, $detector ){
+				var text = $detector.innerText ? 'innerText' : 'textContent';
+				return {
 					'>' : function( $v ){ this.el.appendChild( $v.el ); },
 					'<' : function( $v ){ $v == 'body' ? $doc.body.appendChild( this.el ) : $v.el.appendChild( this.el ); },
-					'html' : function( $v ){ return ( $v === undefined ) ? this.el.innerHTML : this.el.innerHTML = $v; }
-				},
-				event : {
-					'click' : function( $v ){
-						var self = this, el = self.el;
-						if( $v ){
-							dk.addEvent( el, 'click', function( $e ){
-									var t = dkEvent( $e );
-									t.target = self;
-									$v( t );
-								}
-							)
-						}else{
-						}
+					'>-' : function( $v ){ this.el.removeChild( $v.el ); },
+					'<-' : function( $v ){ $v == 'body' ? $doc.body.removeChild( this.el ) : $v.el.removeChild( this.el ); },
+					'html' : function( $v ){ return ( $v === undefined ) ? this.el.innerHTML : this.el.innerHTML = $v; },
+					'text' : function( $v ){ return ( $v === undefined ) ? this.el[ text ] : this.el[ text ] = $v; }
+				}
+			})( DOC, dk.DETECTOR ),
+			event : (function( $w, $dkEvent, $addEvent, $delEvent ){
+				var r = {}, arr = [ 'mouseover', 'mouseout', 'click', 'down', 'move', 'up'  ], i = arr.length, t0;
+
+				function makeListener( $k, $dom, $cb ){
+					var t0 = { mousedown : 1, mouseup : 1, mousemove : 1 };
+					return $dom.eventList[ $k ] = function( $e ){
+						var ev = $dkEvent( $e ), type = $e.type;
+						t0[ type ] ? null : cancelBubbling( $e ), ev.type = type, ev.target = $dom, $cb( ev );
 					}
 				}
-			};
-		})( dk.DETECTOR, DOC ),
 
-		(function( $domFn, $proto ){
-			function make( $t0 ){
-				var k;
-				for( k in $t0 ){
-					$domFn( k, $t0[ k ] );
+				function cancelBubbling( $e ){
+					cancelBubbling = $e.stopPropagation ? function( $e ){ $e.stopPropagation(); } : $w.event ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
 				}
+
+				function make( $k ){
+					return function( $v ){
+						var el = this.el;
+						$v ? $addEvent( el, $k, makeListener( $k, this, $v ) ) : ( $delEvent( el, $k, this.eventList[ $k ] ), delete this.eventList[ $k ] );
+					}
+				}
+
+				while( i-- ) r[ t0 = arr[ i ] ] = make( t0 );
+				return r;
+			})( W, dkEvent, dk.addEvent, dk.delEvent )
+		},
+
+		dk.cls( 'Dom', (function( $doc, $selector, $detector ){
+			var factory, Dom, uuList = {}, proto = {},
+				maker = $doc.createElement( 'div' );
+
+			function destroyDom( $k ){
+				// todo 돔트리 제거, 이벤트 제거
+				delete uuList[ $k ];
 			}
 
-			make( $proto.css ), make( $proto.tree ), make( $proto.event );
-		})( dk.Dom.fn, proto );
+			function listDom( $arr ){
+				var r = [], i = $arr.length;
+				if( i == 1 ) r = new Dom( $arr[ --i ] );
+				else while( i-- ) r[ i ] = new Dom( $arr[ i ] );
+				return r;
+			}
+
+			function parser( $str ){
+				if( $str.indexOf( '>' ) < 0 ) return $doc.createElement( $str.substring( 1, $str.length ) );
+				else return ( maker.innerHTML = $str, maker ).firstChild;
+			}
+
+			Dom = function( $el ){
+				var s = $el.style;
+				/*this.parent = null, this.children = [], */
+				this.el = $el, this.style = s, this.eventList = {};
+			},
+				Dom.prototype.S = (function(){
+					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					return function(){
+						var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
+						while( i < j ){
+							k = arguments[ i++ ];
+							if( i == j ) return proto[ k ] ? proto[ k ].call( this ) :
+									k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+							else  v = arguments[ i++ ],
+								proto[ k ] ? proto[ k ].call( this, v ) :
+										k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+						}
+						return this;
+					}
+				})(),
+
+				factory = function( $k, $v ){
+					if( $k === undefined ) return new Dom( $doc.createElement( 'div' ) );
+					if( typeof $k === 'string' ){ // 문자열
+						if( $v === null ) return destroyDom( $k ); // 돔제거
+						if( $k.charAt( 0 ) == '<' ) return new Dom( parser( $k ) ); // 태그문자
+						return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = listDom( $selector( $k ) ); // 캐싱, 쿼리
+					}else{ // element
+						return $k.nodeType === 1 ? new Dom( $k ) : $k.length > 0 ? listDom( $k ) : null;
+					}
+				},
+				factory.fn = function(){
+					var i = 0, j = arguments.length, k, v;
+					while( i < j ){
+						k = arguments[ i++ ];
+						if( i == j ) return proto[ k ];
+						else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+					}
+				};
+
+			return factory;
+		})( DOC, dk.selector, dk.DETECTOR ) ),
+		proto.connect( dk.Dom.fn, proto.css, proto.tree, proto.event ),
+
+		dk.cls( 'Style', (function( $doc, $head, $detector ){
+			var factory, Style, uuList = {}, proto = {},
+				el, sheet, rules;
+
+			el = $doc.createElement( 'style' ), $head.appendChild( el ), sheet = el.sheet || el.styleSheet, rules = sheet.cssRules || sheet.rules,
+
+				Style = sheet.addRule ? function( $key ){
+					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.addRule( $key, ' ', self.styleId );
+				} : function( $key ){
+					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.insertRule( $key + '{}', self.styleId );
+				},
+				Style.prototype.S = (function(){
+					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					return function(){
+						var i = 0, j = arguments.length, k, v, s = this.rules[ this.styleId ].style, r, t0;
+						while( i < j ){
+							k = arguments[ i++ ];
+							if( i == j ) return proto[ k ] ? proto[ k ].call( { style : s } ) :
+								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+							else  v = arguments[ i++ ],
+								proto[ k ] ? proto[ k ].call( { style : s }, v ) :
+									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+						}
+						return this;
+					}
+				})(),
+
+				factory = function( $k ){
+					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Style( $k );
+				},
+				factory.fn = function(){
+					var i = 0, j = arguments.length, k, v;
+					while( i < j ){
+						k = arguments[ i++ ];
+						if( i == j ) return proto[ k ];
+						else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+					}
+				};
+			return factory;
+		})( DOC, HEAD, dk.DETECTOR ) ),
+		proto.connect( dk.Style.fn, proto.css );
 })();

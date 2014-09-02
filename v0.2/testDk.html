@@ -41,6 +41,7 @@
 //        testCache();
 //        testS();
         testEvent();
+        testStyle();
 
         function testTag(){
             var a0 = dk.Dom( '<div></div>' );
@@ -102,10 +103,20 @@
         function testEvent(){
             var a0 = dk.Dom().S( 'width', 500, 'height', 200, 'bgColor', '#000000' );
             a0.S( '<', 'body' );
-            a0.S( 'click', function( $e ){
-                log( $e );
-                a0.S( 'click', null );
-            })
+
+            var a1 = dk.Dom().S( 'width', 300, 'height', 100, 'bgColor', '#333' );
+            a1.S( '<', a0 );
+
+            function handler( $e ){
+                log( $e.target.S( 'width' ) + ' : ' + $e.type );
+            }
+
+            a0.S( 'click', handler, 'mouseover', handler, 'down', handler );
+            a1.S( 'click', handler, 'mouseover', handler, 'down', handler );
+        }
+
+        function testStyle(){
+            dk.Style( 'body' ).S( 'bgColor', '#666', 'margin', 0 );
         }
     } );
 /*    dk( function(){
