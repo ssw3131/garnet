@@ -40,8 +40,11 @@
 //        testElement();
 //        testCache();
 //        testS();
-        testEvent();
-        testStyle();
+//        testEvent();
+//        testStyle();
+//        testAjax();
+        testJs();
+//        testImg();
 
         function testTag(){
             var a0 = dk.Dom( '<div></div>' );
@@ -116,35 +119,75 @@
         }
 
         function testStyle(){
-            dk.Style( 'body' ).S( 'bgColor', '#666', 'margin', 0 );
+            dk.Style( 'body' ).S( 'bgColor', '#666', 'margin', 100 );
+            dk.Style( 'div' ).S( 'bgColor', '#fff', 'margin', 0 );
+        }
+
+        function testAjax(){
+            dk.ajax( getTest, 'test1.txt' )
+            function getTest( data ) {
+                log( '로딩완료-test1.txt', data )
+            }
+
+            // get을 이용한 제이슨/xml로딩 및 파싱테스트
+            dk.ajax( getJSON_test, 'json/json.json' )
+            function getJSON_test( d ) {
+                var data = JSON.parse( d );
+                log( data )
+            }
+
+            dk.ajax( getXMLtest, 'json/test.xml' )
+            function getXMLtest() {
+                var data = arguments[0]
+                log( arguments[0] )
+            }
+        }
+
+        function testJs(){
+//            dk.js( jsCallBack, 'test1.js' )
+            function jsCallBack() {
+                log( '로딩완료-js콜백테스트' )
+            }
+
+            dk.js( function(){ log( 'js 멀티 로드완료' ) }, 'test1.js', 'test2.js' )
+
+            var str = dk.DETECTOR.browser == 'ie' ? encodeURIComponent( '언어의정원' ) : '언어의정원'
+
+            function openAPICallBakcTest2( d ) {
+                log( d )
+                console.log( d.channel.q, d )
+            }
+
+            dk.js( openAPICallBakcTest2, 'http://apis.daum.net/contents/movie?apikey=' + 'bffaf40ba59dff1a741998dd1d594e122f4260af&q=' + str + '&output=json&callback=' )
+        }
+
+        function testImg(){
+            dk.img( getImageTest, 'imgs/01.jpg', 'imgs/02.jpg', 'imgs/03.jpg', 'imgs/04.jpg', 'imgs/01.jpg', 'imgs/02.jpg', 'imgs/03.jpg', 'imgs/04.jpg' )
+            function getImageTest( d ) {
+                console.log( '이미지로드!', d )
+                var arr = dk.Dom( d ), i = arr.length;
+                while( i-- ){
+                    arr[ i ].S( 'position', 'absolute', 'left', i * 100, 'top', i * 100, '<', 'body' );
+                }
+            }
         }
     } );
 /*    dk( function(){
 
-        var time0, time1, leng = 100000, i = leng;
+        var leng = 100000, i = leng;
 
-        var obj = { test : { test : function(){}}}
-        function test(){}
-        var t0 = dk.Dom();
-        t0.S( '<', 'body' );
-
-        time0 = Date.now();
+        dk.timeCheck( 1 );
         while( i-- ){
-//            typeof test == 'function';
-//            t0.S( '@width', '100px' );
+            var t0 = 'MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP'.split( ',' ), j = t0.length;
         }
-        time1 = Date.now();
-        log( time1 - time0 );
+        log( dk.timeCheck( 0 ) );
 
         i = leng;
-        time0 = Date.now();
+        dk.timeCheck( 1 );
         while( i-- ){
-//            obj[ 'test' ].test;
-            t0.el.setAttribute( 'data', '1000px2' );
-//            t0.el[ 'data' ] = 1000;
+            var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], j = t0.length;
         }
-        time1 = Date.now();
-        log( time1 - time0 );
+        log( dk.timeCheck( 0 ) );
     })*/
 </script>
 </body>

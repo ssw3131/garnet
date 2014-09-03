@@ -7,7 +7,7 @@
 
 // 보정패치 :
 	W.console = W[ 'console' ] ? W[ 'console' ] : { log : function(){} },
-		W.log = W[ 'log' ] ? W[ 'log' ] : function( $log ){ W.console.log( $log ) },
+		W.log = W[ 'log' ] ? W[ 'log' ] : function(){ arguments.length > 1 ? W.console.log( Array.prototype.join.call( arguments, ',' ) ) : W.console.log( arguments[ 0 ] ); },
 		W.JSON = W[ 'JSON' ] ? W[ 'JSON' ] : { parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); } },
 		Date.now = Date.now * 1 || function(){ return +new Date },
 		W.requestAnimFrame = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){W.setTimeout( $loop, 17 ) } })(),
@@ -163,6 +163,15 @@
 			}
 		})( W, DOC ) ),
 
+// UTIL :
+		dk.fn( 'timeCheck', (function(){
+			var dateNow = Date.now, start;
+			return function( $toggle ){
+				if( $toggle ) start = dateNow();
+				else return dateNow() - start;
+			}
+		})() ),
+
 // EVENT :
 		dkEvent = (function( $detector ){
 			var t0 = $detector.currentTarget;
@@ -174,195 +183,24 @@
 			}
 		})( dk.DETECTOR ),
 
-		(function( $detector ){
+		(function( $detector, $dkFn ){
 			var map;
 			map = $detector.mobile ? { down : 'touchstart', move : 'touchmove', up : 'touchend' } : { down : 'mousedown', move : 'mousemove', up : 'mouseup' },
-
-				dk.fn( 'addEvent', (function(){
+				$dkFn( 'addEvent', (function(){
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() ),
-
-				dk.fn( 'delEvent', (function(){
+				$dkFn( 'delEvent', (function(){
 					return W.removeEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.removeEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() )
-		})( dk.DETECTOR ),
-
-// FNS :
-		(function(){
-			var checkXMLHttp = (function(){
-					var t = 'MSXML2.XMLHTTP.6.0,MSXML2.XMLHTTP.5.0,MSXML2.XMLHTTP.4.0,MSXML2.XMLHTTP.3.0,MSXML2.XMLHTTP,Microsoft.XMLHTTP'.split( ',' ), i = 0, j = t.length
-					if( W['XMLHttpRequest'] ) return function(){return new W['XMLHttpRequest']}
-					while( i < j ) if( new ActiveXObject( t[i++] ) ) return function(){ new ActiveXObject( t[i] )}
-				})(),
-				param = function(){
-					var pK, pV, params, arg = arguments[0], i = 2, j = arg.length, k, v;
-					for( i = 2; i < j; i++ ){
-						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
-							params ? (params += '&' + pK + '=' + pV) : (params = '?' + pK + '=' + pV)
-					}
-					return params
-				},
-				ajax = function( callback, url/*paramK,paramV*/ ){
-					var rq = checkXMLHttp(), params
-					params = param( arguments )
-					rq.open( 'GET', url, true ),
-						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
-						rq.onreadystatechange = function(){
-							if( rq.readyState == 4 ) rq.status == 200 ? (console.log( rq.responseXML ), rq.onreadystatechange = null, callback ? (callback(
-								((dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 10) ? rq.responseXML.documentElement : rq.responseXML) ? ((function(){
-									var i, data = rq.responseXML, len = data.childNodes.length
-									for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i]
-								})()) : rq.responseText
-							)) : 0) : 0
-						},
-
-						rq.send( params ? params : null )
-				},
-				js = (function(){
-					var UUID = 0
-					return function( callBack, url ){
-						var t = DOC.createElement( 'script' ), t0, t1, id = UUID++
-						//TODO js에서도 URI 인코딩을 어케할지 결정해야겠군
-						callBack ? (t0 = url.charAt( url.length - 1 )) : 0, t1 = (t0 == '=')
-						if( t1 ) W['____callbacks' + id] = function(){ callBack.apply( null, arguments ), W['____callbacks' + id] = null}
-						t.type = 'text/javascript', t.charset = 'utf-8', t.src = url + (t1 ? ['____callbacks' + id] : ''), HEAD.appendChild( t )
-						if( !t1 ) t.onreadystatechange = function(){
-							if( t.readyState == 'loaded' || t.readyState == 'complete' ) t.onreadystatechange = null, callBack ? callBack() : 0
-						}
-					}
-				})();
-			//TODO post처리
-			dk.fn( 'get', ajax ),
-				dk.fn( 'js', function( callBack, url ){
-					var i = 1, j = arguments.length, len = j - 1;
-					while( i < j ) js( i == len ? callBack : 0, arguments[i++] )
-				} ),
-				dk.fn( 'img', (function(){
-					return function( callback, src /* src,src */ ){
-						var i = arguments.length, list = [];
-						while( i-- > 1 ){
-							var dom = document.createElement( 'img' );
-							dom.src = arguments[i]
-							list.push( dom )
-							if( i == 1 ) dom.onload = function(){
-								callback( list )
-							}
-						}
-
-					}
-				})() );
-		})(),
-		dk.fn( 'sList', (function(){
-			function dkList(){
-				var i, j, t;
-				this.list = {}, this._list = [], this.name = arguments[0]
-				this.update = arguments[1] ? function(){
-					t = this._list, i = t.length, j = i % 8
-					while( i-- > j ) t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i]()
-					while( j-- ) t[j]()
-				} : 0
-			}
-
-			function reset(){
-				var k, t0 = arguments[0], t1 = t0.list, t2 = t0._list
-				t2 = []
-				for( k in t1 ) t2.push( t1[k] )
-				t0._list = t2
-			}
-
-			dkList.prototype = {
-				S : function(){
-					var i = 0, j = arguments.length, k, v;
-					while( i < j ){
-						k = arguments[i++];
-						if( i == j ){
-							if( k == 'this' ) return this;
-							else if( k == 'list' ) return this.list;
-							return typeof this[k] == 'function' ? this[k]() : this.list[k]
-						}
-						else{
-							v = arguments[i++]
-							if( v === null ) delete this[k];
-							typeof this[k] == 'function' ? this[k]( v ) : this.list[k] = v
-						}
-					}
-					reset( this )
-					return v;
-				}
-			}
-			return function( k, update ){ return new dkList( k, update )}
-		})() ),
-
-// OBJS :
-		dk.static( 'KEY', (function(){
-			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t1.length;
-			while( i-- ) t3[ t1[ i-- ] ] = t1[ i ].toLowerCase(), t0[ t1[ i ].toLowerCase() ] = 0;
-			dk.addEvent( W, 'keydown', function( $e ){
-					var t = ev( $e );
-					t.keyCode = $e.keyCode,
-						list[ t3[ t.keyCode ] ] ? list[ t3[ t.keyCode ] ]( t ) : 0;
-				}
-			)
-			return r
-		})() ),
-		dk.static( 'LOOP', (function(){
-			var r = dk.sList( 'LOOP', 1 );
-			//TODO 트윈처리
-//					(function loop() { r['update'](), requestAnimFrame( loop )})();
-			setInterval( function(){
-				r['update']()
-			}, 16 )
-			return r
-		})() ),
-		dk.static( 'WIN', (function(){
-			var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
-				r = {
-					width : 0, height : 0, scrollX : 0, scrollY : 0,
-					RESIZE : (function(){
-						var t = dk.sList( 'RESIZE', 1 ), func = function(){
-							r.width = t3[t2 + 'Width'], r.height = t3[t2 + 'Height']
-							t['update'].call( t )
-						}
-						setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
-						return t
-					})(),
-					SCROLL : (function(){
-						var t = dk.sList( 'SCROLL', 1 )
-						dk.addEvent( W, 'scroll', function(){
-							r.scrollX = document.body.scrollLeft + t1.scrollLeft
-							r.scrollY = document.body.scrollTop + t1.scrollTop
-							t['update']()
-						} )
-						return t
-					})(),
-					scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
-				}
-			return r
-		})() ),
-		dk.static( 'REG', (function(){
-			return {
-				numeric : function( k ){return /^[+-]*[0-9]*\.?\d+$/.test( k )},
-				stringOnly : function( k ){return  /^[^0-9]*$/.test( k )},
-				stripHTMLTags : function( k ){return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
-				lineModify : function( k ){return  k.split( "\r\n" ).join( "\n" )},
-				Email : function( k ){return /^(.+)\@(.+)\.(\w+)$/.test( k )},
-				ip : function( k ){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
-				url : function( k ){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
-				KoreanRegistrationNumber : function( k ){return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
-				empty : function( k ){
-					if( !k ) return true;
-					return  !k.length
-				}
-			}
-		})() ),
+		})( dk.DETECTOR, dk.fn ),
 
 // SELECTOR :
 		dk.fn( 'selector', (function( $doc ){
@@ -714,9 +552,9 @@
 			return bsSelector( $doc, /^\s*|\s*$/g );
 		})( DOC ) ),
 
-// CLASS :
+// PROTOTYPE :
 		proto = {
-			connect : function( $fn/*, ...*/ ){
+			connect : function( $fn/* , $obj, $obj */ ){
 				var i = arguments.length, k, param = [];
 				while( i-- > 1 ){
 					for( k in arguments[ i ] ) param.push( k ), param.push( arguments[ i ][ k ] );
@@ -786,9 +624,9 @@
 			})( W, dkEvent, dk.addEvent, dk.delEvent )
 		},
 
+// DOM :
 		dk.cls( 'Dom', (function( $doc, $selector, $detector ){
-			var factory, Dom, uuList = {}, proto = {},
-				maker = $doc.createElement( 'div' );
+			var factory, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' );
 
 			function destroyDom( $k ){
 				// todo 돔트리 제거, 이벤트 제거
@@ -853,16 +691,15 @@
 		})( DOC, dk.selector, dk.DETECTOR ) ),
 		proto.connect( dk.Dom.fn, proto.css, proto.tree, proto.event ),
 
+// STYLE :
 		dk.cls( 'Style', (function( $doc, $head, $detector ){
-			var factory, Style, uuList = {}, proto = {},
-				el, sheet, rules;
-
+			var factory, Style, uuList = {}, proto = {}, el, sheet, rules;
 			el = $doc.createElement( 'style' ), $head.appendChild( el ), sheet = el.sheet || el.styleSheet, rules = sheet.cssRules || sheet.rules,
 
 				Style = sheet.addRule ? function( $key ){
-					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.addRule( $key, ' ', self.styleId );
+					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.addRule( $key, ' ', this.styleId );
 				} : function( $key ){
-					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.insertRule( $key + '{}', self.styleId );
+					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.insertRule( $key + '{}', this.styleId );
 				},
 				Style.prototype.S = (function(){
 					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
@@ -893,5 +730,175 @@
 				};
 			return factory;
 		})( DOC, HEAD, dk.DETECTOR ) ),
-		proto.connect( dk.Style.fn, proto.css );
+		proto.connect( dk.Style.fn, proto.css ),
+
+// LOADER :
+		(function( $w, $detector, $dkFn ){
+			var checkXMLHttp = (function(){
+					if( $w['XMLHttpRequest'] ) return function(){ return new $w['XMLHttpRequest']() };
+					var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
+					while( i < j ){
+						try{
+							new ActiveXObject( t0[ i ] );
+							return function(){ return new ActiveXObject( t0[ i ] ); }
+						}catch( $e ){ i++; }
+					}
+				})(),
+				param = function(){
+					var pK, pV, params, arg = arguments[0], i, j = arg.length, k, v;
+					for( i = 2; i < j; i++ ){
+						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
+							params ? ( params += '&' + pK + '=' + pV ) : ( params = '?' + pK + '=' + pV );
+					}
+					return params;
+				},
+				ajax = function( $cb, $url/* , $paramK, $paramV */ ){
+					var rq = checkXMLHttp(), params;
+					params = param( arguments ),
+						rq.open( 'GET', $url, true ),
+						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
+						rq.onreadystatechange = function(){
+							rq.readyState == 4 ? rq.status == 200 ? ( rq.onreadystatechange = null, $cb ? ( $cb( ( ( $detector.browser == 'ie' && $detector.browserVer < 10 ) ? rq.responseXML.documentElement : rq.responseXML ) ? ( (function(){
+								var i, data = rq.responseXML, len = data.childNodes.length;
+								for( i = 0; i < len; i++ ) if( data.childNodes[i].nodeType == 1 ) return data.childNodes[i];
+							})() ) : rq.responseText ) ) : 0 ) : 0 : 0;
+						},
+						rq.send( params ? params : null );
+				};
+			$dkFn( 'ajax', ajax );
+		})( W, dk.DETECTOR, dk.fn ),
+
+		(function( $w, $doc, $head, $dkFn ){
+			var js = (function(){
+				var uuId = 0;
+				return function( $cb, $url ){
+					var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
+					$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
+						t1 ? $w[ '____callbacks' + id ] = function(){ $cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null; }
+							: $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){ if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0; },
+						el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
+				}
+			})();
+			$dkFn( 'js', function( $cb, $url/* ,$url, $url */ ){
+				var arr = arguments, i = 0, leng = arr.length - 1;
+
+				function load(){ js( complete, arr[ ++i ] ); };
+				function complete(){ i == leng ? $cb ? $cb() : null : load(); };
+				leng == 1 ? js( $cb, arr[ ++i ] ) : load();
+			} );
+		})( W, DOC, HEAD, dk.fn ),
+
+		(function( $doc, $dkFn ){
+			$dkFn( 'img', function( $cb, $src /* , $src, $src */ ){
+				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el;
+
+				function load(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), el.onload = complete; };
+				function complete(){ i == leng ? $cb ? $cb( r ) : null : load(); };
+				load();
+			} );
+		})( DOC, dk.fn ),
+
+// STATIC :
+		dk.fn( 'sList', (function(){
+			function dkList(){
+				var i, j, t;
+				this.list = {}, this._list = [], this.name = arguments[0]
+				this.update = arguments[1] ? function(){
+					t = this._list, i = t.length, j = i % 8
+					while( i-- > j ) t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i--](), t[i]()
+					while( j-- ) t[j]()
+				} : 0
+			}
+
+			function reset(){
+				var k, t0 = arguments[0], t1 = t0.list, t2 = t0._list
+				t2 = []
+				for( k in t1 ) t2.push( t1[k] )
+				t0._list = t2
+			}
+
+			dkList.prototype = {
+				S : function(){
+					var i = 0, j = arguments.length, k, v;
+					while( i < j ){
+						k = arguments[i++];
+						if( i == j ){
+							if( k == 'this' ) return this;
+							else if( k == 'list' ) return this.list;
+							return typeof this[k] == 'function' ? this[k]() : this.list[k]
+						}
+						else{
+							v = arguments[i++]
+							if( v === null ) delete this[k];
+							typeof this[k] == 'function' ? this[k]( v ) : this.list[k] = v
+						}
+					}
+					reset( this )
+					return v;
+				}
+			}
+			return function( k, update ){ return new dkList( k, update )}
+		})() ),
+		dk.static( 'KEY', (function(){
+			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t1.length;
+//			log( t1 );
+			while( i-- ) t3[ t1[ i-- ] ] = t1[ i ].toLowerCase(), t0[ t1[ i ].toLowerCase() ] = 0;
+			dk.addEvent( W, 'keydown', function( $e ){
+					var t = ev( $e );
+					t.keyCode = $e.keyCode,
+						list[ t3[ t.keyCode ] ] ? list[ t3[ t.keyCode ] ]( t ) : 0;
+				}
+			)
+			return r
+		})() ),
+		dk.static( 'LOOP', (function(){
+			var r = dk.sList( 'LOOP', 1 );
+			//TODO 트윈처리
+//					(function loop() { r['update'](), requestAnimFrame( loop )})();
+			setInterval( function(){
+				r['update']()
+			}, 16 )
+			return r
+		})() ),
+		dk.static( 'WIN', (function(){
+			var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
+				r = {
+					width : 0, height : 0, scrollX : 0, scrollY : 0,
+					RESIZE : (function(){
+						var t = dk.sList( 'RESIZE', 1 ), func = function(){
+							r.width = t3[t2 + 'Width'], r.height = t3[t2 + 'Height']
+							t['update'].call( t )
+						}
+						setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
+						return t
+					})(),
+					SCROLL : (function(){
+						var t = dk.sList( 'SCROLL', 1 )
+						dk.addEvent( W, 'scroll', function(){
+							r.scrollX = document.body.scrollLeft + t1.scrollLeft
+							r.scrollY = document.body.scrollTop + t1.scrollTop
+							t['update']()
+						} )
+						return t
+					})(),
+					scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
+				}
+			return r
+		})() ),
+		dk.static( 'REG', (function(){
+			return {
+				numeric : function( k ){return /^[+-]*[0-9]*\.?\d+$/.test( k )},
+				stringOnly : function( k ){return  /^[^0-9]*$/.test( k )},
+				stripHTMLTags : function( k ){return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
+				lineModify : function( k ){return  k.split( "\r\n" ).join( "\n" )},
+				Email : function( k ){return /^(.+)\@(.+)\.(\w+)$/.test( k )},
+				ip : function( k ){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
+				url : function( k ){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
+				KoreanRegistrationNumber : function( k ){return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
+				empty : function( k ){
+					if( !k ) return true;
+					return  !k.length
+				}
+			}
+		})() )
 })();
