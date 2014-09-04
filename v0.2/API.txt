@@ -1,25 +1,66 @@
-dk( function(){} );
+// dk :
+    dk( function(){} );
 
-dk.fn( $k, $v )
-dk.class( $k, $v )
-dk.static( $k, $v )
+// CORE :
+    dk.fn( $k, $v )
+    dk.class( $k, $v )
+    dk.static( $k, $v )
 
-dk.INFO
+// INFO :
+    dk.INFO == {}
 
-dk.DETECTOR
+// DETECTOR :
+    dk.DETECTOR == {}
 
-dk.selector( query, doc, r )
+// UTIL :
+    dk.random( $max, $min )
+    dk.randomInt( $max, $min )
+    dk.randomColor()
+    dk.timeCheck( $bool )
 
-dk.Dom
-                   // text
-                   dk.Dom( '<div></div>' );
-                   dk.Dom( '<div' );
-                   dk.Dom();
-                   // selector
-                   dk.Dom( '#test' );
-                   // element
-                   dk.Dom( document.createElement( 'div' ) );
-                   // cache
-                   dk.Dom( '#test', null );
+// EVENT :
+    dk.addEvent( $el, $et, $cb, $cap )
+    dk.delEvent( $el, $et, $cb, $cap )
 
-                   dk.Dom.fn( $k, $v )
+// SELECTOR :
+    dk.selector( query, doc, r )
+
+// DOM :
+    // text - еб╠в
+    dk.Dom( '<div></div>' );
+    dk.Dom( '<div' );
+    dk.Dom();
+    // text - selector
+    dk.Dom( '#test' );
+    // element
+    dk.Dom( document.createElement( 'div' ) );
+    // cache
+    dk.Dom( '#test', null );
+
+    // proto
+    dk.Dom.fn( $k, $v/* , $k, $v */ )
+
+    // S method
+    dk.Dom().S( $k, $v/* , $k, $v */ )
+
+// STYLE :
+    // text
+    dk.Style( '' )
+
+    // proto
+    dk.Style.fn( $k, $v/* , $k, $v */ )
+
+    // S method
+    dk.Style().S( $k, $v/* , $k, $v */ )
+
+// LOADER :
+    dk.ajax( $cb, $url/* , $paramK, $paramV */ )
+    dk.js( $cb, $url/* ,$url, $url */ )
+    dk.img( $cb, $src/* ,$src, $src */ )
+
+// STATIC :
+    dk.sList
+    dk.KEY
+    dk.LOOP
+    dk.WIN
+    dk.REG
