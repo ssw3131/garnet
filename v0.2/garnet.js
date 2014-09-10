@@ -10,7 +10,7 @@
 		W.log = W[ 'log' ] ? W[ 'log' ] : function(){ arguments.length > 1 ? W.console.log( Array.prototype.join.call( arguments, ',' ) ) : W.console.log( arguments[ 0 ] ); },
 		W.JSON = W[ 'JSON' ] ? W[ 'JSON' ] : { parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); } },
 		Date.now = Date.now * 1 || function(){ return +new Date },
-		W.requestAnimFrame = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){W.setTimeout( $loop, 17 ) } })(),
+		W.requestAnimFrame = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){ W.setTimeout( $loop, 17 ) } })(),
 		(function( f ){ W.setTimeout = f( W.setTimeout ), W.setInterval = f( W.setInterval ) })( function( f ){
 			return function( $a, $b ){
 				var a = [].slice.call( arguments, 2 );
@@ -22,7 +22,8 @@
 // dk :
 		W.dk = dk = (function( $doc ){
 			return function( $host ){
-				var check = setInterval( function(){
+				var check;
+				check = setInterval( function(){
 					switch( $doc.readyState ){
 						case'complete':
 						case'interactive':
@@ -65,22 +66,30 @@
 				prefixCss, prefixStyle, transform3D, keyframe = $w['CSSRule'],
 				docMode = 0,
 				d = $doc.createElement( 'div' ), s = d.style, c = $doc.createElement( 'canvas' ), a = $doc.createElement( 'audio' ), v = $doc.createElement( 'video' ), t0,
-				ie = function(){
-					if( agent.indexOf( 'msie' ) < 0 && agent.indexOf( 'trident' ) < 0 ) return;
-					if( agent.indexOf( 'iemobile' ) > -1 ) os = 'winMobile';
-					return browser = 'ie', bv = agent.indexOf( 'msie 7' ) > -1 && agent.indexOf( 'trident' ) > -1 ? -1 : agent.indexOf( 'msie' ) < 0 ? 11 : parseFloat( /msie ([\d]+)/.exec( agent )[1] );
-				},
+				ie, chrome, firefox, safari, opera, naver;
+
+			ie = function(){
+				if( agent.indexOf( 'msie' ) < 0 && agent.indexOf( 'trident' ) < 0 ) return;
+				if( agent.indexOf( 'iemobile' ) > -1 ) os = 'winMobile';
+				return browser = 'ie', bv = agent.indexOf( 'msie 7' ) > -1 && agent.indexOf( 'trident' ) > -1 ? -1 : agent.indexOf( 'msie' ) < 0 ? 11 : parseFloat( /msie ([\d]+)/.exec( agent )[1] );
+			},
 				chrome = function(){
 					if( agent.indexOf( t0 = 'chrome' ) < 0 && agent.indexOf( t0 = 'crios' ) < 0 ) return;
 					return browser = 'chrome', bv = parseFloat( ( t0 == 'chrome' ? /chrome\/([\d]+)/ : /crios\/([\d]+)/ ).exec( agent )[1] );
 				},
-				firefox = function(){ return agent.indexOf( 'firefox' ) < 0 ? 0 : ( browser = 'firefox', bv = parseFloat( /firefox\/([\d]+)/.exec( agent )[1] ) ); },
-				safari = function(){ return agent.indexOf( 'safari' ) < 0 ? 0 : ( browser = 'safari', bv = parseFloat( /safari\/([\d]+)/.exec( agent )[1] ) ); },
+				firefox = function(){
+					return agent.indexOf( 'firefox' ) < 0 ? 0 : ( browser = 'firefox', bv = parseFloat( /firefox\/([\d]+)/.exec( agent )[1] ) );
+				},
+				safari = function(){
+					return agent.indexOf( 'safari' ) < 0 ? 0 : ( browser = 'safari', bv = parseFloat( /safari\/([\d]+)/.exec( agent )[1] ) );
+				},
 				opera = function(){
 					var i;
 					return ( agent.indexOf( i = 'opera' ) < 0 && agent.indexOf( i = 'opr' ) < 0 ) ? 0 : ( browser = 'opera', bv = ( i == 'opera' ) ? parseFloat( /version\/([\d]+)/.exec( agent )[1] ) : parseFloat( /opr\/([\d]+)/.exec( agent )[1] ) );
 				},
-				naver = function(){ return agent.indexOf( 'naver' ) < 0 ? 0 : browser = 'naver'; };
+				naver = function(){
+					return agent.indexOf( 'naver' ) < 0 ? 0 : browser = 'naver';
+				};
 
 			// win
 			if( agent.indexOf( 'android' ) > -1 ){
@@ -189,24 +198,24 @@
 			}
 		})( dk.DETECTOR ),
 
-		(function( $detector, $dkFn ){
+		(function( $detector ){
 			var map;
 			map = $detector.mobile ? { down : 'touchstart', move : 'touchmove', up : 'touchend' } : { down : 'mousedown', move : 'mousemove', up : 'mouseup' },
-				$dkFn( 'addEvent', (function(){
+				dk.fn( 'addEvent', (function(){
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() ),
-				$dkFn( 'delEvent', (function(){
+				dk.fn( 'delEvent', (function(){
 					return W.removeEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.removeEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() )
-		})( dk.DETECTOR, dk.fn ),
+		})( dk.DETECTOR ),
 
 // SELECTOR :
 		dk.fn( 'selector', (function( $doc ){
@@ -604,58 +613,56 @@
 				}
 			})( DOC, dk.DETECTOR ),
 			event : (function( $w, $dkEvent, $addEvent, $delEvent ){
-				var r = {}, arr = [ 'mouseover', 'mouseout', 'click', 'down', 'move', 'up'  ], i = arr.length, t0;
+				var r = {}, evList = [ 'mouseover', 'mouseout', 'click', 'down', 'move', 'up'  ], i = evList.length,
+					cancleMap = { mousedown : 1, mouseup : 1, mousemove : 1 }, t0,
+					cancelBubbling, makeListener, make;
 
-				function makeListener( $k, $dom, $cb ){
-					var t0 = { mousedown : 1, mouseup : 1, mousemove : 1 };
-					return $dom.eventList[ $k ] = function( $e ){
-						var ev = $dkEvent( $e ), type = $e.type;
-						t0[ type ] ? null : cancelBubbling( $e ), ev.type = type, ev.target = $dom, $cb( ev );
-					}
-				}
-
-				function cancelBubbling( $e ){
+				cancelBubbling = function( $e ){
 					cancelBubbling = $e.stopPropagation ? function( $e ){ $e.stopPropagation(); } : $w.event ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
-				}
+				},
+					makeListener = function( $k, $dom, $cb ){
+						return $dom.eventList[ $k ] = function( $e ){
+							var ev = $dkEvent( $e ), type = $e.type;
+							cancleMap[ type ] ? null : cancelBubbling( $e ), ev.type = type, ev.target = $dom, $cb( ev );
+						}
+					},
+					make = function( $k ){
+						return function( $v ){
+							var el = this.el;
+							$v ? $addEvent( el, $k, makeListener( $k, this, $v ) ) : ( $delEvent( el, $k, this.eventList[ $k ] ), delete this.eventList[ $k ] );
+						}
+					};
 
-				function make( $k ){
-					return function( $v ){
-						var el = this.el;
-						$v ? $addEvent( el, $k, makeListener( $k, this, $v ) ) : ( $delEvent( el, $k, this.eventList[ $k ] ), delete this.eventList[ $k ] );
-					}
-				}
-
-				while( i-- ) r[ t0 = arr[ i ] ] = make( t0 );
+				while( i-- ) r[ t0 = evList[ i ] ] = make( t0 );
 				return r;
 			})( W, dkEvent, dk.addEvent, dk.delEvent )
 		},
 
 // DOM :
 		dk.cls( 'Dom', (function( $doc, $selector, $detector ){
-			var factory, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' );
+			var factory, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' ),
+				destroyDom, listDom, parser;
 
-			function destroyDom( $k ){
+			destroyDom = function( $k ){
 				// todo 돔트리 제거, 이벤트 제거
 				delete uuList[ $k ];
-			}
-
-			function listDom( $arr ){
-				var r = [], i = $arr.length;
-				if( i == 1 ) r = new Dom( $arr[ --i ] );
-				else while( i-- ) r[ i ] = new Dom( $arr[ i ] );
-				return r;
-			}
-
-			function parser( $str ){
-				if( $str.indexOf( '>' ) < 0 ) return $doc.createElement( $str.substring( 1, $str.length ) );
-				else return ( maker.innerHTML = $str, maker ).firstChild;
-			}
-
-			Dom = function( $el ){
-				var s = $el.style;
-				/*this.parent = null, this.children = [], */
-				this.el = $el, this.style = s, this.eventList = {};
 			},
+				listDom = function( $arr ){
+					var r = [], i = $arr.length;
+					if( i == 1 ) r = new Dom( $arr[ --i ] );
+					else while( i-- ) r[ i ] = new Dom( $arr[ i ] );
+					return r;
+				},
+				parser = function( $str ){
+					if( $str.indexOf( '>' ) < 0 ) return $doc.createElement( $str.substring( 1, $str.length ) );
+					else return ( maker.innerHTML = $str, maker ).firstChild;
+				},
+
+				Dom = function( $el ){
+					var s = $el.style;
+					/*this.parent = null, this.children = [], */
+					this.el = $el, this.style = s, this.eventList = {};
+				},
 				Dom.prototype.S = (function(){
 					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
 					return function(){
@@ -739,22 +746,24 @@
 		proto.connect( dk.Style.fn, proto.css ),
 
 // LOADER :
-		(function( $w, $detector, $dkFn ){
-			var checkXMLHttp = (function(){
-					if( $w['XMLHttpRequest'] ) return function(){ return new $w['XMLHttpRequest']() };
-					var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
-					while( i < j ){
-						try{
-							new ActiveXObject( t0[ i ] );
-							return function(){ return new ActiveXObject( t0[ i ] ); }
-						}catch( $e ){ i++; }
+		dk.fn( 'ajax', (function( $w, $detector ){
+			var checkXMLHttp, param, ajax;
+			checkXMLHttp = (function(){
+				if( $w['XMLHttpRequest'] ) return function(){ return new $w['XMLHttpRequest']() };
+				var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
+				while( i < j ){
+					try{
+						new ActiveXObject( t0[ i ] );
+						return function(){ return new ActiveXObject( t0[ i ] ); }
+					}catch( $e ){
+						i++;
 					}
-				})(),
+				}
+			})(),
 				param = function(){
 					var pK, pV, params, arg = arguments[0], i, j = arg.length, k, v;
 					for( i = 2; i < j; i++ ){
-						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ),
-							params ? ( params += '&' + pK + '=' + pV ) : ( params = '?' + pK + '=' + pV );
+						pK = encodeURIComponent( k = arg[i++] ), pV = encodeURIComponent( v = arg[i] ), params ? ( params += '&' + pK + '=' + pV ) : ( params = '?' + pK + '=' + pV );
 					}
 					return params;
 				},
@@ -771,38 +780,54 @@
 						},
 						rq.send( params ? params : null );
 				};
-			$dkFn( 'ajax', ajax );
-		})( W, dk.DETECTOR, dk.fn ),
-
-		(function( $w, $doc, $head, $dkFn ){
-			var js = (function(){
+			return ajax;
+		})( W, dk.DETECTOR ) ),
+		dk.fn( 'js', (function( $w, $doc, $head ){
+			var js;
+			js = (function(){
 				var uuId = 0;
 				return function( $cb, $url ){
 					var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
 					$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
-						t1 ? $w[ '____callbacks' + id ] = function(){ $cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null; }
-							: $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){ if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0; },
+						t1 ? $w[ '____callbacks' + id ] = function(){
+							$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
+						} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
+							if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
+						},
 						el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
 				}
 			})();
-			$dkFn( 'js', function( $cb, $url/* ,$url, $url */ ){
-				var arr = arguments, i = 0, leng = arr.length - 1;
+			return function( $cb, $url/* ,$url, $url */ ){
+				var arr = arguments, i = 0, leng = arr.length - 1, load, complete;
+				load = function(){ js( complete, arr[ ++i ] ); },
+					complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
+						leng == 1 ? js( $cb, arr[ ++i ] ) : load();
+			}
+		})( W, DOC, HEAD ) ),
+		dk.fn( 'img', (function( $doc ){
+			return function( $cb, $src /* , $src, $src */ ){
+				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el, load, complete;
+				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), el.onload = complete; },
+					complete = function(){ i == leng ? $cb ? $cb( r ) : null : load(); },
+					load();
+			}
+		})( DOC ) ),
 
-				function load(){ js( complete, arr[ ++i ] ); };
-				function complete(){ i == leng ? $cb ? $cb() : null : load(); };
-				leng == 1 ? js( $cb, arr[ ++i ] ) : load();
-			} );
-		})( W, DOC, HEAD, dk.fn ),
-
-		(function( $doc, $dkFn ){
-			$dkFn( 'img', function( $cb, $src /* , $src, $src */ ){
-				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el;
-
-				function load(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), el.onload = complete; };
-				function complete(){ i == leng ? $cb ? $cb( r ) : null : load(); };
-				load();
-			} );
-		})( DOC, dk.fn ),
+// PLUGIN :
+		dk.fn( 'pluginRoot', (function(){
+			var url = 'http://ssw3131.github.io/garnet/v0.2/plugin/';
+			return function( $url ){ return url = $url ? $url : url; }
+		})() ),
+		dk.fn( 'plugin', (function(){
+			var uuList = {};
+			return function( $cb, $id/* ,$id, $id */ ){
+				var url = dk.pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
+				while( i-- > 1 ){
+					uuList[ t0 = arguments[ leng - i ] ] ? null : ( uuList[ t0 ] = 1, arr.push( url + t0 + '.js' ) );
+				}
+				dk.js.apply( null, arr );
+			}
+		})() ),
 
 // STATIC :
 		dk.fn( 'sList', (function(){
@@ -843,7 +868,9 @@
 					return v;
 				}
 			}
-			return function( k, update ){ return new dkList( k, update )}
+			return function( k, update ){
+				return new dkList( k, update )
+			}
 		})() ),
 		dk.static( 'KEY', (function(){
 			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t1.length;
@@ -887,20 +914,20 @@
 						} )
 						return t
 					})(),
-					scroll : function(){ W.scrollTo( arguments[0], arguments[1] )}
+					scroll : function(){ W.scrollTo( arguments[0], arguments[1] ) }
 				}
 			return r
 		})() ),
 		dk.static( 'REG', (function(){
 			return {
-				numeric : function( k ){return /^[+-]*[0-9]*\.?\d+$/.test( k )},
-				stringOnly : function( k ){return  /^[^0-9]*$/.test( k )},
-				stripHTMLTags : function( k ){return k.replace( /<\/?[^\<\/]+\/?>/g, "" )},
-				lineModify : function( k ){return  k.split( "\r\n" ).join( "\n" )},
-				Email : function( k ){return /^(.+)\@(.+)\.(\w+)$/.test( k )},
-				ip : function( k ){return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k )},
-				url : function( k ){return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1},
-				KoreanRegistrationNumber : function( k ){return /^[0-9]{6}-?[0-9]{7}$/.test( k )},
+				numeric : function( k ){ return /^[+-]*[0-9]*\.?\d+$/.test( k ) },
+				stringOnly : function( k ){ return  /^[^0-9]*$/.test( k ) },
+				stripHTMLTags : function( k ){ return k.replace( /<\/?[^\<\/]+\/?>/g, "" ) },
+				lineModify : function( k ){ return  k.split( "\r\n" ).join( "\n" ) },
+				Email : function( k ){ return /^(.+)\@(.+)\.(\w+)$/.test( k ) },
+				ip : function( k ){ return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k ) },
+				url : function( k ){ return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1 },
+				KoreanRegistrationNumber : function( k ){ return /^[0-9]{6}-?[0-9]{7}$/.test( k ) },
 				empty : function( k ){
 					if( !k ) return true;
 					return  !k.length
