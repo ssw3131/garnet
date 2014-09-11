@@ -1,8 +1,8 @@
 ;
+'use strict';
 (function(){
-	'use strict';
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
-	var dk, err, dkEvent, proto;
+	var dk, dkEvent, proto;
 	var trim = /^\s*|\s*$/g;
 
 // 보정패치 :
@@ -37,27 +37,27 @@
 			}
 		})( DOC ),
 
-// ERROR :
-		err = function( $log ){
-			log( $log );
-		},
-
 // CORE :
 		dk.fn = function( $k, $v ){
-			$k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ),
-				dk [ $k ] ? err( 'dk.fn에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ),
+				dk[ $k ] ? dk.err( 'dk.fn에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 		dk.cls = function( $k, $v ){
-			$k = $k.replace( trim, '' ).toLowerCase(), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
-				dk [ $k ] ? err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
+				dk[ $k ] ? dk.err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 		dk.static = function( $k, $v ){
 			$k = $k.replace( trim, '' ).toUpperCase(),
-				dk [ $k ] ? err( 'dk.static에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+				dk[ $k ] ? dk.err( 'dk.static에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 
 // INFO :
 		dk.static( 'INFO', { name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git' } ),
+
+// ERROR :
+		dk.fn( 'err', function( $log ){
+			log( $log );
+		} ),
 
 // DETECTOR :
 		dk.static( 'DETECTOR', (function( $w, $doc ){
