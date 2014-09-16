@@ -199,8 +199,8 @@
 		})( dk.DETECTOR ),
 
 		(function( $detector ){
-			var map;
-			map = $detector.mobile ? { down : 'touchstart', move : 'touchmove', up : 'touchend' } : { down : 'mousedown', move : 'mousemove', up : 'mouseup' },
+			var map = { over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup' };
+			map = $detector.mobile ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : map,
 				dk.fn( 'addEvent', (function(){
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
@@ -609,11 +609,15 @@
 					'>-' : function( $v ){ this.el.removeChild( $v.el ); },
 					'<-' : function( $v ){ $v == 'body' ? $doc.body.removeChild( this.el ) : $v.el.removeChild( this.el ); },
 					'html' : function( $v ){ return ( $v === undefined ) ? this.el.innerHTML : this.el.innerHTML = $v; },
-					'text' : function( $v ){ return ( $v === undefined ) ? this.el[ text ] : this.el[ text ] = $v; }
+					'+html' : function( $v ){ return this.el.innerHTML = $v + this.el.innerHTML; },
+					'html+' : function( $v ){ return this.el.innerHTML = this.el.innerHTML + $v; },
+					'text' : function( $v ){ return ( $v === undefined ) ? this.el[ text ] : this.el[ text ] = $v; },
+					'+text' : function( $v ){ return this.el[ text ] = $v + this.el[ text ]; },
+					'text+' : function( $v ){ return this.el[ text ] = this.el[ text ] + $v; }
 				}
 			})( DOC, dk.DETECTOR ),
 			event : (function( $w, $dkEvent, $addEvent, $delEvent ){
-				var r = {}, evList = [ 'mouseover', 'mouseout', 'click', 'down', 'move', 'up'  ], i = evList.length,
+				var r = {}, evList = [ 'over', 'out', 'click', 'down', 'move', 'up'  ], i = evList.length,
 					cancleMap = { mousedown : 1, mouseup : 1, mousemove : 1 }, t0,
 					cancelBubbling, makeListener, make;
 
