@@ -64,3 +64,18 @@
     dk.LOOP
     dk.WIN
     dk.REG
+
+// PLUGIN :
+    dk.pluginRoot( '/garnet/testCaseV0.2/plugin/' );
+    dk.plugin( $cb, $id/* ,$id, $id */ )
+
+// FLASH :
+    // text
+    dk.Flash( '' )
+
+    // proto
+    dk.Flash.fn( $k, $v/* , $k, $v */ )
+
+    // S method
+    dk.Flash().S( $k, $v/* , $k, $v */ )
+    dk.Flash().S( url, '', width, 0, height, 0, wmode, '', allowScriptAccess, '', version, 9, toFlash, 'function( a, b )', show, hide, refresh, add, del )

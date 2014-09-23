@@ -2,7 +2,7 @@
 'use strict';
 (function(){
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
-	var dk, dkEvent, proto;
+	var dk, dkEvent;
 	var trim = /^\s*|\s*$/g;
 
 // 보정패치 :
@@ -568,7 +568,7 @@
 		})( DOC ) ),
 
 // PROTOTYPE :
-		proto = {
+		dk.static( 'PROTO', {
 			connect : function( $fn/* , $obj, $obj */ ){
 				var i = arguments.length, k, param = [];
 				while( i-- > 1 ){
@@ -640,7 +640,7 @@
 				while( i-- ) r[ t0 = evList[ i ] ] = make( t0 );
 				return r;
 			})( W, dkEvent, dk.addEvent, dk.delEvent )
-		},
+		} ),
 
 // DOM :
 		dk.cls( 'Dom', (function( $doc, $selector, $detector ){
@@ -706,7 +706,7 @@
 
 			return factory;
 		})( DOC, dk.selector, dk.DETECTOR ) ),
-		proto.connect( dk.Dom.fn, proto.css, proto.tree, proto.event ),
+		dk.PROTO.connect( dk.Dom.fn, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event ),
 
 // STYLE :
 		dk.cls( 'Style', (function( $doc, $head, $detector ){
@@ -747,7 +747,7 @@
 				};
 			return factory;
 		})( DOC, HEAD, dk.DETECTOR ) ),
-		proto.connect( dk.Style.fn, proto.css ),
+		dk.PROTO.connect( dk.Style.fn, dk.PROTO.css ),
 
 // LOADER :
 		dk.fn( 'ajax', (function( $w, $detector ){
