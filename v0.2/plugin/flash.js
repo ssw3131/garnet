@@ -1,62 +1,122 @@
 ;
 'use strict';
 (function(){
-	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ], proto;
+	var W = window, DOC = document, proto, addSwf, alterSwf;
+	var trim = /^\s*|\s*$/g;
 
-// FLASH :
-	dk.cls( 'Flash', (function( $doc, $detector ){
-		var factory, Flash, uuList = {}, proto = {}, destroyFlash;
-
-		destroyFlash = function( $k ){
-			// todo 导飘府 力芭
-			delete uuList[ $k ];
+	addSwf = (function( $detector ){
+		if( $detector.browser == "ie" && $detector.browserVersion < 9 )
+			return function(){
+				var data = this.data, param = data.param, r, k;
+				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + ' />';
+				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
+				r += '</object>',
+					this.conEl.innerHTML = r, this.flash = this.conEl.firstChild;
+			}
+		else
+			return function(){
+				var data = this.data, param = data.param, r, k;
+				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + ' style="position:absolute; margin:0px; padding:0px">';
+				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
+				r += '</object>',
+					this.conEl.innerHTML = r, this.flash = this.conEl.firstChild;
+			}
+	})( dk.DETECTOR ),
+		alterSwf = function(){
+			this.conEl.innerHTML = '<a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player"></a>';
 		},
+// FLASH :
+		dk.cls( 'Flash', (function( $doc, $detector ){
+			var factory, uuList = {}, Flash, Data, proto = {}, destroyFlash;
 
-			Flash = function(){
-				var el = $doc.createElement( "div" ), s = el.style, conEl = $doc.createElement( "div" ), conS = conEl.style;
-				this.el = el, this.style = s, el.appendChild( conEl ), this.conEl = conEl, this.conStyle = conS
+			destroyFlash = function( $k ){
+				// todo 导飘府 力芭
+				delete uuList[ $k ];
 			},
-			Flash.prototype.S = (function(){
-				var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
-				return function(){
-					var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
+
+				Flash = function(){
+					var el = $doc.createElement( "div" ), s = el.style, conEl = $doc.createElement( "div" ), conS = conEl.style;
+					this.el = el, this.style = s, el.appendChild( conEl ), this.conEl = conEl, this.conStyle = conS, this.data = new Data();
+				},
+				Data = function(){
+					this.url = "", this.width = 0, this.height = 0, this.version = 10.1, this.param = { wmode : 'opaque', allowScriptAccess : 'always' };
+				},
+
+				Flash.prototype.S = (function(){
+					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					return function(){
+						var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
+						while( i < j ){
+							k = arguments[ i++ ];
+							if( i == j ) return proto[ k ] ? proto[ k ].call( this ) :
+									k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+							else  v = arguments[ i++ ],
+								proto[ k ] ? proto[ k ].call( this, v ) :
+										k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+						}
+						return this;
+					}
+				})(),
+				Flash.prototype.load = (function(){
+					return function(){
+						var i = 0, j = arguments.length, k, v, data = this.data;
+						while( i < j ){
+							k = arguments[ i++ ], v = arguments[ i++ ], k in data ? data[ k ] = v : data.param[ k ] = v;
+						}
+						$detector.flash >= data.version ? ( addSwf.call( this ), proto.width.call( this, data.width ), proto.height.call( this, data.height ) ) : alterSwf.call( this );
+						return this;
+					}
+				})(),
+
+				factory = function( $k, $v ){
+					if( $v === null ) return destroyFlash( $k ); // 导力芭
+					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Flash();
+				},
+				factory.fn = function(){
+					var i = 0, j = arguments.length, k, v;
 					while( i < j ){
 						k = arguments[ i++ ];
-						if( i == j ) return proto[ k ] ? proto[ k ].call( this ) :
-								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
-							( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
-						else  v = arguments[ i++ ],
-							proto[ k ] ? proto[ k ].call( this, v ) :
-									k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
-								s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+						if( i == j ) return proto[ k ];
+						else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
 					}
-					return this;
-				}
-			})(),
+				};
 
-			factory = function( $k, $v ){
-				if( $v === null ) return destroyFlash( $k ); // 导力芭
-				return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Flash();
-			},
-			factory.fn = function(){
-				var i = 0, j = arguments.length, k, v;
-				while( i < j ){
-					k = arguments[ i++ ];
-					if( i == j ) return proto[ k ];
-					else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
-				}
-			};
+			return factory;
+		})( DOC, dk.DETECTOR ) ),
 
-		return factory;
-	})( DOC, dk.DETECTOR ) ),
-		proto = {
-			url : function( $v ){
-				log( $v )
-			},
-			version : function( $v ){
-				log( 'version', $v )
+		proto = (function( $detector ){
+			return {
+				width : function( $v ){
+					this.data.width = this.style.width = this.conStyle.width = this.flash.width = typeof $v == "number" ? $v + "px" : $v;
+				},
+				height : function( $v ){
+					this.data.height = this.style.height = this.conStyle.height = this.flash.height = typeof $v == "number" ? $v + "px" : $v;
+				},
+				show : function(){
+					this.conStyle.visibility = "visible";
+				},
+				hide : function(){
+					this.conStyle.visibility = "hidden";
+				},
+				refresh : function(){
+					addSwf.call( this );
+				},
+				add : function(){
+					this.el.appendChild( this.conEl ), addSwf.call( this );
+				},
+				del : function(){
+					this.el.removeChild( this.conEl );
+				},
+				toFlash : function( $v ){
+					var f, t0;
+					$v = $v.replace( /(\s*)/g, "" ),
+						f = ( t0 = $v.split( '(' ) )[ 0 ],
+							t0[ 1 ].charAt( 0 ) == ')' ? this.flash.toFlash( f ) : this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) );
+				}
 			}
-		},
+		})( dk.DETECTOR ),
 		dk.PROTO.connect( dk.Flash.fn, dk.PROTO.css, dk.PROTO.tree, proto )
 
 })()
