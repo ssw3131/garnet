@@ -46,13 +46,13 @@
 			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
 				dk[ $k ] ? dk.err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
-		dk.static = function( $k, $v ){
+		dk.obj = function( $k, $v ){
 			$k = $k.replace( trim, '' ).toUpperCase(),
-				dk[ $k ] ? dk.err( 'dk.static에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+				dk[ $k ] ? dk.err( 'dk.obj에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 
 // INFO :
-		dk.static( 'INFO', { name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git' } ),
+		dk.obj( 'INFO', { name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git' } ),
 
 // ERROR :
 		dk.fn( 'err', function( $log ){
@@ -60,7 +60,7 @@
 		} ),
 
 // DETECTOR :
-		dk.static( 'DETECTOR', (function( $w, $doc ){
+		dk.obj( 'DETECTOR', (function( $w, $doc ){
 			var navi = $w.navigator, agent = navi.userAgent.toLowerCase(), platform = navi.platform.toLowerCase(), app = navi.appVersion.toLowerCase(),
 				device = 'pc', os, osv, browser, bv, flash,
 				prefixCss, prefixStyle, transform3D, keyframe = $w['CSSRule'],
@@ -568,7 +568,7 @@
 		})( DOC ) ),
 
 // PROTOTYPE :
-		dk.static( 'PROTO', {
+		dk.obj( 'PROTO', {
 			connect : function( $fn/* , $obj, $obj */ ){
 				var i = arguments.length, k, param = [];
 				while( i-- > 1 ){
@@ -833,7 +833,7 @@
 			}
 		})() ),
 
-// STATIC :
+// OBJ :
 		dk.fn( 'sList', (function(){
 			function dkList(){
 				var i, j, t;
@@ -876,7 +876,7 @@
 				return new dkList( k, update )
 			}
 		})() ),
-		dk.static( 'KEY', (function(){
+		dk.obj( 'KEY', (function(){
 			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t1.length;
 //			log( t1 );
 			while( i-- ) t3[ t1[ i-- ] ] = t1[ i ].toLowerCase(), t0[ t1[ i ].toLowerCase() ] = 0;
@@ -888,7 +888,7 @@
 			)
 			return r
 		})() ),
-		dk.static( 'LOOP', (function(){
+		dk.obj( 'LOOP', (function(){
 			var r = dk.sList( 'LOOP', 1 );
 			//TODO 트윈처리
 //					(function loop() { r['update'](), requestAnimFrame( loop )})();
@@ -897,7 +897,7 @@
 			}, 16 )
 			return r
 		})() ),
-		dk.static( 'WIN', (function(){
+		dk.obj( 'WIN', (function(){
 			var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
 				r = {
 					width : 0, height : 0, scrollX : 0, scrollY : 0,
@@ -922,7 +922,7 @@
 				}
 			return r
 		})() ),
-		dk.static( 'REG', (function(){
+		dk.obj( 'REG', (function(){
 			return {
 				numeric : function( k ){ return /^[+-]*[0-9]*\.?\d+$/.test( k ) },
 				stringOnly : function( k ){ return  /^[^0-9]*$/.test( k ) },
