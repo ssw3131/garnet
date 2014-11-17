@@ -676,6 +676,7 @@
 							if( i == j ) return proto[ k ] ? proto[ k ].call( this ) :
 									k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
 								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+							// todo parseFloat( r ) % 처리
 							else  v = arguments[ i++ ],
 								proto[ k ] ? proto[ k ].call( this, v ) :
 										k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
