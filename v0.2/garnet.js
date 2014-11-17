@@ -577,9 +577,13 @@
 				$fn.apply( undefined, param );
 			},
 			css : (function( $detector ){
-				var prefixCss = $detector.prefixCss, float = $detector.float;
+				var prefixCss = $detector.prefixCss, float = $detector.float, t0 = ( $detector.browser == 'ie' && $detector.browserVer < 9 );
 				return {
-					bgColor : function( $v ){
+					bgColor : t0 ? function( $v ){
+						var s = this.style, t0;
+						if( $v ) $v.indexOf( 'rgba' ) >= 0 ? ( t0 = $v.replace( 'rgba', 'rgb' ).split( ',' ), t0.pop(), $v = t0.join( ',' ) + ')' ) : null, s[ 'backgroundColor' ] = $v;
+						else return s[ 'backgroundColor' ];
+					} : function( $v ){
 						var s = this.style;
 						if( $v ) s[ 'backgroundColor' ] = $v;
 						else return s[ 'backgroundColor' ];
@@ -939,4 +943,5 @@
 				}
 			}
 		})() )
-})();
+})
+();
