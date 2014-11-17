@@ -6,8 +6,8 @@
 
 	addSwf = (function( $detector ){
 		alert( $detector.browser )
-		alert( $detector.browserVersion )
-		if( $detector.browser == "ie" && $detector.browserVersion < 9 )
+		alert( $detector.browserVer )
+		if( $detector.browser == "ie" && $detector.browserVer < 9 )
 			return function(){
 				var data = this.data, param = data.param, r, k;
 				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
