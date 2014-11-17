@@ -111,6 +111,7 @@
 					this.el.removeChild( this.conEl );
 				},
 				toFlash : function( $v ){
+					// todo ie10 이하 toFlash 문제
 					var f, t0;
 					$v = $v.replace( /(\s*)/g, "" ),
 						f = ( t0 = $v.split( '(' ) )[ 0 ],
