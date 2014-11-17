@@ -12,7 +12,6 @@
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
 					this.conEl.innerHTML = r, this.flash = this.conEl.firstChild;
-				alert( r )
 			}
 		else
 			return function(){
