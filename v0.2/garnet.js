@@ -7,7 +7,7 @@
 
 // 보정패치 :
 	W.console = W[ 'console' ] ? W[ 'console' ] : { log : function(){} },
-			W.log = W[ 'log' ] ? W[ 'log' ] : function(){ arguments.length > 1 ? W.console.log( Array.prototype.join.call( arguments  ) ) : W.console.log( arguments[ 0 ] ); },
+			W.log = W[ 'log' ] ? W[ 'log' ] : function(){ arguments.length > 1 ? W.console.log( Array.prototype.join.call ) : W.console.log( arguments[ 0 ] ); },
 		W.JSON = W[ 'JSON' ] ? W[ 'JSON' ] : { parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); } },
 		Date.now = Date.now * 1 || function(){ return +new Date },
 		W.requestAnimFrame = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){ W.setTimeout( $loop, 17 ) } })(),
