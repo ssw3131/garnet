@@ -5,8 +5,6 @@
 	var trim = /^\s*|\s*$/g;
 
 	addSwf = (function( $detector ){
-		alert( $detector.browser )
-		alert( $detector.browserVer )
 		if( $detector.browser == "ie" && $detector.browserVer < 9 )
 			return function(){
 				var data = this.data, param = data.param, r, k;
@@ -113,6 +111,7 @@
 				},
 				toFlash : function( $v ){
 					var f, t0;
+					alert( this.flash )
 					$v = $v.replace( /(\s*)/g, "" ),
 						f = ( t0 = $v.split( '(' ) )[ 0 ],
 							t0[ 1 ].charAt( 0 ) == ')' ? this.flash.toFlash( f ) : this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) );
