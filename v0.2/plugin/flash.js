@@ -12,6 +12,7 @@
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
 					this.conEl.innerHTML = r, this.flash = this.conEl.firstChild;
+				alert( r )
 			}
 		else
 			return function(){
@@ -111,7 +112,6 @@
 				},
 				toFlash : function( $v ){
 					var f, t0;
-					alert( this.flash )
 					$v = $v.replace( /(\s*)/g, "" ),
 						f = ( t0 = $v.split( '(' ) )[ 0 ],
 							t0[ 1 ].charAt( 0 ) == ')' ? this.flash.toFlash( f ) : this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) );
