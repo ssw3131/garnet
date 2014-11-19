@@ -731,9 +731,9 @@
 							k = arguments[ i++ ];
 							if( i == j ) return proto[ k ] ? proto[ k ].call( { style : s } ) :
 								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
-							else  v = arguments[ i++ ], alert( v ), alert( k ),
+							else  v = arguments[ i++ ],
 								proto[ k ] ? proto[ k ].call( { style : s }, v ) :
-									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v, alert( s ), alert( k )
+									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
 						}
 						return this;
 					}
