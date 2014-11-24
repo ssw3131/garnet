@@ -70,7 +70,7 @@
     dk.WIN
     dk.RESIZE.S( $k, $cb )
     dk.SCROLL.S( $k, $cb )
-    dk.WHEEL.S( $k, $cb )
+    dk.WHEEL.S( $k, function( $delta ){} )
     dk.REG
 
 // FLASH :
