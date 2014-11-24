@@ -13,16 +13,12 @@
 
         W.log = log = (function(){
             if( ( W[ "console" ] ) )
-                return function(){
-                    var a = arguments, str;
-                    logArr.splice( 0, 0, a[ 0 ], console.log( a[ 0 ] ) ),
-                        toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
+                return function( $log ){
+                    logArr.splice( 0, 0, $log, console.log( $log ) ), toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
                 }
             else
-                return function(){
-                    var a = arguments, str;
-                    logArr.splice( 0, 0, a[ 0 ] ),
-                        toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
+                return function( $log ){
+                    logArr.splice( 0, 0, $log ), toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
                 }
         })(),
 
@@ -40,5 +36,7 @@
             if( $left ) es0.left = $left + "px", es1.left = $left + "px";
             if( $top ) es0.top = $top + 22 + "px", es1.top = $top + "px";
             if( $width ) es0.width = $width + "px", es1.width = $width + 10 + "px";
-        }
+        },
+
+		log.show()
 })()
