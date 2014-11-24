@@ -58,16 +58,20 @@
     dk.js( $cb, $url/* ,$url, $url */ )
     dk.img( $cb, $src/* ,$src, $src */ )
 
-// STATIC :
-    dk.sList
-    dk.KEY
-    dk.LOOP
-    dk.WIN
-    dk.REG
-
 // PLUGIN :
     dk.pluginRoot( '/garnet/testCaseV0.2/plugin/' );
     dk.plugin( $cb, $id/* ,$id, $id */ )
+
+// STATIC :
+    dk.sList( 'KEY', 0 )
+    dk.sList( 'LOOP', 1 );
+    dk.KEY.S( 'a', function( $e ){} )
+    dk.LOOP.S( $k, $cb )
+    dk.WIN
+    dk.RESIZE.S( $k, $cb )
+    dk.SCROLL.S( $k, $cb )
+    dk.WHEEL.S( $k, $cb )
+    dk.REG
 
 // FLASH :
     // text

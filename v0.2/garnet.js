@@ -151,6 +151,7 @@
 			}
 			return {
 				device : device, browser : browser, browserVer : bv, os : os, osVer : osv,
+				ie8 : browser == 'ie' && bv < 9,
 				mobile : device == 'pc' ? 0 : 1,
 				flash : flash,
 				prefixCss : prefixCss, prefixStyle : prefixStyle,
@@ -577,7 +578,7 @@
 				$fn.apply( undefined, param );
 			},
 			css : (function( $detector ){
-				var prefixCss = $detector.prefixCss, float = $detector.float, t0 = ( $detector.browser == 'ie' && $detector.browserVer < 9 );
+				var prefixCss = $detector.prefixCss, float = $detector.float, t0 = $detector.ie8;
 				return {
 					bgColor : t0 ? function( $v ){
 						var s = this.style, t0;
@@ -827,16 +828,16 @@
 			var url = 'http://ssw3131.github.io/garnet/v0.2/plugin/';
 			return function( $url ){ return url = $url ? $url : url; }
 		})() ),
-		dk.fn( 'plugin', (function(){
+		dk.fn( 'plugin', (function( $pluginRoot, $js ){
 			var uuList = {};
 			return function( $cb, $id/* ,$id, $id */ ){
-				var url = dk.pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
+				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
 				while( i-- > 1 ){
 					uuList[ t0 = arguments[ leng - i ] ] ? null : ( uuList[ t0 ] = 1, arr.push( url + t0 + '.js' ) );
 				}
-				dk.js.apply( null, arr );
+				$js.apply( null, arr );
 			}
-		})() ),
+		})( dk.pluginRoot, dk.js ) ),
 
 // OBJ :
 		dk.fn( 'sList', (function(){
@@ -844,9 +845,10 @@
 				var i, j, t;
 				this.list = {}, this._list = [], this.name = arguments[ 0 ],
 					this.update = arguments[ 1 ] ? function(){
-						t = this._list, i = t.length, j = i % 8
-						while( i-- > j ) t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i ]();
-						while( j-- ) t[ j ]();
+						t = this._list, i = t.length, j = i % 8;
+//						while( i-- > j ) t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i-- ](), t[ i ]();
+//						while( j-- ) t[ j ]();
+						while( i-- ) t[ i ]( arguments[ 0 ] );
 					} : 0;
 			}
 
@@ -878,51 +880,61 @@
 				return new dkList( $k, $update );
 			}
 		})() ),
-		dk.obj( 'KEY', (function(){
-			var r = dk.sList( 'KEY', 0 ), ev = dkEvent, list = r.list, t0 = {}, t3 = {}, t1 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t1.length;
-			while( i-- ) t3[ t1[ i-- ] ] = t1[ i ].toLowerCase(), t0[ t1[ i ].toLowerCase() ] = 0;
+
+		dk.obj( 'LOOP', (function( $sList ){
+			var r = $sList( 'LOOP', 1 );
+			// TODO 트윈처리
+			(function loop(){ r[ 'update' ](), requestAnimFrame( loop ) })();
+			// setInterval( function(){ r[ 'update' ](); }, 16 );
+			return r;
+		})( dk.sList ) ),
+
+		dk.obj( 'KEY', (function( $sList, $dkEvent ){
+			var r = $sList( 'KEY', 0 ), list = r.list, t0 = {}, t1 = {}, t2 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
+			while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toLowerCase(), t0[ t2[ i ].toLowerCase() ] = 0;
 			dk.addEvent( W, 'keydown', function( $e ){
-					var t = ev( $e );
-					t.keyCode = $e.keyCode,
-						list[ t3[ t.keyCode ] ] ? list[ t3[ t.keyCode ] ]( t ) : 0;
-				}
-			)
+				var ev = $dkEvent( $e ), t0 = list[ t1[ ev.keyCode = $e.keyCode ] ];
+				t0 ? t0( ev ) : 0;
+			} );
 			return r
-		})() ),
-		dk.obj( 'LOOP', (function(){
-			var r = dk.sList( 'LOOP', 1 );
-			//TODO 트윈처리
-//					(function loop() { r['update'](), requestAnimFrame( loop )})();
-			setInterval( function(){
-				r['update']()
-			}, 16 )
-			return r
-		})() ),
-		dk.obj( 'WIN', (function(){
-			var t1 = DOC.documentElement, t2 = W.innerWidth ? 'inner' : 'client', t3 = (dk.DETECTOR.browser == 'ie' && dk.DETECTOR.browserVer < 9) ? t1 : W,
-				r = {
-					width : 0, height : 0, scrollX : 0, scrollY : 0,
-					RESIZE : (function(){
-						var t = dk.sList( 'RESIZE', 1 ), func = function(){
-							r.width = t3[t2 + 'Width'], r.height = t3[t2 + 'Height']
-							t['update'].call( t )
-						}
-						setTimeout( func, 1 ), dk.addEvent( W, 'resize', func )
-						return t
-					})(),
-					SCROLL : (function(){
-						var t = dk.sList( 'SCROLL', 1 )
-						dk.addEvent( W, 'scroll', function(){
-							r.scrollX = document.body.scrollLeft + t1.scrollLeft
-							r.scrollY = document.body.scrollTop + t1.scrollTop
-							t['update']()
-						} )
-						return t
-					})(),
-					scroll : function(){ W.scrollTo( arguments[0], arguments[1] ) }
-				}
-			return r
-		})() ),
+		})( dk.sList, dkEvent ) ),
+
+		dk.obj( 'WIN', (function( $detector ){
+			var r = {
+				width : 0, height : 0, scrollLeft : 0, scrollTop : 0,
+				scrollTo : function( $x, $y ){ W.scrollTo( $x, $y ) }
+			}
+			return r;
+		})( dk.DETECTOR ) ),
+
+		dk.obj( 'RESIZE', (function( $detector, $sList, $dkWIN, $addEvent ){
+			var t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client',
+				r = $sList( 'RESIZE', 1 ), func = function(){
+					$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]();
+				};
+			setTimeout( func, 1 ), $addEvent( W, 'resize', func )
+			return r;
+		})( dk.DETECTOR, dk.sList, dk.WIN, dk.addEvent ) ),
+
+		dk.obj( 'SCROLL', (function( $sList, $dkWIN, $addEvent, $doc ){
+			var r = $sList( 'SCROLL', 1 );
+			$addEvent( W, 'scroll', function(){
+				$dkWIN.scrollLeft = $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body.scrollLeft ? $doc.body.scrollLeft : 0,
+					$dkWIN.scrollTop = $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body.scrollTop ? $doc.body.scrollTop : 0;
+				r[ 'update' ]();
+			} )
+			return r;
+		})( dk.sList, dk.WIN, dk.addEvent, DOC ) ),
+
+		dk.obj( 'WHEEL', (function( $sList, $addEvent, $detector ){
+			var r = $sList( 'WHEEL', 1 );
+			$addEvent( W, $detector.wheelEvent, function( $e ){
+				var ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
+				r[ 'update' ]( delta );
+			} )
+			return r;
+		})( dk.sList, dk.addEvent, dk.DETECTOR ) ),
+
 		dk.obj( 'REG', (function(){
 			return {
 				numeric : function( k ){ return /^[+-]*[0-9]*\.?\d+$/.test( k ) },
@@ -939,5 +951,4 @@
 				}
 			}
 		})() )
-})
-();
+})();
