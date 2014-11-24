@@ -15,13 +15,13 @@
             if( ( W[ "console" ] ) )
                 return function(){
                     var a = arguments, str;
-                    a.length > 1 ? ( str = jcJoin.call( a, ',' ), logArr.splice( 0, 0, str ), console.log( str ) ) : ( logArr.splice( 0, 0, a[ 0 ] ), console.log( a[ 0 ] ) ),
+                    logArr.splice( 0, 0, a[ 0 ], console.log( a[ 0 ] ) ),
                         toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
                 }
             else
                 return function(){
                     var a = arguments, str;
-                    a.length > 1 ? ( str = jcJoin.call( a, ',' ), logArr.splice( 0, 0, str )) : logArr.splice( 0, 0, a[ 0 ] ),
+                    logArr.splice( 0, 0, a[ 0 ] ),
                         toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
                 }
         })(),
