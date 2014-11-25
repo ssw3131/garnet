@@ -187,6 +187,12 @@
 			var t0, r;
 			return function(){ return t0 ? ( r = $dateNow() - t0, t0 = null, r ) : ( t0 = $dateNow(), null ); }
 		})( Date.now ) ),
+		dk.fn( 'scrollLeft', (function( $doc ){
+			return function(){ return $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body.scrollLeft ? $doc.body.scrollLeft : 0 };
+		})( DOC ) ),
+		dk.fn( 'scrollTop', (function( $doc ){
+			return function(){ return $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body.scrollTop ? $doc.body.scrollTop : 0};
+		})( DOC ) ),
 
 // EVENT :
 		dkEvent = (function( $detector ){
@@ -201,7 +207,7 @@
 
 		(function( $detector ){
 			var map = { over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup' };
-			map = $detector.mobile ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : map,
+			$detector.mobile ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : null,
 				dk.fn( 'addEvent', (function(){
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
@@ -841,20 +847,21 @@
 
 // OBJ :
 		dk.fn( 'sList', (function(){
-			function dkList( $k, $update ){
+			function dkList( $k, $update, $start, $end ){
 				this.list = {}, this._list = [], this.name = $k,
 					this.update = $update ? function( $param ){
 						var t, i, j;
 						t = this._list, i = t.length, j = i % 8;
 						while( i-- > j ) t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i ]( $param );
 						while( j-- ) t[ j ]( $param );
-					} : 0;
+					} : 0,
+					this.start = $start, this.end = $end;
 			}
 
 			function reset(){
 				var k, t0 = this.list, t1 = [];
 				for( k in t0 ) t1.push( t0[ k ] );
-				this._list = t1;
+				this._list = t1, t1.length ? this.start ? this.start() : null : this.end ? this.end() : null;
 			}
 
 			dkList.prototype = {
@@ -869,8 +876,8 @@
 					return v;
 				}
 			}
-			return function( $k, $update ){
-				return new dkList( $k, $update );
+			return function( $k, $update, $start, $end ){
+				return new dkList( $k, $update, $start, $end );
 			}
 		})() ),
 
@@ -882,51 +889,91 @@
 			return r;
 		})( dk.sList ) ),
 
-		dk.obj( 'KEY', (function( $sList, $addEvent, $dkEvent ){
-			var r = $sList( 'KEY', 0 ), list = r.list, t0 = {}, t1 = {}, t2 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
-			while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toLowerCase(), t0[ t2[ i ].toLowerCase() ] = 0;
-			$addEvent( W, 'keydown', function( $e ){
+		dk.obj( 'KEY', (function( $sList, $addEvent, $delEvent, $dkEvent ){
+			var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
+			func = function( $e ){
 				var ev = $dkEvent( $e ), t0 = list[ t1[ ev.keyCode = $e.keyCode ] ];
 				t0 ? t0( ev ) : 0;
-			} );
-			return r
-		})( dk.sList, dk.addEvent, dkEvent ) ),
+			},
+				start = function(){ $addEvent( W, 'keydown', func ); },
+				end = function(){ $delEvent( W, 'keydown', func ); },
+				r = $sList( 'KEY', 0, start, end ),
+				list = r.list;
+			while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toLowerCase(), t0[ t2[ i ].toLowerCase() ] = 0;
+			return r;
+		})( dk.sList, dk.addEvent, dk.delEvent, dkEvent ) ),
 
-		dk.obj( 'WIN', (function( $detector ){
+		dk.obj( 'WIN', (function(){
 			var r = {
 				width : 0, height : 0, scrollLeft : 0, scrollTop : 0,
 				scrollTo : function( $x, $y ){ W.scrollTo( $x, $y ) }
 			}
 			return r;
-		})( dk.DETECTOR ) ),
+		})() ),
 
-		dk.obj( 'RESIZE', (function( $detector, $sList, $dkWIN, $addEvent ){
-			var t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client',
-				r = $sList( 'RESIZE', 1 ), func = function(){
-					$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]();
-				};
-			setTimeout( func, 1 ), $addEvent( W, 'resize', func )
+		dk.obj( 'RESIZE', (function( $sList, $addEvent, $delEvent, $detector, $dkWIN ){
+			var r, func, start, end, t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client';
+			func = function(){
+				$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]();
+			},
+				start = function(){ $addEvent( W, 'resize', func ); },
+				end = function(){ $delEvent( W, 'resize', func ); },
+				r = $sList( 'RESIZE', 1, start, end ),
+				setTimeout( func, 1 );
 			return r;
-		})( dk.DETECTOR, dk.sList, dk.WIN, dk.addEvent ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN ) ),
 
-		dk.obj( 'SCROLL', (function( $sList, $dkWIN, $addEvent, $doc ){
-			var r = $sList( 'SCROLL', 1 );
-			$addEvent( W, 'scroll', function(){
-				$dkWIN.scrollLeft = $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body.scrollLeft ? $doc.body.scrollLeft : 0,
-					$dkWIN.scrollTop = $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body.scrollTop ? $doc.body.scrollTop : 0;
-				r[ 'update' ]();
-			} )
+		dk.obj( 'SCROLL', (function( $sList, $addEvent, $delEvent, $dkWIN, $scrollLeft, $scrollTop ){
+			var r, func, start, end;
+			func = function(){
+				$dkWIN.scrollLeft = $scrollLeft(),
+					$dkWIN.scrollTop = $scrollTop(),
+					r[ 'update' ]();
+			},
+				start = function(){ $addEvent( W, 'scroll', func ); },
+				end = function(){ $delEvent( W, 'scroll', func ); },
+				r = $sList( 'SCROLL', 1, start, end );
 			return r;
-		})( dk.sList, dk.WIN, dk.addEvent, DOC ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.WIN, dk.scrollLeft, dk.scrollTop ) ),
 
-		dk.obj( 'WHEEL', (function( $sList, $addEvent, $detector ){
-			var r = $sList( 'WHEEL', 1 );
-			$addEvent( W, $detector.wheelEvent, function( $e ){
+		dk.obj( 'WHEEL', (function( $sList, $addEvent, $delEvent, $detector ){
+			var r, func, start, end;
+			func = function( $e ){
 				var ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
 				r[ 'update' ]( delta );
-			} )
+			},
+				start = function(){ $addEvent( W, $detector.wheelEvent, func ); },
+				end = function(){ $delEvent( W, $detector.wheelEvent, func ); },
+				r = $sList( 'WHEEL', 1, start, end );
 			return r;
-		})( dk.sList, dk.addEvent, dk.DETECTOR ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR ) ),
+
+		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $scrollLeft, $scrollTop ){
+			var r, func, start, end, oldX, oldY;
+			log( $detector.mobile )
+			func = $detector.mobile ? function( $e ){
+				var mouseX, mouseY, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length;
+				r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $scrollLeft(),
+					r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $scrollTop(),
+
+//				while( i-- ) touchList[ i ] = eTouches[ i ];
+					r.touchList = eTouches;
+				r[ 'update' ]();
+			} : function( $e ){
+				var mouseX, mouseY, evType = $e.type;
+				r.mouseX = mouseX = $e.clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $scrollLeft(),
+					r.mouseY = mouseY = $e.clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $scrollTop(),
+					r[ 'update' ]();
+			},
+				start = function(){
+					$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func );
+				},
+				end = function(){
+					$delEvent( DOC, 'down', func ), $delEvent( DOC, 'move', func ), $delEvent( DOC, 'up', func );
+				},
+				r = $sList( 'MOUSE', 1, start, end );
+			return r;
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.scrollLeft, dk.scrollTop ) ),
 
 		dk.obj( 'REG', (function(){
 			return {

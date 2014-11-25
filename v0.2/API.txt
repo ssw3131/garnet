@@ -71,6 +71,7 @@
     dk.RESIZE.S( $k, $cb )
     dk.SCROLL.S( $k, $cb )
     dk.WHEEL.S( $k, function( $delta ){} )
+    dk.MOUSE.S( $k, $cb )
     dk.REG
 
 // FLASH :
