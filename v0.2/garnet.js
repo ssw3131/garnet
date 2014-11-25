@@ -949,21 +949,27 @@
 		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR ) ),
 
 		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $scrollLeft, $scrollTop ){
-			var r, func, start, end, oldX, oldY;
-			log( $detector.mobile )
+			var r, func, start, end, oldX, oldY, startX, startY, press;
 			func = $detector.mobile ? function( $e ){
-				var mouseX, mouseY, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length;
-				r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $scrollLeft(),
-					r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $scrollTop(),
-
-//				while( i-- ) touchList[ i ] = eTouches[ i ];
-					r.touchList = eTouches;
-				r[ 'update' ]();
+				var mouseX = 0, mouseY = 0, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length;
+				if( i ){
+					r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $scrollLeft(),
+						r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $scrollTop();
+					while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].pageX, pageY : eTouches[ i ].pageY };
+				}
+				r.touchList = touchList,
+						evType == 'touchstart' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
+						evType == 'touchmove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
+						evType == 'touchend' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
+					r[ 'update' ]();
 			} : function( $e ){
 				var mouseX, mouseY, evType = $e.type;
 				r.mouseX = mouseX = $e.clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $scrollLeft(),
 					r.mouseY = mouseY = $e.clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $scrollTop(),
-					r[ 'update' ]();
+						evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
+						evType == 'mousemove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
+						evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null;
+				r[ 'update' ]();
 			},
 				start = function(){
 					$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func );

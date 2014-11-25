@@ -63,6 +63,7 @@
     dk.plugin( $cb, $id/* ,$id, $id */ )
 
 // STATIC :
+    리스트에 1개 이상 추가됐을 때 실행
     dk.sList( 'KEY', 0 )
     dk.sList( 'LOOP', 1 );
     dk.KEY.S( 'a', function( $e ){} )
@@ -72,6 +73,10 @@
     dk.SCROLL.S( $k, $cb )
     dk.WHEEL.S( $k, function( $delta ){} )
     dk.MOUSE.S( $k, $cb )
+    dk.MOUSE.mouseX
+    dk.MOUSE.pageX
+    dk.MOUSE.moveX
+    dk.MOUSE.speedX
     dk.REG
 
 // FLASH :
