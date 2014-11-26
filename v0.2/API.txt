@@ -65,18 +65,23 @@
 // STATIC :
     리스트에 1개 이상 추가됐을 때 실행
     dk.sList( 'KEY', 0 )
-    dk.sList( 'LOOP', 1 );
-    dk.KEY.S( 'a', function( $e ){} )
+    dk.sList( 'LOOP', 1 )
     dk.LOOP.S( $k, $cb )
     dk.WIN
+    dk.WIN.width
+    dk.WIN.height
+    dk.WIN.scrollTo( $x, $y )
     dk.RESIZE.S( $k, $cb )
     dk.SCROLL.S( $k, $cb )
-    dk.WHEEL.S( $k, function( $delta ){} )
+    dk.SCROLL.scrollLeft
+    dk.SCROLL.scrollTop
     dk.MOUSE.S( $k, $cb )
     dk.MOUSE.mouseX
     dk.MOUSE.pageX
     dk.MOUSE.moveX
     dk.MOUSE.speedX
+    dk.WHEEL.S( $k, function( $delta ){} )
+    dk.KEY.S( 'a', function( $e ){} )
     dk.REG
 
 // FLASH :
