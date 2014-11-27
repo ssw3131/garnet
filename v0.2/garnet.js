@@ -912,8 +912,7 @@
 			},
 				start = function(){ $addEvent( W, 'scroll', func ); },
 				end = function(){ $delEvent( W, 'scroll', func ); },
-				r = $sList( 'SCROLL', 1, start, end ),
-				func();
+				r = $sList( 'SCROLL', 1, start, end );
 			return r;
 		})( dk.sList, dk.addEvent, dk.delEvent, DOC ) ),
 
