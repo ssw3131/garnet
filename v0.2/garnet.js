@@ -917,7 +917,7 @@
 		})( dk.sList, dk.addEvent, dk.delEvent, DOC ) ),
 
 		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $dkScroll, $dkEvent ){
-			var r, func, start, end, oldX, oldY, startX, startY, press;
+			var r, func, start, end, oldX, oldY, startX, startY, press, map = { mousedown : 'down', mousemove : 'move', mouseup : 'up', touchstart : 'down', touchmove : 'move', touchend : 'up' };
 			func = $detector.mobile ? function( $e ){
 				var mouseX = 0, mouseY = 0, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length, ev = $dkEvent( $e );
 				if( i ){
@@ -929,7 +929,7 @@
 						evType == 'touchstart' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 						evType == 'touchmove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
 						evType == 'touchend' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-					ev.type = $e.type,
+					ev.type = map[ evType ],
 					r[ 'update' ]( ev );
 			} : function( $e ){
 				var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
@@ -938,7 +938,7 @@
 						evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 						evType == 'mousemove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
 						evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-					ev.type = $e.type,
+					ev.type = map[ evType ],
 					r[ 'update' ]( ev );
 			},
 				start = function(){
