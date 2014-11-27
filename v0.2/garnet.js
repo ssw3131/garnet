@@ -916,10 +916,10 @@
 			return r;
 		})( dk.sList, dk.addEvent, dk.delEvent, DOC ) ),
 
-		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $dkScroll ){
+		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $dkScroll, $dkEvent ){
 			var r, func, start, end, oldX, oldY, startX, startY, press;
 			func = $detector.mobile ? function( $e ){
-				var mouseX = 0, mouseY = 0, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length;
+				var mouseX = 0, mouseY = 0, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length, ev = $dkEvent( $e );
 				if( i ){
 					r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
 						r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop;
@@ -929,15 +929,17 @@
 						evType == 'touchstart' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 						evType == 'touchmove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
 						evType == 'touchend' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-					r[ 'update' ]();
+					ev.type = $e.type,
+					r[ 'update' ]( ev );
 			} : function( $e ){
-				var mouseX, mouseY, evType = $e.type;
+				var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
 				r.mouseX = mouseX = $e.clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
 					r.mouseY = mouseY = $e.clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop,
 						evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 						evType == 'mousemove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
-						evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null;
-				r[ 'update' ]();
+						evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
+					ev.type = $e.type,
+					r[ 'update' ]( ev );
 			},
 				start = function(){
 					$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func ),
@@ -949,7 +951,7 @@
 				},
 				r = $sList( 'MOUSE', 1, start, end );
 			return r;
-		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dkEvent ) ),
 
 		dk.obj( 'WHEEL', (function( $sList, $addEvent, $delEvent, $detector ){
 			var r, func, start, end;
