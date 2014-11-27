@@ -929,7 +929,7 @@
 						evType == 'touchstart' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 						evType == 'touchmove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
 						evType == 'touchend' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-					ev.type = map[ evType ],
+					ev.type = map[ evType ] ? map[ evType ] : evType,
 					r[ 'update' ]( ev );
 			} : function( $e ){
 				var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
@@ -938,7 +938,7 @@
 						evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 						evType == 'mousemove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
 						evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-					ev.type = map[ evType ],
+					ev.type = map[ evType ] ? map[ evType ] : evType,
 					r[ 'update' ]( ev );
 			},
 				start = function(){
