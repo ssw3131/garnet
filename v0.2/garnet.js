@@ -927,7 +927,7 @@
 				}
 				r.touchList = touchList,
 						evType == 'touchstart' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
-						evType == 'touchmove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
+						evType == 'touchmove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0, $e.preventDefault() ) :
 						evType == 'touchend' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
 					ev.type = map[ evType ] ? map[ evType ] : evType,
 					r[ 'update' ]( ev );
