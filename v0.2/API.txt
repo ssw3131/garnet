@@ -80,6 +80,7 @@
     dk.MOUSE.pageX
     dk.MOUSE.moveX
     dk.MOUSE.speedX
+    dk.MOUSE.touchMovePreventDefault = true
     dk.WHEEL.S( $k, function( $delta ){} )
     dk.KEY.S( 'a', function( $e ){} )
     dk.REG
