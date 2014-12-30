@@ -43,6 +43,29 @@
     // S method
     dk.Dom().S( $k, $v/* , $k, $v */ )
 
+    dk.Dom().S( 'bgColor', $v )
+    dk.Dom().S( 'bgImg', $v )
+    dk.Dom().S( 'float', $v )
+    dk.Dom().S( 'fontSmoothing', $v )
+
+    dk.Dom().S( '>', $dom )
+    dk.Dom().S( '<', $dom )
+    dk.Dom().S( '>-', $dom )
+    dk.Dom().S( '<-', $dom )
+    dk.Dom().S( 'html', $v )
+    dk.Dom().S( '+html', $v )
+    dk.Dom().S( 'html+', $v )
+    dk.Dom().S( 'text', $v )
+    dk.Dom().S( '+text', $v )
+    dk.Dom().S( 'text+', $v )
+
+    dk.Dom().S( 'over', $cb )
+    dk.Dom().S( 'out', $cb )
+    dk.Dom().S( 'click', $cb )
+    dk.Dom().S( 'down', $cb )
+    dk.Dom().S( 'move', $cb )
+    dk.Dom().S( 'up', $cb )
+
 // STYLE :
     // text
     dk.Style( '' )
@@ -80,7 +103,7 @@
     dk.MOUSE.pageX
     dk.MOUSE.moveX
     dk.MOUSE.speedX
-    dk.MOUSE.touchMovePreventDefault = true
+    dk.MOUSE.expandTouch - 터치무브 가로이동 시 true, 스크롤 이동 시 false
     dk.WHEEL.S( $k, function( $delta ){} )
     dk.KEY.S( 'a', function( $e ){} )
     dk.REG

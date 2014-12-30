@@ -33,9 +33,9 @@
         },
 
         log.position = function( $left, $top, $width ){
-            if( $left ) es0.left = $left + "px", es1.left = $left + "px";
-            if( $top ) es0.top = $top + 22 + "px", es1.top = $top + "px";
-            if( $width ) es0.width = $width + "px", es1.width = $width + 10 + "px";
+            if( $left !== undefined ) es0.left = $left + "px", es1.left = $left + "px";
+            if( $top !== undefined ) es0.top = $top + 22 + "px", es1.top = $top + "px";
+            if( $width !== undefined ) es0.width = $width + "px", es1.width = $width + 10 + "px";
         },
 
 		log.show()
