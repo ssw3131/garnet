@@ -111,9 +111,8 @@
 				},
 				toFlash : function( $v ){
 					// todo ie10 이하 toFlash 문제
-					var f, t0, flash = DOC.getElementById( this.uuId );
-					log( 'dk' )
-					log( flash )
+					var f, t0;
+					log( 'dk2' )
 					log( this.flash )
 					log( this.flash.toFlash )
 					$v = $v.replace( /(\s*)/g, "" ),
