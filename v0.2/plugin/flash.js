@@ -8,18 +8,19 @@
 		if( $detector.browser == "ie" && $detector.browserVer < 9 )
 			return function(){
 				var id = this.uuId, data = this.data, param = data.param, r, k;
-				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + " id=" + k + " name=" + k + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
+				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + " id=" + id + " name=" + id + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
 					this.conEl.innerHTML = r, this.flash = DOC.getElementById( id );
 			}
 		else
 			return function(){
-				log( '1==========================================================================================================================================' )
+				log( '2==========================================================================================================================================' )
 				var id = this.uuId, data = this.data, param = data.param, r, k;
-				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + " id=" + k + ' style="position:absolute; margin:0px; padding:0px">';
+				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + " id=" + id + ' style="position:absolute; margin:0px; padding:0px">';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
+					log( id ),
 					this.conEl.innerHTML = r, this.flash = DOC.getElementById( id ), log( this.flash );
 			}
 	})( dk.DETECTOR ),
