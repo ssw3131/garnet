@@ -112,6 +112,7 @@
 				toFlash : function( $v ){
 					// todo ie10 이하 toFlash 문제
 					var f, t0, flash = DOC.getElementById( this.uuId );
+					log( 'dk' )
 					log( flash )
 					log( this.flash )
 					log( this.flash.toFlash )
