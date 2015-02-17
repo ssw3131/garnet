@@ -20,6 +20,7 @@
 				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + " id=" + k + ' style="position:absolute; margin:0px; padding:0px">';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
+					log( k ),
 					this.conEl.innerHTML = r, this.flash = DOC.getElementById( k ), log( this.flash );
 			}
 	})( dk.DETECTOR ),
@@ -63,11 +64,9 @@
 				Flash.prototype.load = (function(){
 					return function(){
 						var i = 0, j = arguments.length, k, v, data = this.data;
-						log( '1==========================================================================================================================================' )
 						while( i < j ){
 							k = arguments[ i++ ], v = arguments[ i++ ], k in data ? data[ k ] = v : data.param[ k ] = v;
 						}
-						log( '2==========================================================================================================================================' )
 						$detector.flash >= data.version ? ( addSwf.call( this ), proto.width.call( this, data.width ), proto.height.call( this, data.height ) ) : alterSwf.call( this );
 						return this;
 					}
