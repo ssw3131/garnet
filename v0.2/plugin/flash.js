@@ -112,9 +112,6 @@
 				toFlash : function( $v ){
 					// todo ie10 이하 toFlash 문제
 					var f, t0;
-					log( 'dk2' )
-					log( this.flash )
-					log( this.flash.toFlash )
 					$v = $v.replace( /(\s*)/g, "" ),
 						f = ( t0 = $v.split( '(' ) )[ 0 ],
 							t0[ 1 ].charAt( 0 ) == ')' ? this.flash ? this.flash.toFlash( f ) : dk.err( 'flash 로딩 중' ) : this.flash ? this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) ) : dk.err( 'flash 로딩 중' );
