@@ -7,21 +7,20 @@
 	addSwf = (function( $detector ){
 		if( $detector.browser == "ie" && $detector.browserVer < 9 )
 			return function(){
-				var k = this.key, data = this.data, param = data.param, r, k;
+				var id = this.uuId, data = this.data, param = data.param, r, k;
 				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + " id=" + k + " name=" + k + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
-					this.conEl.innerHTML = r, this.flash = DOC.getElementById( k );
+					this.conEl.innerHTML = r, this.flash = DOC.getElementById( id );
 			}
 		else
 			return function(){
-				log( '==========================================================================================================================================' )
-				var k = this.key, data = this.data, param = data.param, r, k;
+				log( '1==========================================================================================================================================' )
+				var id = this.uuId, data = this.data, param = data.param, r, k;
 				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + " id=" + k + ' style="position:absolute; margin:0px; padding:0px">';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
-					log( k ),
-					this.conEl.innerHTML = r, this.flash = DOC.getElementById( k ), log( this.flash );
+					this.conEl.innerHTML = r, this.flash = DOC.getElementById( id ), log( this.flash );
 			}
 	})( dk.DETECTOR ),
 		alterSwf = function(){
@@ -36,9 +35,9 @@
 				delete uuList[ $k ];
 			},
 
-				Flash = function( $k ){
+				Flash = function( $id ){
 					var el = $doc.createElement( "div" ), s = el.style, conEl = $doc.createElement( "div" ), conS = conEl.style;
-					this.key = $k, this.el = el, this.style = s, el.appendChild( conEl ), this.conEl = conEl, this.conStyle = conS, this.data = new Data();
+					this.uuId = $id, this.el = el, this.style = s, el.appendChild( conEl ), this.conEl = conEl, this.conStyle = conS, this.data = new Data();
 				},
 				Data = function(){
 					this.url = "", this.width = 0, this.height = 0, this.version = 10.1, this.param = { wmode : 'opaque', allowScriptAccess : 'always' };
