@@ -19,7 +19,7 @@
 				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + ' style="position:absolute; margin:0px; padding:0px">';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
-					this.conEl.innerHTML = r, this.flash = this.conEl.childNodes[ 0 ];
+					this.conEl.innerHTML = r, this.flash = this.conEl.childNodes[ 0 ], log( this.flash );
 			}
 	})( dk.DETECTOR ),
 		alterSwf = function(){
