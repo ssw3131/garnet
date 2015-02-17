@@ -7,8 +7,8 @@
 	addSwf = (function( $detector ){
 		if( $detector.browser == "ie" && $detector.browserVer < 9 )
 			return function(){
-				var data = this.data, param = data.param, r, k;
-				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + " id=" + $id + " name=" + $id + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
+				var id = this.uuId, data = this.data, param = data.param, r, k;
+				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + " id=" + id + " name=" + id + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
 					this.conEl.innerHTML = r, this.flash = this.conEl.childNodes[ 0 ];
