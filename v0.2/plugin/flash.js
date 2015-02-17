@@ -114,7 +114,7 @@
 					var f, t0;
 					$v = $v.replace( /(\s*)/g, "" ),
 						f = ( t0 = $v.split( '(' ) )[ 0 ],
-							t0[ 1 ].charAt( 0 ) == ')' ? this.flash.toFlash( f ) : this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) );
+							t0[ 1 ].charAt( 0 ) == ')' ? this.flash ? this.flash.toFlash( f ) : dk.err( 'flash 로딩 중' ) : this.flash ? this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) ) : dk.err( 'flash 로딩 중' );
 				}
 			}
 		})( dk.DETECTOR ),
