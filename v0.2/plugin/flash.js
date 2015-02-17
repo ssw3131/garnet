@@ -8,18 +8,18 @@
 		if( $detector.browser == "ie" && $detector.browserVer < 9 )
 			return function(){
 				var data = this.data, param = data.param, r, k;
-				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
+				r = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width=' + data.width + ' height=' + data.height + " id=" + $id + " name=" + $id + ' style="position:absolute; margin:0px; padding:0px"><param name="movie" value=' + data.url + '>';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
 					this.conEl.innerHTML = r, this.flash = this.conEl.childNodes[ 0 ];
 			}
 		else
 			return function(){
-				var data = this.data, param = data.param, r, k;
-				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + ' style="position:absolute; margin:0px; padding:0px">';
+				var id = this.uuId, data = this.data, param = data.param, r, k;
+				r = '<object type="application/x-shockwave-flash" data=' + data.url + ' width=' + data.width + ' height=' + data.height + " id=" + id + ' style="position:absolute; margin:0px; padding:0px">';
 				for( k in param ){ r += '<param name=' + k + ' value=' + param[ k ] + ' />'; }
 				r += '</object>',
-					this.conEl.innerHTML = r, this.flash = this.conEl.childNodes[ 0 ], log( this.flash );
+					this.conEl.innerHTML = r, this.flash = this.conEl.childNodes[ 0 ];
 			}
 	})( dk.DETECTOR ),
 		alterSwf = function(){
@@ -34,9 +34,9 @@
 				delete uuList[ $k ];
 			},
 
-				Flash = function(){
+				Flash = function( $id ){
 					var el = $doc.createElement( "div" ), s = el.style, conEl = $doc.createElement( "div" ), conS = conEl.style;
-					this.el = el, this.style = s, el.appendChild( conEl ), this.conEl = conEl, this.conStyle = conS, this.data = new Data();
+					this.uuId = $id, this.el = el, this.style = s, el.appendChild( conEl ), this.conEl = conEl, this.conStyle = conS, this.data = new Data();
 				},
 				Data = function(){
 					this.url = "", this.width = 0, this.height = 0, this.version = 10.1, this.param = { wmode : 'opaque', allowScriptAccess : 'always' };
@@ -72,7 +72,7 @@
 
 				factory = function( $k, $v ){
 					if( $v === null ) return destroyFlash( $k ); // µ¼Á¦°Å
-					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Flash();
+					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Flash( $k );
 				},
 				factory.fn = function(){
 					var i = 0, j = arguments.length, k, v;
