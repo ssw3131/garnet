@@ -3,8 +3,8 @@
 
 // CORE :
     dk.fn( $k, $v )
-    dk.class( $k, $v )
-    dk.static( $k, $v )
+    dk.cls( $k, $v )
+    dk.obj( $k, $v )
 
 // INFO :
     dk.INFO == {}
@@ -47,6 +47,7 @@
     dk.Dom().S( 'bgImg', $v )
     dk.Dom().S( 'float', $v )
     dk.Dom().S( 'fontSmoothing', $v )
+    dk.Dom().S( 'opacity', $v ) // ie8 - filter: alpha(opacity=$v * 100)
 
     dk.Dom().S( '>', $dom )
     dk.Dom().S( '<', $dom )

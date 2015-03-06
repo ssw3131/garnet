@@ -1,16 +1,16 @@
 ;
 'use strict';
 (function(){
-	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
+	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[0];
 	var dk, dkEvent;
 	var trim = /^\s*|\s*$/g;
 
 // 보정패치 :
-	W.console = W[ 'console' ] ? W[ 'console' ] : { log : function(){} },
-		W.log = W[ 'log' ] ? W[ 'log' ] : function(){ W.console.log( arguments[ 0 ] ) },
-		W.JSON = W[ 'JSON' ] ? W[ 'JSON' ] : { parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); } },
+	W.console = W['console'] ? W['console'] : {log : function(){}},
+		W.log = W['log'] ? W['log'] : function(){ W.console.log( arguments[0] ) },
+		W.JSON = W['JSON'] ? W['JSON'] : {parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); }},
 		Date.now = Date.now * 1 || function(){ return +new Date },
-		W.requestAnimFrame = (function(){ return  W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){ W.setTimeout( $loop, 17 ) } })(),
+		W.requestAnimFrame = (function(){ return W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){ W.setTimeout( $loop, 17 ) } })(),
 		(function( f ){ W.setTimeout = f( W.setTimeout ), W.setInterval = f( W.setInterval ) })( function( f ){
 			return function( $a, $b ){
 				var a = [].slice.call( arguments, 2 );
@@ -40,19 +40,19 @@
 // CORE :
 		dk.fn = function( $k, $v ){
 			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ),
-				dk[ $k ] ? dk.err( 'dk.fn에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+				dk[$k] ? dk.err( 'dk.fn에 이미 ' + $k + '값이 존재합니다' ) : dk[$k] = $v;
 		},
 		dk.cls = function( $k, $v ){
 			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
-				dk[ $k ] ? dk.err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+				dk[$k] ? dk.err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[$k] = $v;
 		},
 		dk.obj = function( $k, $v ){
 			$k = $k.replace( trim, '' ).toUpperCase(),
-				dk[ $k ] ? dk.err( 'dk.obj에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+				dk[$k] ? dk.err( 'dk.obj에 이미 ' + $k + '값이 존재합니다' ) : dk[$k] = $v;
 		},
 
 // INFO :
-		dk.obj( 'INFO', { name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git' } ),
+		dk.obj( 'INFO', {name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git'} ),
 
 // ERROR :
 		dk.fn( 'err', function( $log ){
@@ -117,7 +117,7 @@
 					ie() || chrome() || firefox() || safari() || opera();
 				}else if( platform.indexOf( 'mac' ) > -1 ){
 					os = 'mac', t0 = /os x ([\d._]+)/.exec( agent )[1].replace( '_', '.' ).split( '.' ), osv = parseFloat( t0[0] + '.' + t0[1] ),
-						safari() || chrome() || firefox() || opera();
+					safari() || chrome() || firefox() || opera();
 				}else{
 					os = app.indexOf( 'x11' ) > -1 ? 'unix' : app.indexOf( 'linux' ) > -1 ? 'linux' : 0, chrome() || firefox();
 				}
@@ -150,22 +150,32 @@
 				else keyframe = null;
 			}
 			return {
-				device : device, browser : browser, browserVer : bv, os : os, osVer : osv,
+				device : device,
+				browser : browser,
+				browserVer : bv,
+				os : os,
+				osVer : osv,
 				ie8 : browser == 'ie' && bv < 9,
 				mobile : device == 'pc' ? 0 : 1,
 				flash : flash,
-				prefixCss : prefixCss, prefixStyle : prefixStyle,
-				transform3D : transform3D, transform : ( prefixStyle + 'Transform' in s || 'transform' in s ) ? 1 : 0, transition : ( prefixStyle + 'Transition' in s || 'transition' in s ) ? 1 : 0,
+				prefixCss : prefixCss,
+				prefixStyle : prefixStyle,
+				transform3D : transform3D,
+				transform : ( prefixStyle + 'Transform' in s || 'transform' in s ) ? 1 : 0,
+				transition : ( prefixStyle + 'Transition' in s || 'transition' in s ) ? 1 : 0,
 				keyframe : keyframe ? 1 : 0,
 				float : 'cssFloat' in s ? 'cssFloat' : 'styleFloat',
-				canvas : c ? 1 : 0, canvasText : c && c['getContext'] && c.getContext( '2d' ).fillText ? 1 : 0,
-				audio : a ? 1 : 0, video : v ? 1 : 0,
+				canvas : c ? 1 : 0,
+				canvasText : c && c['getContext'] && c.getContext( '2d' ).fillText ? 1 : 0,
+				audio : a ? 1 : 0,
+				video : v ? 1 : 0,
 				videoPoster : v && 'poster' in v ? 1 : 0,
-				videoWebm : v && v[ 'canPlayType' ] && v.canPlayType( 'video/webm; codecs="vp8,mp4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
-				videoH264 : v && v[ 'canPlayType' ] && v.canPlayType( 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
-				videoTeora : v && v[ 'canPlayType' ] && v.canPlayType( 'video/ogg; codecs="theora,vorbis"' ).indexOf( 'no' ) == -1 ? 1 : 0,
+				videoWebm : v && v['canPlayType'] && v.canPlayType( 'video/webm; codecs="vp8,mp4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
+				videoH264 : v && v['canPlayType'] && v.canPlayType( 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"' ).indexOf( 'no' ) == -1 ? 1 : 0,
+				videoTeora : v && v['canPlayType'] && v.canPlayType( 'video/ogg; codecs="theora,vorbis"' ).indexOf( 'no' ) == -1 ? 1 : 0,
 				insertBefore : 'insertBefore' in d ? 1 : 0,
-				innerText : 'innerText' in d ? 1 : 0, textContent : 'textContent' in d ? 1 : 0,
+				innerText : 'innerText' in d ? 1 : 0,
+				textContent : 'textContent' in d ? 1 : 0,
 				touchBool : 'ontouchstart' in $w ? 1 : 0,
 				currentTarget : browser == 'firefox' ? 'target' : 'srcElement',
 				wheelEvent : browser == 'firefox' ? 'DOMMouseScroll' : 'mousewheel',
@@ -194,26 +204,26 @@
 			return function( $e ){
 				return {
 					nativeEvent : $e,
-					nativeTarget : $e[ t0 ]
+					nativeTarget : $e[t0]
 				}
 			}
 		})( dk.DETECTOR ),
 
 		(function( $detector ){
-			var map = { over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup' };
+			var map = {over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup'};
 			$detector.mobile ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : null,
 				dk.fn( 'addEvent', (function(){
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
+						$et = map[$et] ? map[$et] : $et, $el.addEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
+						$et = map[$et] ? map[$et] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() ),
 				dk.fn( 'delEvent', (function(){
 					return W.removeEventListener ? function( $el, $et, $cb, $cap ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.removeEventListener( $et, $cb, $cap );
+						$et = map[$et] ? map[$et] : $et, $el.removeEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
+						$et = map[$et] ? map[$et] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 					}
 				})() )
 		})( dk.DETECTOR ),
@@ -264,9 +274,28 @@
 								nChild = {'first-child' : 'firstElementChild', 'last-child' : 'lastElementChild'},
 								enabled = {INPUT : 1, BUTTON : 1, SELECT : 1, OPTION : 1, TEXTAREA : 1},
 								checked = {INPUT : 1, radio : 1, checkbox : 1, OPTION : 2},
-								skip = {'target' : 1, 'active' : 1, 'visited' : 1, 'first-line' : 1, 'first-letter' : 1, 'hover' : 1, 'focus' : 1, 'after' : 1, 'before' : 1, 'selection' : 1,
-									'eq' : 1, 'gt' : 1, 'lt' : 1,
-									'valid' : 1, 'invalid' : 1, 'optional' : 1, 'in-range' : 1, 'out-of-range' : 1, 'read-only' : 1, 'read-write' : 1, 'required' : 1
+								skip = {
+									'target' : 1,
+									'active' : 1,
+									'visited' : 1,
+									'first-line' : 1,
+									'first-letter' : 1,
+									'hover' : 1,
+									'focus' : 1,
+									'after' : 1,
+									'before' : 1,
+									'selection' : 1,
+									'eq' : 1,
+									'gt' : 1,
+									'lt' : 1,
+									'valid' : 1,
+									'invalid' : 1,
+									'optional' : 1,
+									'in-range' : 1,
+									'out-of-range' : 1,
+									'read-only' : 1,
+									'read-write' : 1,
+									'required' : 1
 								};
 							return function filters( el, token ){
 								var parent, childs, tag, dir, t0, t1, t2, k, v, i, j, m, dd, tname, ename, lname;
@@ -358,7 +387,7 @@
 													}
 												}
 												return t0 = dd.DQindex, v == 'even' || v == '2n' ? t0 % 2 == 0 :
-														v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
+													v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
 													t0 == v;
 											case'nth-last-child':
 												if( !dd.DQseqL || dd.DQseqL != bsRseq ){
@@ -371,7 +400,7 @@
 													}
 												}
 												return t0 = dd.DQindexL, v == 'even' || v == '2n' ? t0 % 2 == 0 :
-														v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
+													v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
 													t0 == v;
 											case'nth-of-type':
 												tag = el.tagName, tname = 'DQseqT' + tag, lname = 'DQindexT' + tag;
@@ -385,7 +414,7 @@
 													}
 												}
 												return t0 = dd[lname], v == 'even' || v == '2n' ? t0 % 2 == 0 :
-														v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
+													v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
 													t0 == v;
 											case'nth-last-of-type':
 												tag = el.tagName, tname = 'DQseqTL' + tag, lname = 'DQindexTL' + tag;
@@ -399,7 +428,7 @@
 													}
 												}
 												return t0 = dd[lname], v == 'even' || v == '2n' ? t0 % 2 == 0 :
-														v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
+													v == 'odd' || v == '2n+1' ? t0 % 2 == 1 :
 													t0 == v;
 										}
 								}//
@@ -432,7 +461,17 @@
 					mQSA = {' ' : 1, '+' : 1, '~' : 1, ':' : 1, '[' : 1},
 					mParent = {' ' : 1, '>' : 1}, mBracket = {'[' : 1, '(' : 1, ']' : 2, ')' : 2},
 					mEx = {' ' : 1, '*' : 1, ']' : 1, '>' : 1, '+' : 1, '~' : 1, '^' : 1, '$' : 1},
-					mT0 = {' ' : 1, '*' : 2, '>' : 2, '+' : 2, '~' : 2, '#' : 3, '.' : 3, ':' : 3, '[' : 3}, mT1 = {'>' : 1, '+' : 1, '~' : 1},
+					mT0 = {
+						' ' : 1,
+						'*' : 2,
+						'>' : 2,
+						'+' : 2,
+						'~' : 2,
+						'#' : 3,
+						'.' : 3,
+						':' : 3,
+						'[' : 3
+					}, mT1 = {'>' : 1, '+' : 1, '~' : 1},
 					R = [], arrs = {_l : 0},
 					aPsibl = ['previousSibling', 'previousElementSibling'],
 					tEl = DOC.createElement( 'ul' ), isElCld, isQSA;
@@ -573,7 +612,7 @@
 			connect : function( $fn/* , $obj, $obj */ ){
 				var i = arguments.length, k, param = [];
 				while( i-- > 1 ){
-					for( k in arguments[ i ] ) param.push( k ), param.push( arguments[ i ][ k ] );
+					for( k in arguments[i] ) param.push( k ), param.push( arguments[i][k] );
 				}
 				$fn.apply( undefined, param );
 			},
@@ -582,27 +621,36 @@
 				return {
 					bgColor : t0 ? function( $v ){
 						var s = this.style, t0;
-						if( $v ) $v.indexOf( 'rgba' ) >= 0 ? ( t0 = $v.replace( 'rgba', 'rgb' ).split( ',' ), t0.pop(), $v = t0.join( ',' ) + ')' ) : null, s[ 'backgroundColor' ] = $v;
-						else return s[ 'backgroundColor' ];
+						if( $v ) $v.indexOf( 'rgba' ) >= 0 ? ( t0 = $v.replace( 'rgba', 'rgb' ).split( ',' ), t0.pop(), $v = t0.join( ',' ) + ')' ) : null, s['backgroundColor'] = $v;
+						else return s['backgroundColor'];
 					} : function( $v ){
 						var s = this.style;
-						if( $v ) s[ 'backgroundColor' ] = $v;
-						else return s[ 'backgroundColor' ];
+						if( $v ) s['backgroundColor'] = $v;
+						else return s['backgroundColor'];
 					},
 					bgImg : function( $v ){
 						var s = this.style;
-						if( $v ) s[ 'backgroundImage' ] = 'url(' + $v + ')';
-						else return s[ 'backgroundImage' ];
+						if( $v ) s['backgroundImage'] = 'url(' + $v + ')';
+						else return s['backgroundImage'];
 					},
 					float : function( $v ){
 						var s = this.style;
-						if( $v ) s[ float ] = $v;
-						else return s[ float ];
+						if( $v ) s[float] = $v;
+						else return s[float];
 					},
 					fontSmoothing : function( $v ){
 						var s = this.style;
-						if( $v ) s[ 'font-smoothing' ] = $v, s[ prefixCss + 'font-smoothing' ] = $v;
-						else return s[ 'font-smoothing' ];
+						if( $v ) s['font-smoothing'] = $v, s[prefixCss + 'font-smoothing'] = $v;
+						else return s['font-smoothing'];
+					},
+					opacity : t0 ? function( $v ){
+						var s = this.style;
+						if( $v ) s['opacity'] = $v, s['filter'] = 'alpha(opacity=' + ( $v * 100 ) + ')';
+						else return s['opacity'];
+					} : function( $v ){
+						var s = this.style;
+						if( $v ) s['opacity'] = $v;
+						else return s['opacity'];
 					}
 				}
 			})( dk.DETECTOR ),
@@ -616,33 +664,33 @@
 					'html' : function( $v ){ return ( $v === undefined ) ? this.el.innerHTML : this.el.innerHTML = $v; },
 					'+html' : function( $v ){ return this.el.innerHTML = $v + this.el.innerHTML; },
 					'html+' : function( $v ){ return this.el.innerHTML = this.el.innerHTML + $v; },
-					'text' : function( $v ){ return ( $v === undefined ) ? this.el[ text ] : this.el[ text ] = $v; },
-					'+text' : function( $v ){ return this.el[ text ] = $v + this.el[ text ]; },
-					'text+' : function( $v ){ return this.el[ text ] = this.el[ text ] + $v; }
+					'text' : function( $v ){ return ( $v === undefined ) ? this.el[text] : this.el[text] = $v; },
+					'+text' : function( $v ){ return this.el[text] = $v + this.el[text]; },
+					'text+' : function( $v ){ return this.el[text] = this.el[text] + $v; }
 				}
 			})( DOC, dk.DETECTOR ),
 			event : (function( $w, $dkEvent, $addEvent, $delEvent ){
-				var r = {}, evList = [ 'over', 'out', 'click', 'down', 'move', 'up'  ], i = evList.length,
-					cancleMap = { mousedown : 1, mouseup : 1, mousemove : 1 }, t0,
+				var r = {}, evList = ['over', 'out', 'down', 'move', 'up', 'click', 'focus'], i = evList.length,
+					cancleMap = {mousedown : 1, mouseup : 1, mousemove : 1}, t0,
 					cancelBubbling, makeListener, make;
 
 				cancelBubbling = function( $e ){
 					cancelBubbling = $e.stopPropagation ? function( $e ){ $e.stopPropagation(); } : $w.event ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
 				},
 					makeListener = function( $k, $dom, $cb ){
-						return $dom.eventList[ $k ] = function( $e ){
+						return $dom.eventList[$k] = function( $e ){
 							var ev = $dkEvent( $e ), type = $e.type;
-							cancleMap[ type ] ? null : cancelBubbling( $e ), ev.type = type, ev.target = $dom, $cb( ev );
+							cancleMap[type] ? null : cancelBubbling( $e ), ev.type = type, ev.target = $dom, $cb( ev );
 						}
 					},
 					make = function( $k ){
 						return function( $v ){
 							var el = this.el;
-							$v ? $addEvent( el, $k, makeListener( $k, this, $v ) ) : ( $delEvent( el, $k, this.eventList[ $k ] ), delete this.eventList[ $k ] );
+							$v ? $addEvent( el, $k, makeListener( $k, this, $v ) ) : ( $delEvent( el, $k, this.eventList[$k] ), delete this.eventList[$k] );
 						}
 					};
 
-				while( i-- ) r[ t0 = evList[ i ] ] = make( t0 );
+				while( i-- ) r[t0 = evList[i]] = make( t0 );
 				return r;
 			})( W, dkEvent, dk.addEvent, dk.delEvent )
 		} ),
@@ -654,12 +702,12 @@
 
 			destroyDom = function( $k ){
 				// todo 돔트리 제거, 이벤트 제거
-				delete uuList[ $k ];
+				delete uuList[$k];
 			},
 				listDom = function( $arr ){
 					var r = [], i = $arr.length;
-					if( i == 1 ) r = new Dom( $arr[ --i ] );
-					else while( i-- ) r[ i ] = new Dom( $arr[ i ] );
+					if( i == 1 ) r = new Dom( $arr[--i] );
+					else while( i-- ) r[i] = new Dom( $arr[i] );
 					return r;
 				},
 				parser = function( $str ){
@@ -673,19 +721,19 @@
 					this.el = $el, this.style = s, this.eventList = {};
 				},
 				Dom.prototype.S = (function(){
-					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					var prefixCss = $detector.prefixCss, nopx = {opacity : 1, zIndex : 1, 'z-index' : 1};
 					return function(){
 						var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
 						while( i < j ){
-							k = arguments[ i++ ];
-							if( i == j ) return proto[ k ] ? proto[ k ].call( this ) :
-									k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
-								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+							k = arguments[i++];
+							if( i == j ) return proto[k] ? proto[k].call( this ) :
+								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+									( r = s[k], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
 							// todo parseFloat( r ) % 처리
-							else  v = arguments[ i++ ],
-								proto[ k ] ? proto[ k ].call( this, v ) :
-										k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
-									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+							else  v = arguments[i++],
+								proto[k] ? proto[k].call( this, v ) :
+									k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+										s[k] = s[prefixCss + k] = typeof v == 'number' ? nopx[k] ? v : v + 'px' : v
 						}
 						return this;
 					}
@@ -696,7 +744,7 @@
 					if( typeof $k === 'string' ){ // 문자열
 						if( $v === null ) return destroyDom( $k ); // 돔제거
 						if( $k.charAt( 0 ) == '<' ) return new Dom( parser( $k ) ); // 태그문자
-						return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = listDom( $selector( $k ) ); // 캐싱, 쿼리
+						return uuList[$k] ? uuList[$k] : uuList[$k] = listDom( $selector( $k ) ); // 캐싱, 쿼리
 					}else{ // element
 						return $k.nodeType === 1 ? new Dom( $k ) : $k.length > 0 ? listDom( $k ) : null;
 					}
@@ -704,9 +752,9 @@
 				factory.fn = function(){
 					var i = 0, j = arguments.length, k, v;
 					while( i < j ){
-						k = arguments[ i++ ];
-						if( i == j ) return proto[ k ];
-						else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+						k = arguments[i++];
+						if( i == j ) return proto[k];
+						else v = arguments[i++], v === null ? delete proto[k] : proto[k] = v;
 					}
 				};
 
@@ -725,30 +773,30 @@
 					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.insertRule( $key + '{}', this.styleId );
 				},
 				Style.prototype.S = (function(){
-					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					var prefixCss = $detector.prefixCss, nopx = {opacity : 1, zIndex : 1, 'z-index' : 1};
 					return function(){
-						var i = 0, j = arguments.length, k, v, s = this.rules[ this.styleId ].style, r, t0;
+						var i = 0, j = arguments.length, k, v, s = this.rules[this.styleId].style, r, t0;
 						while( i < j ){
-							k = arguments[ i++ ];
-							if( i == j ) return proto[ k ] ? proto[ k ].call( { style : s } ) :
-								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
-							else  v = arguments[ i++ ],
-								proto[ k ] ? proto[ k ].call( { style : s }, v ) :
-									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+							k = arguments[i++];
+							if( i == j ) return proto[k] ? proto[k].call( {style : s} ) :
+								( r = s[k], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+							else  v = arguments[i++],
+								proto[k] ? proto[k].call( {style : s}, v ) :
+									s[k] = s[prefixCss + k] = typeof v == 'number' ? nopx[k] ? v : v + 'px' : v
 						}
 						return this;
 					}
 				})(),
 
 				factory = function( $k ){
-					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Style( $k );
+					return uuList[$k] ? uuList[$k] : uuList[$k] = new Style( $k );
 				},
 				factory.fn = function(){
 					var i = 0, j = arguments.length, k, v;
 					while( i < j ){
-						k = arguments[ i++ ];
-						if( i == j ) return proto[ k ];
-						else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+						k = arguments[i++];
+						if( i == j ) return proto[k];
+						else v = arguments[i++], v === null ? delete proto[k] : proto[k] = v;
 					}
 				};
 			return factory;
@@ -760,11 +808,11 @@
 			var checkXMLHttp, param, ajax;
 			checkXMLHttp = (function(){
 				if( $w['XMLHttpRequest'] ) return function(){ return new $w['XMLHttpRequest']() };
-				var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
+				var t0 = ['MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'], i = 0, j = t0.length;
 				while( i < j ){
 					try{
-						new ActiveXObject( t0[ i ] );
-						return function(){ return new ActiveXObject( t0[ i ] ); }
+						new ActiveXObject( t0[i] );
+						return function(){ return new ActiveXObject( t0[i] ); }
 					}catch( $e ){
 						i++;
 					}
@@ -799,8 +847,8 @@
 				return function( $cb, $url ){
 					var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
 					$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
-						t1 ? $w[ '____callbacks' + id ] = function(){
-							$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
+						t1 ? $w['____callbacks' + id] = function(){
+							$cb.apply( null, arguments ), $w['____callbacks' + id] = null;
 						} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
 							if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
 						},
@@ -809,15 +857,15 @@
 			})();
 			return function( $cb, $url/* ,$url, $url */ ){
 				var arr = arguments, i = 0, leng = arr.length - 1, load, complete;
-				load = function(){ js( complete, arr[ ++i ] ); },
+				load = function(){ js( complete, arr[++i] ); },
 					complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
-						leng == 1 ? js( $cb, arr[ ++i ] ) : load();
+					leng == 1 ? js( $cb, arr[++i] ) : load();
 			}
 		})( W, DOC, HEAD ) ),
 		dk.fn( 'img', (function( $doc ){
 			return function( $cb, $src /* , $src, $src */ ){
 				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el, load, complete;
-				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), el.onload = complete; },
+				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[++i], r.push( el ), el.onload = complete; },
 					complete = function(){ i == leng ? $cb ? $cb( r ) : null : load(); },
 					load();
 			}
@@ -831,9 +879,9 @@
 		dk.fn( 'plugin', (function( $pluginRoot, $js ){
 			var uuList = {};
 			return function( $cb, $id/* ,$id, $id */ ){
-				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
+				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [$cb], t0;
 				while( i-- > 1 ){
-					uuList[ t0 = arguments[ leng - i ] ] ? null : ( uuList[ t0 ] = 1, arr.push( url + t0 + '.js' ) );
+					uuList[t0 = arguments[leng - i]] ? null : ( uuList[t0] = 1, arr.push( url + t0 + '.js' ) );
 				}
 				$js.apply( null, arr );
 			}
@@ -846,15 +894,15 @@
 					this.update = $update ? function( $param ){
 						var t, i, j;
 						t = this._list, i = t.length, j = i % 8;
-						while( i-- > j ) t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i ]( $param );
-						while( j-- ) t[ j ]( $param );
+						while( i-- > j ) t[i--]( $param ), t[i--]( $param ), t[i--]( $param ), t[i--]( $param ), t[i--]( $param ), t[i--]( $param ), t[i--]( $param ), t[i]( $param );
+						while( j-- ) t[j]( $param );
 					} : 0,
 					this.start = $start, this.end = $end;
 			}
 
 			function reset(){
 				var k, t0 = this.list, t1 = [];
-				for( k in t0 ) t1.push( t0[ k ] );
+				for( k in t0 ) t1.push( t0[k] );
 				this._list = t1, t1.length ? this.start ? this.start() : null : this.end ? this.end() : null;
 			}
 
@@ -863,8 +911,8 @@
 					var i = 0, j = arguments.length, k, v;
 					while( i < j ){
 						k = arguments[i++];
-						if( i == j ) return this.list[ k ];
-						else v = arguments[ i++ ], v === null ? delete this.list[ k ] : this.list[ k ] = v;
+						if( i == j ) return this.list[k];
+						else v = arguments[i++], v === null ? delete this.list[k] : this.list[k] = v;
 					}
 					reset.call( this );
 					return v;
@@ -878,7 +926,7 @@
 		dk.obj( 'LOOP', (function( $sList ){
 			var r = $sList( 'LOOP', 1 );
 			// TODO 트윈처리
-			(function loop(){ r[ 'update' ](), requestAnimFrame( loop ) })();
+			(function loop(){ r['update'](), requestAnimFrame( loop ) })();
 			// setInterval( function(){ r[ 'update' ](); }, 16 );
 			return r;
 		})( dk.sList ) ),
@@ -894,7 +942,7 @@
 		dk.obj( 'RESIZE', (function( $sList, $addEvent, $delEvent, $detector, $dkWIN ){
 			var r, func, start, end, t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client';
 			func = function(){
-				$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]();
+				$dkWIN.width = t1[t2 + 'Width'], $dkWIN.height = t1[t2 + 'Height'], r['update']();
 			},
 				start = function(){ $addEvent( W, 'resize', func ); },
 				end = function(){ $delEvent( W, 'resize', func ); },
@@ -908,7 +956,7 @@
 			func = function(){
 				r.scrollLeft = $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body.scrollLeft ? $doc.body.scrollLeft : 0,
 					r.scrollTop = $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body.scrollTop ? $doc.body.scrollTop : 0,
-					r[ 'update' ]();
+					r['update']();
 			},
 				start = function(){ $addEvent( W, 'scroll', func ); },
 				end = function(){ $delEvent( W, 'scroll', func ); },
@@ -917,33 +965,40 @@
 		})( dk.sList, dk.addEvent, dk.delEvent, DOC ) ),
 
 		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $dkScroll, $dkEvent ){
-			var r, cancelBubbling, func, start, end, oldX, oldY, startX, startY, press, move, map = { mousedown : 'down', mousemove : 'move', mouseup : 'up', touchstart : 'down', touchmove : 'move', touchend : 'up' };
+			var r, cancelBubbling, func, start, end, oldX, oldY, startX, startY, press, move, map = {
+				mousedown : 'down',
+				mousemove : 'move',
+				mouseup : 'up',
+				touchstart : 'down',
+				touchmove : 'move',
+				touchend : 'up'
+			};
 			cancelBubbling = function( $e ){
 				cancelBubbling = $e.stopPropagation ? function( $e ){ $e.stopPropagation(); } : $w.event ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
 			},
 				func = $detector.mobile ? function( $e ){
 					var mouseX = 0, mouseY = 0, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length, ev = $dkEvent( $e );
 					if( i ){
-						r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
-							r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop;
-						while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].pageX, pageY : eTouches[ i ].pageY };
+						r.mouseX = mouseX = eTouches[0].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
+							r.mouseY = mouseY = eTouches[0].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop;
+						while( i-- ) touchList[i] = {pageX : eTouches[i].pageX, pageY : eTouches[i].pageY};
 					}
 					cancelBubbling( $e ),
 						r.touchList = touchList,
-							evType == 'touchstart' ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0, r.expandTouch = false, move = false ) :
+						evType == 'touchstart' ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0, r.expandTouch = false, move = false ) :
 							evType == 'touchmove' ? ( r.moveX = mouseX - startX, r.moveY = mouseY - startY, r.moveX != 0 && Math.abs( r.moveX ) / Math.abs( r.moveY ) > 3 && !move ? ( $e.preventDefault(), r.expandTouch = true ) : r.expandTouch ? $e.preventDefault() : null, move = true ) :
-							evType == 'touchend' ? ( r.moveX = r.moveY = 0, r.expandTouch = false, move = false ) : null,
-						ev.type = map[ evType ] ? map[ evType ] : evType,
-						r[ 'update' ]( ev );
+								evType == 'touchend' ? ( r.moveX = r.moveY = 0, r.expandTouch = false, move = false ) : null,
+						ev.type = map[evType] ? map[evType] : evType,
+						r['update']( ev );
 				} : function( $e ){
 					var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
 					r.mouseX = mouseX = $e.clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
 						r.mouseY = mouseY = $e.clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop,
-							evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
+						evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
 							evType == 'mousemove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
-							evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-						ev.type = map[ evType ] ? map[ evType ] : evType,
-						r[ 'update' ]( ev );
+								evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
+						ev.type = map[evType] ? map[evType] : evType,
+						r['update']( ev );
 				},
 				start = function(){
 					$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func ),
@@ -961,7 +1016,7 @@
 			var r, func, start, end;
 			func = function( $e ){
 				var ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
-				r[ 'update' ]( delta );
+				r['update']( delta );
 			},
 				start = function(){ $addEvent( W, $detector.wheelEvent, func ); },
 				end = function(){ $delEvent( W, $detector.wheelEvent, func ); },
@@ -972,30 +1027,30 @@
 		dk.obj( 'KEY', (function( $sList, $addEvent, $delEvent, $dkEvent ){
 			var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
 			func = function( $e ){
-				var ev = $dkEvent( $e ), t0 = list[ t1[ ev.keyCode = $e.keyCode ] ];
+				var ev = $dkEvent( $e ), t0 = list[t1[ev.keyCode = $e.keyCode]];
 				t0 ? t0( ev ) : 0;
 			},
 				start = function(){ $addEvent( W, 'keydown', func ); },
 				end = function(){ $delEvent( W, 'keydown', func ); },
 				r = $sList( 'KEY', 0, start, end ),
 				list = r.list;
-			while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toLowerCase(), t0[ t2[ i ].toLowerCase() ] = 0;
+			while( i-- ) t1[t2[i--]] = t2[i].toLowerCase(), t0[t2[i].toLowerCase()] = 0;
 			return r;
 		})( dk.sList, dk.addEvent, dk.delEvent, dkEvent ) ),
 
 		dk.obj( 'REG', (function(){
 			return {
 				numeric : function( k ){ return /^[+-]*[0-9]*\.?\d+$/.test( k ) },
-				stringOnly : function( k ){ return  /^[^0-9]*$/.test( k ) },
+				stringOnly : function( k ){ return /^[^0-9]*$/.test( k ) },
 				stripHTMLTags : function( k ){ return k.replace( /<\/?[^\<\/]+\/?>/g, "" ) },
-				lineModify : function( k ){ return  k.split( "\r\n" ).join( "\n" ) },
+				lineModify : function( k ){ return k.split( "\r\n" ).join( "\n" ) },
 				Email : function( k ){ return /^(.+)\@(.+)\.(\w+)$/.test( k ) },
 				ip : function( k ){ return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k ) },
 				url : function( k ){ return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1 },
 				KoreanRegistrationNumber : function( k ){ return /^[0-9]{6}-?[0-9]{7}$/.test( k ) },
 				empty : function( k ){
 					if( !k ) return true;
-					return  !k.length
+					return !k.length
 				}
 			}
 		})() )
