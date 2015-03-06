@@ -670,7 +670,7 @@
 				}
 			})( DOC, dk.DETECTOR ),
 			event : (function( $w, $dkEvent, $addEvent, $delEvent ){
-				var r = {}, evList = ['over', 'out', 'down', 'move', 'up', 'click', 'focus'], i = evList.length,
+				var r = {}, evList = ['over', 'out', 'down', 'move', 'up', 'click', 'contextmenu'], i = evList.length,
 					cancleMap = {mousedown : 1, mouseup : 1, mousemove : 1}, t0,
 					cancelBubbling, makeListener, make;
 
