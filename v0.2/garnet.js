@@ -649,7 +649,7 @@
 				}
 			})( DOC, dk.DETECTOR ), event : (function( $w, $dkEvent, $addEvent, $delEvent ){
 				// todo mouse enter 등 이벤트 추가
-				var r = {}, evList = ['over', 'out', 'down', 'move', 'up', 'click', 'enter', 'leave', 'contextmenu', 'dbclick'], i = evList.length, cancleMap = {
+				var r = {}, evList = ['over', 'out', 'down', 'move', 'up', 'click', 'enter', 'leave', 'contextmenu', 'dblclick'], i = evList.length, cancleMap = {
 					mousedown : 1, mouseup : 1, mousemove : 1
 				}, t0, cancelBubbling, makeListener, make;
 
