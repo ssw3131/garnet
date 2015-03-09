@@ -61,11 +61,15 @@
     dk.Dom().S( 'text+', $v )
 
     dk.Dom().S( 'over', $cb )
+    dk.Dom().S( 'enter', $cb )
     dk.Dom().S( 'out', $cb )
+    dk.Dom().S( 'leave', $cb )
     dk.Dom().S( 'click', $cb )
+    dk.Dom().S( 'dblclick', $cb )
     dk.Dom().S( 'down', $cb )
     dk.Dom().S( 'move', $cb )
     dk.Dom().S( 'up', $cb )
+    dk.Dom().S( 'contextmenu', $cb )
 
 // STYLE :
     // text

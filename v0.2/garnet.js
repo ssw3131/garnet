@@ -55,9 +55,7 @@
 		dk.obj( 'INFO', {name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git'} ),
 
 // ERROR :
-		dk.fn( 'err', function( $log ){
-			log( $log );
-		} ),
+		dk.fn( 'err', function( $log ){ log( $log ); } ),
 
 // DETECTOR :
 		dk.obj( 'DETECTOR', (function( $w, $doc ){
