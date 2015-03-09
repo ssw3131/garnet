@@ -861,14 +861,25 @@
 					leng == 1 ? js( $cb, arr[++i] ) : load();
 			}
 		})( W, DOC, HEAD ) ),
-		dk.fn( 'img', (function( $doc ){
+		dk.fn( 'img', (function( $doc, $detector ){
+			var onload = (function(){
+				if( $detector.ie8 )
+					return function( $el, $cb ){
+						var t0 = setInterval( function(){ $el.complete ? ( clearInterval( t0 ), $cb() ) : 0; }, 16 );
+					}
+				else
+					return function( $el, $cb ){
+						$el.onload = function(){ $cb(); }
+					}
+			})();
+
 			return function( $cb, $src /* , $src, $src */ ){
 				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el, load, complete;
-				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[++i], r.push( el ), el.onload = complete; },
+				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[++i], r.push( el ), onload( el, complete ); },
 					complete = function(){ i == leng ? $cb ? $cb( r ) : null : load(); },
 					load();
 			}
-		})( DOC ) ),
+		})( DOC, dk.DETECTOR ) ),
 
 // PLUGIN :
 		dk.fn( 'pluginRoot', (function(){
