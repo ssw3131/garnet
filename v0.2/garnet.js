@@ -195,7 +195,7 @@
 
 		(function( $detector ){
 			var map = {
-				over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup'
+				over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup', enter : 'mouseenter', leave : 'mouseleave'
 			};
 			$detector.mobile ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : null, dk.fn( 'addEvent', (function(){
 				return W.addEventListener ? function( $el, $et, $cb, $cap ){
