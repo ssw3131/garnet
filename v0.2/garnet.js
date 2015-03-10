@@ -761,20 +761,20 @@
 		})( DOC, dk.selector, dk.DETECTOR ) ),
 		dk.PROTO.connect( dk.Dom.fn, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event ),
 
-// STYLE :
-		dk.cls( 'Style', (function( $doc, $head, $detector ){
-			var factory, Style, uuList = {}, proto = {}, el, sheet, rules;
+// CSS :
+		dk.cls( 'Css', (function( $doc, $head, $detector ){
+			var factory, Css, uuList = {}, proto = {}, el, sheet, rules;
 			el = $doc.createElement( 'style' ), $head.appendChild( el ), sheet = el.sheet || el.styleSheet, rules = sheet.cssRules || sheet.rules,
 
-				Style = sheet.addRule ? function( $key ){
-					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.addRule( $key, ' ', this.styleId );
+				Css = sheet.addRule ? function( $key ){
+					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.addRule( $key, ' ', this.cssId );
 				} : function( $key ){
-					this.sheet = sheet, this.rules = rules, this.styleId = rules.length, sheet.insertRule( $key + '{}', this.styleId );
+					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.insertRule( $key + '{}', this.cssId );
 				},
-				Style.prototype.S = (function(){
+				Css.prototype.S = (function(){
 					var prefixCss = $detector.prefixCss, nopx = {opacity : 1, zIndex : 1, 'z-index' : 1};
 					return function(){
-						var i = 0, j = arguments.length, k, v, s = this.rules[this.styleId].style, r, t0;
+						var i = 0, j = arguments.length, k, v, s = this.rules[this.cssId].style, r, t0;
 						while( i < j ){
 							k = arguments[i++];
 							if( i == j ) return proto[k] ? proto[k].call( {style : s} ) :
@@ -788,7 +788,7 @@
 				})(),
 
 				factory = function( $k ){
-					return uuList[$k] ? uuList[$k] : uuList[$k] = new Style( $k );
+					return uuList[$k] ? uuList[$k] : uuList[$k] = new Css( $k );
 				},
 				factory.fn = function(){
 					var i = 0, j = arguments.length, k, v;
@@ -800,7 +800,7 @@
 				};
 			return factory;
 		})( DOC, HEAD, dk.DETECTOR ) ),
-		dk.PROTO.connect( dk.Style.fn, dk.PROTO.css ),
+		dk.PROTO.connect( dk.Css.fn, dk.PROTO.css ),
 
 // LOADER :
 		dk.fn( 'ajax', (function( $w, $detector ){
