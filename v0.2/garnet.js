@@ -153,7 +153,7 @@
 				browserVer : bv,
 				os : os,
 				osVer : osv,
-				ie8 : browser == 'ie' && bv < 9,
+				ie8 : browser == 'ie' && bv < 9 ? 1 : 0,
 				mobile : device == 'pc' ? 0 : 1,
 				flash : flash,
 				prefixCss : prefixCss,
