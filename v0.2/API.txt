@@ -71,15 +71,15 @@
     dk.Dom().S( 'up', $cb )
     dk.Dom().S( 'contextmenu', $cb )
 
-// STYLE :
+// CSS :
     // text
-    dk.Style( '' )
+    dk.Css( '' )
 
     // proto
-    dk.Style.fn( $k, $v/* , $k, $v */ )
+    dk.Css.fn( $k, $v/* , $k, $v */ )
 
     // S method
-    dk.Style().S( $k, $v/* , $k, $v */ )
+    dk.Css().S( $k, $v/* , $k, $v */ )
 
 // LOADER :
     dk.ajax( $cb, $url/* , $paramK, $paramV */ )
