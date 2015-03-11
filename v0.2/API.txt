@@ -1,28 +1,28 @@
 // dk :
     dk( function(){} );
 
-// CORE :
+v// CORE :
     dk.fn( $k, $v )
     dk.cls( $k, $v )
     dk.obj( $k, $v )
 
-// INFO :
+v// INFO :
     dk.INFO == {}
 
 // DETECTOR :
     dk.DETECTOR == {}
 
-// UTIL :
+v// UTIL :
     dk.random( $max, $min )
     dk.randomInt( $max, $min )
     dk.randomColor()
     dk.timeCheck( $bool )
 
-// EVENT :
+v// EVENT :
     dk.addEvent( $el, $et, $cb, $cap )
     dk.delEvent( $el, $et, $cb, $cap )
 
-// SELECTOR :
+v// SELECTOR :
     dk.selector( query, doc, r )
 
 // DOM :
@@ -81,39 +81,39 @@
     // S method
     dk.Css().S( $k, $v/* , $k, $v */ )
 
-// LOADER :
+v// LOADER :
     dk.ajax( $cb, $url/* , $paramK, $paramV */ )
     dk.js( $cb, $url/* ,$url, $url */ )
     dk.img( $cb, $src/* ,$src, $src */ )
 
-// PLUGIN :
+v// PLUGIN :
     dk.pluginRoot( '/garnet/testCaseV0.2/plugin/' );
     dk.plugin( $cb, $id/* ,$id, $id */ )
 
 // STATIC :
-    리스트에 1개 이상 추가됐을 때 실행
-    dk.sList( 'KEY', 0 )
-    dk.sList( 'LOOP', 1 )
-    dk.LOOP.S( $k, $cb )
     dk.WIN
     dk.WIN.width
     dk.WIN.height
     dk.WIN.scrollTo( $x, $y )
+    리스트에 1개 이상 추가됐을 때 실행
+    dk.sList( 'KEY', 0 )
+    dk.sList( 'LOOP', 1 )
     dk.RESIZE.S( $k, $cb )
-    dk.SCROLL.S( $k, $cb )
-    dk.SCROLL.scrollLeft
-    dk.SCROLL.scrollTop
+    dk.LOOP.S( $k, $cb )
     dk.MOUSE.S( $k, $cb )
     dk.MOUSE.mouseX
     dk.MOUSE.pageX
     dk.MOUSE.moveX
     dk.MOUSE.speedX
     dk.MOUSE.expandTouch - 터치무브 가로이동 시 true, 스크롤 이동 시 false
+    dk.SCROLL.S( $k, $cb )
+    dk.SCROLL.scrollLeft
+    dk.SCROLL.scrollTop
     dk.WHEEL.S( $k, function( $delta ){} )
     dk.KEY.S( 'a', function( $e ){} )
     dk.REG
 
-// FLASH :
+v// FLASH :
     // text
     dk.Flash( '' )
 
