@@ -49,12 +49,12 @@
 						while( i < j ){
 							k = arguments[ i++ ];
 							if( i == j ) return proto[ k ] ? proto[ k ].call( this ) :
-									k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
-								( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
+								k.indexOf( '@' ) > -1 ? e.getAttribute( k.replace( '@', '' ) ) :
+									( r = s[ k ], t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 );
 							else  v = arguments[ i++ ],
 								proto[ k ] ? proto[ k ].call( this, v ) :
-										k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
-									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+									k.indexOf( '@' ) > -1 ? e.setAttribute( k.replace( '@', '' ), v ) :
+										s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
 						}
 						return this;
 					}
@@ -114,7 +114,7 @@
 					var f, t0;
 					$v = $v.replace( /(\s*)/g, "" ),
 						f = ( t0 = $v.split( '(' ) )[ 0 ],
-							t0[ 1 ].charAt( 0 ) == ')' ? this.flash ? this.flash.toFlash( f ) : dk.err( 'flash 로딩 중' ) : this.flash ? this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) ) : dk.err( 'flash 로딩 중' );
+						t0[ 1 ].charAt( 0 ) == ')' ? this.flash ? this.flash.toFlash( f ) : dk.err( 'flash 로딩 중' ) : this.flash ? this.flash.toFlash( f, t0[ 1 ].substring( 0, t0[ 1 ].length - 1 ) ) : dk.err( 'flash 로딩 중' );
 				}
 			}
 		})( dk.DETECTOR ),
