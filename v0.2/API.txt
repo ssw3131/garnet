@@ -12,7 +12,7 @@ v// INFO :
 // DETECTOR :
     dk.DETECTOR == {}
 
-v// UTIL :
+// UTIL :
     dk.random( $max, $min )
     dk.randomInt( $max, $min )
     dk.randomColor()
@@ -81,12 +81,12 @@ v// SELECTOR :
     // S method
     dk.Css().S( $k, $v/* , $k, $v */ )
 
-v// LOADER :
-    dk.ajax( $cb, $url/* , $paramK, $paramV */ )
+// LOADER :
+    dk.ajax( $cb, $url )
     dk.js( $cb, $url/* ,$url, $url */ )
     dk.img( $cb, $src/* ,$src, $src */ )
 
-v// PLUGIN :
+// PLUGIN :
     dk.pluginRoot( '/garnet/testCaseV0.2/plugin/' );
     dk.plugin( $cb, $id/* ,$id, $id */ )
 
@@ -113,7 +113,7 @@ v// PLUGIN :
     dk.KEY.S( 'a', function( $e ){} )
     dk.REG
 
-v// FLASH :
+// FLASH :
     // text
     dk.Flash( '' )
 
