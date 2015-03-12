@@ -824,7 +824,7 @@
 					}
 					return params;
 				},
-				ajax = function( $cb, $url/* , $paramK, $paramV */ ){
+				ajax = function( $cb, $url ){
 					var rq = checkXMLHttp(), params;
 					params = param( arguments ),
 						rq.open( 'GET', $url, true ),
@@ -891,7 +891,7 @@
 			return function( $cb, $id/* ,$id, $id */ ){
 				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [$cb], t0;
 				while( i-- > 1 ){
-					uuList[t0 = arguments[leng - i]] ? null : ( uuList[t0] = 1, arr.push( url + t0 + '.js' ) );
+					uuList[t0 = arguments[leng - i]] ? null : ( uuList[t0] = 1, arr.push( url + t0 ) );
 				}
 				$js.apply( null, arr );
 			}
