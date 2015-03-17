@@ -766,10 +766,12 @@
 			var factory, Css, uuList = {}, proto = {}, el, sheet, rules;
 			el = $doc.createElement( 'style' ), $head.appendChild( el ), sheet = el.sheet || el.styleSheet, rules = sheet.cssRules || sheet.rules,
 
-				Css = sheet.addRule ? function( $key ){
+				Css = sheet.insertRule ? function( $key ){
+					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.insertRule( $key + '{}', this.cssId );
+				} : sheet.addRule ? function( $key ){
 					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.addRule( $key, ' ', this.cssId );
 				} : function( $key ){
-					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.insertRule( $key + '{}', this.cssId );
+					dk.err( 'sheet에 rule을 추가할 수 없습니다.' );
 				},
 				Css.prototype.S = (function(){
 					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
