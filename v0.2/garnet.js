@@ -966,8 +966,8 @@
 		dk.obj( 'SCROLL', (function( $sList, $addEvent, $delEvent, $doc ){
 			var r, func, start, end;
 			func = function(){
-				r.scrollLeft = $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body.scrollLeft ? $doc.body.scrollLeft : 0,
-					r.scrollTop = $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body.scrollTop ? $doc.body.scrollTop : 0,
+				r.scrollLeft = $doc.documentElement ? $doc.documentElement.scrollLeft : $doc.body ? $doc.body.scrollLeft : 0,
+					r.scrollTop = $doc.documentElement ? $doc.documentElement.scrollTop : $doc.body ? $doc.body.scrollTop : 0,
 					r[ 'update' ]();
 			},
 				start = function(){ $addEvent( W, 'scroll', func ); },
@@ -997,6 +997,7 @@
 					}
 					cancelBubbling( $e ),
 						r.touchList = touchList,
+						// todo move = false
 						evType == 'touchstart' ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0, r.expandTouch = false, move = false ) :
 							evType == 'touchmove' ? ( r.moveX = mouseX - startX, r.moveY = mouseY - startY, r.moveX != 0 && Math.abs( r.moveX ) / Math.abs( r.moveY ) > 3 && !move ? ( $e.preventDefault(), r.expandTouch = true ) : r.expandTouch ? $e.preventDefault() : null, move = true ) :
 								evType == 'touchend' ? ( r.moveX = r.moveY = 0, r.expandTouch = false, move = false ) : null,
