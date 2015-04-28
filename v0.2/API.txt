@@ -105,7 +105,9 @@ v// SELECTOR :
     dk.MOUSE.pageX
     dk.MOUSE.moveX
     dk.MOUSE.speedX
-    dk.MOUSE.expandTouch - 터치무브 가로이동 시 true, 스크롤 이동 시 false
+    $e.nativeEvent.preventDefault()
+						move direction ?
+
     dk.SCROLL.S( $k, $cb )
     dk.SCROLL.scrollLeft
     dk.SCROLL.scrollTop
