@@ -615,7 +615,7 @@
 				$fn.apply( undefined, param );
 			},
 			css : (function( $detector ){
-				var prefixCss = $detector.prefixCss, float = $detector.float, t0 = $detector.ie8;
+				var prefixCss = $detector.prefixCss, dtFloat = $detector.float, t0 = $detector.ie8;
 				return {
 					bgColor : t0 ? function( $v ){
 						var s = this.style, t0;
@@ -633,8 +633,8 @@
 					},
 					float : function( $v ){
 						var s = this.style;
-						if( $v ) s[ float ] = $v;
-						else return s[ float ];
+						if( $v ) s[ dtFloat ] = $v;
+						else return s[ dtFloat ];
 					},
 					fontSmoothing : function( $v ){
 						var s = this.style;
