@@ -2,7 +2,7 @@
 'use strict';
 (function(){
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
-	var dk, dkEvent;
+	var dk;
 	var trim = /^\s*|\s*$/g;
 
 // 보정패치 :
@@ -197,7 +197,7 @@
 		})( Date.now ) ),
 
 // EVENT :
-		dkEvent = (function( $detector ){
+		dk.fn( 'dkEvent', (function( $detector ){
 			var t0 = $detector.currentTarget;
 			return function( $e ){
 				return {
@@ -205,7 +205,7 @@
 					nativeTarget : $e[ t0 ]
 				}
 			}
-		})( dk.DETECTOR ),
+		})( dk.DETECTOR ) ),
 
 		(function( $detector ){
 			var map = { over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup', enter : 'mouseenter', leave : 'mouseleave' };
@@ -432,13 +432,13 @@
 								}//
 							};
 						})( trim, domData || (function(){
-							var id = 1, data = {};
-							return function domData( el, k, v ){
-								var t0;
-								if( !( t0 = el[ 'data-bs' ] ) ) el[ 'data-bs' ] = t0 = id++, data[ t0 ] = {};
-								return k == undefined ? data[ t0 ] : v == undefined ? data[ t0 ][ k ] : v === null ? delete data[ t0 ][ k ] : ( data[ t0 ][ k ] = v );
-							};
-						})() )
+								var id = 1, data = {};
+								return function domData( el, k, v ){
+									var t0;
+									if( !( t0 = el[ 'data-bs' ] ) ) el[ 'data-bs' ] = t0 = id++, data[ t0 ] = {};
+									return k == undefined ? data[ t0 ] : v == undefined ? data[ t0 ][ k ] : v === null ? delete data[ t0 ][ k ] : ( data[ t0 ][ k ] = v );
+								};
+							})() )
 					},
 					rTag = /^[a-z]+[0-9]*$/i, rAlpha = /[a-z]/i, rClsTagId = /^[.#]?[a-z0-9]+$/i,
 					DOC = document, tagName = {}, clsName = {},
@@ -668,7 +668,6 @@
 				}
 			})( DOC, dk.DETECTOR ),
 			event : (function( $w, $dkEvent, $addEvent, $delEvent ){
-				// todo mouse enter 등 이벤트 추가
 				var r = {}, evList = [ 'over', 'out', 'down', 'move', 'up', 'click', 'enter', 'leave', 'contextmenu', 'dblclick' ], i = evList.length,
 					cancleMap = { mousedown : 1, mouseup : 1, mousemove : 1 }, t0,
 					cancelBubbling, makeListener, make;
@@ -691,7 +690,7 @@
 
 				while( i-- ) r[ t0 = evList[ i ] ] = make( t0 );
 				return r;
-			})( W, dkEvent, dk.addEvent, dk.delEvent )
+			})( W, dk.dkEvent, dk.addEvent, dk.delEvent )
 		} ),
 
 // DOM :
@@ -826,6 +825,7 @@
 					}
 					return params;
 				},
+				// todo error 처리 rq.status == 404
 				ajax = function( $cb, $url ){
 					var rq = checkXMLHttp(), params;
 					params = param( arguments ),
@@ -1016,7 +1016,7 @@
 				},
 				r = $sList( 'MOUSE', 1, start, end );
 			return r;
-		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dkEvent ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dk.dkEvent ) ),
 
 		dk.obj( 'WHEEL', (function( $sList, $addEvent, $delEvent, $detector ){
 			var r, func, start, end;
@@ -1042,7 +1042,7 @@
 				list = r.list;
 			while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toLowerCase(), t0[ t2[ i ].toLowerCase() ] = 0;
 			return r;
-		})( dk.sList, dk.addEvent, dk.delEvent, dkEvent ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
 
 		dk.obj( 'REG', (function(){
 			return {
