@@ -15,7 +15,6 @@
             if( ( W[ "console" ] ) )
                 return function( $log ){
                     logArr.splice( 0, 0, $log, console.log( $log ) ), toggle ? e0.innerHTML = logArr[ 0 ] + "<br>" + e0.innerHTML : null;
-                    //e0.innerHTML = $log
                 }
             else
                 return function( $log ){
