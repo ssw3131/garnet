@@ -882,23 +882,16 @@
 				$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]( $dkEvent( $e ) );
 			},
 				$addEvent( W, 'resize', func ),
-				r = $sList( 'RESIZE', 1 )
-
-			if( $detector.ie8 ){
-				r.dispatchEvent = function(){
-					if ( t0 ){
-						log( 'dispatchEvent' )
+				r = $sList( 'RESIZE', 1 ),
+				r.dispatchEvent = $detector.ie8 ? function(){
+					if( t0 ){
 						var ev = $doc.createEventObject();
-						log( ev )
 						t0.fireEvent( 'onresize', ev );
 					}
-				}
-			}else{
-				r.dispatchEvent = function(){
+				} : function(){
 					var ev = $doc.createEvent( 'UIEvents' );
 					ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
 				}
-			}
 			r.dispatchEvent();
 			return r;
 		})( W, DOC, dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
