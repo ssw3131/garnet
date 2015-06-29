@@ -888,6 +888,7 @@
 					var ev = $doc.createEvent( 'UIEvents' );
 					ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
 				},
+
 				r.dispatchEvent();
 			return r;
 		})( W, DOC, dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
