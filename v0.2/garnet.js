@@ -32,7 +32,7 @@
 						default:
 							return
 					}
-					if( $doc && $doc.getElementsByTagName && $doc.getElementById && $doc.body && $doc.readyState ) clearInterval( check ), $host ? $host() : null
+					if( $doc && $doc.getElementsByTagName && $doc.getElementById && $doc.body ) clearInterval( check ), $host ? $host() : null;
 				}, 10 );
 			}
 		})( DOC ),
@@ -52,12 +52,13 @@
 		},
 
 // INFO :
-		dk.obj( 'INFO', { name : 'Dk garnet', version : 'v0.2.0', github : 'https://github.com/ssw3131/garnet.git' } ),
+		dk.obj( 'INFO', { name : 'Dk garnet', version : 'v0.2.1', github : 'https://github.com/ssw3131/garnet.git' } ),
 
 // ERROR :
-		dk.fn( 'err', function( $log ){ log( $log ); } ),
+		dk.fn( 'err', function( $log ){ log( 'err : ' + $log ); } ),
 
 // DETECTOR :
+		// todo detector update
 		dk.obj( 'DETECTOR', (function( $w, $doc ){
 			var navi = $w.navigator, agent = navi.userAgent.toLowerCase(), platform = navi.platform.toLowerCase(), app = navi.appVersion.toLowerCase(),
 				device = 'pc', os, osv, browser, bv, flash,
@@ -226,80 +227,89 @@
 				})() )
 		})( dk.DETECTOR ),
 
-// SELECTOR :
+// SELECTOR : bsSelector v0.3.2 141110
 		dk.fn( 'selector', (function( $doc ){
-			function bsSelector( doc, trim, domData ){
+			/* bsSelector v0.3.2
+			 * Copyright (c) 2014 by ProjectBS Committe and contributors.
+			 * http://www.bsplugin.com All rights reserved.
+			 * Licensed under the BSD license. See http://opensource.org/licenses/BSD-3-Clause
+			 */
+			var bsSelector = function( doc, trim, domData ){
 				'use strict';
-				var compare = {
+				var subTokens = {},
+					subTokener = function( sels ){
+						var i, j, k, m, n, sel, token, t0, t1, v, skip, mT0;
+						m = sels.length,
+							mT0 = { '~' : 1, '|' : 1, '!' : 1, '^' : 1, '$' : 1, '*' : 1 },
+							skip = {
+								'target' : 1, 'active' : 1, 'visited' : 1, 'first-line' : 1, 'first-letter' : 1, 'hover' : 1, 'focus' : 1, 'after' : 1, 'before' : 1, 'selection' : 1,
+								'eq' : 1, 'gt' : 1, 'lt' : 1,
+								'valid' : 1, 'invalid' : 1, 'optional' : 1, 'in-range' : 1, 'out-of-range' : 1, 'read-only' : 1, 'read-write' : 1, 'required' : 1
+							};
+						while( m-- ){//,
+							sel = sels[ m ], j = sel.length;
+							while( j-- ){
+								token = sel[ j ], k = token.charAt( 0 );
+								if( k == '[' ){
+									subTokens[ token ] = [];
+									if( ( i = token.indexOf( '=' ) ) == -1 ) subTokens[ token ].push( token.substr( 1 ) );
+									else
+										subTokens[ token ].push( token.substring( 1, i - ( mT0[ t1 = token.charAt( i - 1 ) ] ? 1 : 0 ) ) ),
+											subTokens[ token ].push( t1 ),
+											subTokens[ token ].push( token.substr( i + 1 ) );
+								}else if( k == ':' ){
+									subTokens[ token ] = [],
+										k = token.substr( 1 ), i = k.indexOf( '(' ), v = i > -1 ? isNaN( t0 = k.substr( i + 1 ) ) ? t0.replace( trim, '' ) : parseFloat( t0 ) : null;
+									if( v ) k = k.substring( 0, i );
+									if( !skip[ k ] )
+										subTokens[ token ].push( k ), subTokens[ token ].push( v );
+								}
+							}
+						}
+					},
+					compare = {
 						// id
 						'#' : function( el, token ){
 							return token.substr( 1 ) == el.id;
 						},
-						// cls
+						// class
 						'.' : function( el, token ){
 							var t0, k;
 							return !( t0 = el.className ) ? 0 : ( k = token.substr( 1 ), t0.indexOf( ' ' ) > -1 ? k == t0 : t0.split( ' ' ).indexOf( k ) > -1 );
 						},
 						// Attribute
-						'[' : (function(){
-							var mT0 = { '~' : 1, '|' : 1, '!' : 1, '^' : 1, '$' : 1, '*' : 1 };
-							return function( el, token ){
-								var t0, t1, i, v;
-								if( ( i = token.indexOf( '=' ) ) == -1 ) return el.getAttribute( token.substr( 1 ) ) === null ? 0 : 1;
-								if( ( t0 = el.getAttribute( token.substring( 1, i - ( mT0[ t1 = token.charAt( i - 1 ) ] ? 1 : 0 ) ) ) ) === null ) return;
-								v = token.substr( i + 1 );
-								switch( t1 ){
-									case'~':
-										return t0.split( ' ' ).indexOf( v ) > -1;
-									case'|':
-										return t0.split( '-' ).indexOf( v ) > -1;
-									case'^':
-										return t0.indexOf( v ) == 0;
-									case'$':
-										return t0.lastIndexOf( v ) == ( t0.length - v.length );
-									case'*':
-										return t0.indexOf( v ) > -1;
-									case'!':
-										return t0 !== v;
-									default:
-										return t0 === v;
-								}
-							};
-						})(),
+						'[' : function( el, token ){
+							var t0, k, v, s, t2;
+							t2 = subTokens[ token ], k = t2[ 0 ], s = t2[ 1 ], v = t2[ 2 ];
+							if( !s ) return el.getAttribute( k ) === null ? 0 : 1;
+							if( ( t0 = el.getAttribute( k ) ) === null ) return;
+							switch( s ){
+								case'~':
+									return t0.split( ' ' ).indexOf( v ) > -1;
+								case'|':
+									return t0.split( '-' ).indexOf( v ) > -1;
+								case'^':
+									return t0.indexOf( v ) == 0;
+								case'$':
+									return t0.lastIndexOf( v ) == ( t0.length - v.length );
+								case'*':
+									return t0.indexOf( v ) > -1;
+								case'!':
+									return t0 !== v;
+								default:
+									return t0 === v;
+							}
+						},
 						// pseudo
-						':' : (function( trim, domData ){
+						':' : (function( domData ){
 							var mTag = { 'first-of-type' : 1, 'last-of-type' : 1, 'only-of-type' : 1 },
 								nChild = { 'first-child' : 'firstElementChild', 'last-child' : 'lastElementChild' },
 								enabled = { INPUT : 1, BUTTON : 1, SELECT : 1, OPTION : 1, TEXTAREA : 1 },
-								checked = { INPUT : 1, radio : 1, checkbox : 1, OPTION : 2 },
-								skip = {
-									'target' : 1,
-									'active' : 1,
-									'visited' : 1,
-									'first-line' : 1,
-									'first-letter' : 1,
-									'hover' : 1,
-									'focus' : 1,
-									'after' : 1,
-									'before' : 1,
-									'selection' : 1,
-									'eq' : 1,
-									'gt' : 1,
-									'lt' : 1,
-									'valid' : 1,
-									'invalid' : 1,
-									'optional' : 1,
-									'in-range' : 1,
-									'out-of-range' : 1,
-									'read-only' : 1,
-									'read-write' : 1,
-									'required' : 1
-								};
+								checked = { INPUT : 1, radio : 1, checkbox : 1, OPTION : 2 };
 							return function filters( el, token ){
 								var parent, childs, tag, dir, t0, t1, t2, k, v, i, j, m, dd, tname, ename, lname;
-								k = token.substr( 1 ), i = k.indexOf( '(' ), v = i > -1 ? isNaN( t0 = k.substr( i + 1 ) ) ? t0.replace( trim, '' ) : parseFloat( t0 ) : null;
-								if( v ) k = k.substring( 0, i );
-								if( skip[ k ] ) return;
+								t0 = subTokens[ token ], k = t0[ 0 ], v = t0[ 1 ];
+								if( !k ) return;
 								switch( k ){
 									case'link':
 										return el.tagName == 'A' && el.getAttribute( 'href' );
@@ -431,7 +441,7 @@
 										}
 								}//
 							};
-						})( trim, domData || (function(){
+						})( domData || (function(){
 								var id = 1, data = {};
 								return function domData( el, k, v ){
 									var t0;
@@ -442,16 +452,33 @@
 					},
 					rTag = /^[a-z]+[0-9]*$/i, rAlpha = /[a-z]/i, rClsTagId = /^[.#]?[a-z0-9]+$/i,
 					DOC = document, tagName = {}, clsName = {},
-					className = (function( tagName, clsName ){
-						var reg = {}, r = [];
-						return DOC[ 'getElementsByClassName' ] ? function( cls ){
-							return clsName[ cls ] || ( clsName[ cls ] = DOC.getElementsByClassName( cls ) );
-						} : function( cls ){
-							var t0 = tagName[ '*' ] || ( tagName[ '*' ] = DOC.getElementsByTagName( '*' ) ), t1 = reg[ cls ] || ( reg[ cls ] = new RegExp( '\\b' + cls + '\\b', 'g' ) ), i = t0.length;
+					getById = (function( tagName ){
+						var r = [];
+						return DOC[ 'getElementById' ] ? function( id ){
+							var t0;
+							return r.length = 0, (t0 = DOC.getElementById( id )) ? (r[ 0 ] = t0, r) : r;
+						} : function( id ){
+							var t0 = tagName[ '*' ] || ( tagName[ '*' ] = DOC.getElementsByTagName( '*' ) ), t1, i = 0, j = t0.length;
 							r.length = 0;
-							while( i-- ) if( t1.test( t0[ i ].className ) ) r[ r.length ] = t0[ i ];
+							while( i < j ){
+								if( id == t0[ i ].id ){
+									r[ 0 ] = t0[ i ];
+									break;
+								}
+								i++;
+							}
 							return r;
 						};
+					})( tagName ),
+					className = (function( tagName, clsName ){
+						var r = [];
+						return DOC[ 'getElementsByClassName' ] ? function( cls ){return clsName[ cls ] || ( clsName[ cls ] = DOC.getElementsByClassName( cls ) );} :
+							function( cls ){
+								var t0 = tagName[ '*' ] || ( tagName[ '*' ] = DOC.getElementsByTagName( '*' ) ), t1, i = t0.length;
+								r.length = 0;
+								while( i-- ) if( cls == ( t1 = t0[ i ].className ) || t1.indexOf( cls + ' ' ) > -1 || t1.indexOf( ' ' + cls ) > -1 ) r[ r.length ] = t0[ i ];
+								return r;
+							};
 					})( tagName, clsName ),
 					bsRseq = 0,
 					navi,
@@ -459,17 +486,7 @@
 					mQSA = { ' ' : 1, '+' : 1, '~' : 1, ':' : 1, '[' : 1 },
 					mParent = { ' ' : 1, '>' : 1 }, mBracket = { '[' : 1, '(' : 1, ']' : 2, ')' : 2 },
 					mEx = { ' ' : 1, '*' : 1, ']' : 1, '>' : 1, '+' : 1, '~' : 1, '^' : 1, '$' : 1 },
-					mT0 = {
-						' ' : 1,
-						'*' : 2,
-						'>' : 2,
-						'+' : 2,
-						'~' : 2,
-						'#' : 3,
-						'.' : 3,
-						':' : 3,
-						'[' : 3
-					}, mT1 = { '>' : 1, '+' : 1, '~' : 1 },
+					mT0 = { ' ' : 1, '*' : 2, '>' : 2, '+' : 2, '~' : 2, '#' : 3, '.' : 3, ':' : 3, '[' : 3 }, mT1 = { '>' : 1, '+' : 1, '~' : 1 },
 					R = [], arrs = { _l : 0 },
 					aPsibl = [ 'previousSibling', 'previousElementSibling' ],
 					tEl = DOC.createElement( 'ul' ), isElCld, isQSA;
@@ -485,24 +502,24 @@
 					var sels, sel,
 						hasParent, hasQSAErr, hasQS,
 						t0, t1, t2, t3, i, j, k, l, m, n,
-						el, els, hit, token, tokens;
+						el, els, hit, token, tokens, isFilter;
 
 					if( !r ) r = R;
-					r.length = 0, doc ? ( DOC = doc ) : ( doc = DOC );
-					if( rClsTagId.test( query ) ) switch( query.charAt( 0 ) ){
-						case'#':
-							return r[ r.length ] = doc.getElementById( query.substr( 1 ) ), r;
-						case'.':
-							return className( query.substr( 1 ) );
-						default:
-							return tagName[ query ] || ( tagName[ query ] = doc.getElementsByTagName( query ) );
-					}
-					if( chrome && isQSA ){
-						if( ( t0 = query.toLowerCase() ).indexOf( ':contains' ) < 0 && t0.indexOf( '!' ) < 0 ){
-							return doc.querySelectorAll( query );
+					i = query.indexOf( ',' );
+					if( doc && 'length' in doc ) isFilter = 1;
+					else{
+						isFilter = 0, doc ? ( DOC = doc ) : ( doc = DOC );
+						if( rClsTagId.test( query ) ) switch( query.charAt( 0 ) ){
+							case'#':
+								return getById( query.substr( 1 ) );
+							case'.':
+								return className( query.substr( 1 ) );
+							default:
+								return tagName[ query ] || ( tagName[ query ] = doc.getElementsByTagName( query ) );
 						}
+						if( chrome && isQSA && query.indexOf( ':contains' ) < 0 && query.indexOf( '!' ) < 0 ) return doc.querySelectorAll( query );
+						if( isQSA && i > -1 && query.indexOf( '!' ) < 0 ) return doc.querySelectorAll( query );
 					}
-					if( isQSA && ( i = query.indexOf( ',' ) ) > -1 && query.indexOf( '!' ) < 0 ) return doc.querySelectorAll( query );
 					if( i == -1 ) sels = arrs._l ? arrs[ --arrs._l ] : [], sels[ 0 ] = query, i = 1;
 					else sels = query.split( ',' ), i = sels.length;
 					while( i-- ){
@@ -530,7 +547,7 @@
 						while( j-- ){
 							if( rTag.test( t0[ j ] ) ) t0[ j ] = t0[ j ].toUpperCase();
 							else if( t0[ j ].charAt( 0 ) == ':' ){
-								if( !( t1 = t0[ j ] ).toLowerCase().indexOf( ':contains(' ) ){
+								if( !( t1 = t0[ j ] ).indexOf( ':contains(' ) ){
 									hasQSAErr = 1;
 									continue;
 								}else{
@@ -545,29 +562,32 @@
 						}
 						sels[ i ] = t0;
 					}
-					if( hasQSAErr ) hasQS = 0;
-					if( sels.length == 1 ){
-						t0 = sels[ 0 ][ 0 ];
-						if( ( k = t0.charAt( 0 ) ) == '#' ) els = arrs._l ? arrs[ --arrs._l ] : [], els[ 0 ] = doc.getElementById( t0.substr( 1 ) ), sels[ 0 ].shift();
-						else if( k == '.' ){
-							els = className( t0.substr( 1 ) ), sels[ 0 ].shift();
-							if( hasQS && els.length > 100 ) return doc.querySelectorAll( query );
-						}else if( k == '[' || k == ':' ){
-							if( hasQS ) return doc.querySelectorAll( query );
-							if( !hasParent ){
-								t0 = sels[ 0 ][ sels[ 0 ].length - 1 ], k = t0.charAt( 0 );
-								if( k == '#' ) sels[ 0 ].pop(), els = arrs._l ? arrs[ --arrs._l ] : [], els[ 0 ] = doc.getElementById( t0.substr( 1 ) );
-								else if( k == '.' ) sels[ 0 ].pop(), els = className( t0.substr( 1 ) );
-								else if( rTag.test( t0 ) ) sels[ 0 ].pop(), els = tagName[ t0 ] || ( tagName[ t0 ] = doc.getElementsByTagName( t0 ) );
+					if( !isFilter ){
+						if( hasQSAErr ) hasQS = 0;
+						if( sels.length == 1 ){
+							t0 = sels[ 0 ][ 0 ];
+							if( ( k = t0.charAt( 0 ) ) == '#' ) els = getById( t0.substr( 1 ) ), sels[ 0 ].shift();
+							else if( k == '.' ){
+								els = className( t0.substr( 1 ) ), sels[ 0 ].shift();
+								if( hasQS && els.length > 100 ) return doc.querySelectorAll( query );
+							}else if( k == '[' || k == ':' ){
+								if( hasQS ) return doc.querySelectorAll( query );
+								if( !hasParent ){
+									t0 = sels[ 0 ][ sels[ 0 ].length - 1 ], k = t0.charAt( 0 );
+									if( k == '#' ) sels[ 0 ].pop(), els = getById( t0.substr( 1 ) );
+									else if( k == '.' ) sels[ 0 ].pop(), els = className( t0.substr( 1 ) );
+									else if( rTag.test( t0 ) ) sels[ 0 ].pop(), els = tagName[ t0 ] || ( tagName[ t0 ] = doc.getElementsByTagName( t0 ) );
+								}
+							}else if( rTag.test( t0 ) ){
+								sels[ 0 ].shift(), els = tagName[ t0 ] || ( tagName[ t0 ] = doc.getElementsByTagName( t0 ) );
+								if( hasQS && els.length > 100 ) return doc.querySelectorAll( query );
 							}
-						}else if( rTag.test( t0 ) ){
-							sels[ 0 ].shift(), els = tagName[ t0 ] || ( tagName[ t0 ] = doc.getElementsByTagName( t0 ) );
-							if( hasQS && els.length > 100 ) return doc.querySelectorAll( query );
 						}
-					}
-					if( !els ) els = tagName[ '*' ] || ( tagName[ '*' ] = doc.getElementsByTagName( '*' ) );
-					if( !sels[ 0 ].length ) return arrs[ arrs._l++ ] = sels[ 0 ], sels.length = 0, arrs[ arrs._l++ ] = sels, els;
-					bsRseq++;
+						if( !els ) els = tagName[ '*' ] || ( tagName[ '*' ] = doc.getElementsByTagName( '*' ) );
+						if( !sels[ 0 ].length ) return arrs[ arrs._l++ ] = sels[ 0 ], sels.length = 0, arrs[ arrs._l++ ] = sels, els;
+						r.length = 0;
+					}else els = doc, doc = DOC, r = [];
+					bsRseq++, subTokener( sels );
 					for( i = 0, j = els.length; i < j; i++ ){
 						l = sels.length;
 						while( l-- ){
@@ -576,9 +596,11 @@
 								token = tokens[ m ], hit = 0;
 								if( ( k = token.charAt( 0 ) ) == ' ' ){
 									m++;
-									while( el = el.parentNode ) if( hit = ( ( t0 = compare[ tokens[ m ].charAt( 0 ) ] ) ? t0( el, tokens[ m ] ) : ( tokens[ m ] == el.tagName || tokens[ m ] == '*' ) ) ) break;
+									while( el = el.parentNode )
+										if( hit = ( ( t0 = compare[ tokens[ m ].charAt( 0 ) ] ) ? t0( el, tokens[ m ] ) : ( tokens[ m ] == el.tagName || tokens[ m ] == '*' ) ) ) break;
 								}else if( k == '>' )
-									hit = ( ( t0 = compare[ tokens[ ++m ].charAt( 0 ) ] ) ? t0( el = el.parentNode, tokens[ m ] ) : ( tokens[ m ] == ( el = el.parentNode ).tagName || tokens[ m ] == '*' ) );
+									hit = ( ( t0 = compare[ tokens[ ++m ].charAt( 0 ) ] ) ? t0( el = el.parentNode, tokens[ m ] ) :
+										( tokens[ m ] == ( el = el.parentNode ).tagName || tokens[ m ] == '*' ) );
 								else if( k == '+' ){
 									while( el = el[ aPsibl[ isElCld ] ] ) if( ( isElCld ? 1 : el.nodeType == 1 ) ) break;
 									hit = el && ( ( t0 = compare[ tokens[ ++m ].charAt( 0 ) ] ) ? t0( el, tokens[ m ] ) : ( tokens[ m ] == el.tagName || tokens[ m ] == '*' ) );
@@ -643,12 +665,12 @@
 					},
 					opacity : t0 ? function( $v ){
 						var s = this.style;
-						if( $v ) s[ 'opacity' ] = $v, s[ 'filter' ] = 'alpha(opacity=' + ( $v * 100 ) + ')';
-						else return s[ 'opacity' ];
+						if( $v == undefined ) return s[ 'opacity' ];
+						else s[ 'opacity' ] = $v, s[ 'filter' ] = 'alpha(opacity=' + ( $v * 100 ) + ')';
 					} : function( $v ){
 						var s = this.style;
-						if( $v ) s[ 'opacity' ] = $v;
-						else return s[ 'opacity' ];
+						if( $v == undefined ) return s[ 'opacity' ];
+						else s[ 'opacity' ] = $v;
 					}
 				}
 			})( dk.DETECTOR ),
@@ -719,7 +741,7 @@
 					this.el = $el, this.style = s, this.eventList = {};
 				},
 				Dom.prototype.S = (function(){
-					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					var prefixCss = $detector.prefixCss, nopx = { zIndex : 1, 'z-index' : 1 };
 					return function(){
 						var i = 0, j = arguments.length, k, v, e = this.el, s = this.style, r, t0;
 						while( i < j ){
@@ -773,7 +795,7 @@
 					dk.err( 'sheet에 rule을 추가할 수 없습니다.' );
 				},
 				Css.prototype.S = (function(){
-					var prefixCss = $detector.prefixCss, nopx = { opacity : 1, zIndex : 1, 'z-index' : 1 };
+					var prefixCss = $detector.prefixCss, nopx = { zIndex : 1, 'z-index' : 1 };
 					return function(){
 						var i = 0, j = arguments.length, k, v, s = this.rules[ this.cssId ].style, r, t0;
 						while( i < j ){
@@ -802,102 +824,6 @@
 			return factory;
 		})( DOC, HEAD, dk.DETECTOR ) ),
 		dk.PROTO.connect( dk.Css.fn, dk.PROTO.css ),
-
-// LOADER :
-		dk.fn( 'ajax', (function( $w, $detector ){
-			var checkXMLHttp, param, ajax;
-			checkXMLHttp = (function(){
-				if( $w[ 'XMLHttpRequest' ] ) return function(){ return new $w[ 'XMLHttpRequest' ]() };
-				var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
-				while( i < j ){
-					try{
-						new ActiveXObject( t0[ i ] );
-						return function(){ return new ActiveXObject( t0[ i ] ); }
-					}catch( $e ){
-						i++;
-					}
-				}
-			})(),
-				param = function(){
-					var pK, pV, params, arg = arguments[ 0 ], i, j = arg.length, k, v;
-					for( i = 2; i < j; i++ ){
-						pK = encodeURIComponent( k = arg[ i++ ] ), pV = encodeURIComponent( v = arg[ i ] ), params ? ( params += '&' + pK + '=' + pV ) : ( params = '?' + pK + '=' + pV );
-					}
-					return params;
-				},
-				// todo error 처리 rq.status == 404
-				ajax = function( $cb, $url ){
-					var rq = checkXMLHttp(), params;
-					params = param( arguments ),
-						rq.open( 'GET', $url, true ),
-						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
-						rq.onreadystatechange = function(){
-							rq.readyState == 4 ? rq.status == 200 ? ( rq.onreadystatechange = null, $cb ? ( $cb( ( ( $detector.browser == 'ie' && $detector.browserVer < 10 ) ? rq.responseXML.documentElement : rq.responseXML ) ? ( (function(){
-								var i, data = rq.responseXML, len = data.childNodes.length;
-								for( i = 0; i < len; i++ ) if( data.childNodes[ i ].nodeType == 1 ) return data.childNodes[ i ];
-							})() ) : rq.responseText ) ) : 0 ) : 0 : 0;
-						},
-						rq.send( params ? params : null );
-				};
-			return ajax;
-		})( W, dk.DETECTOR ) ),
-		dk.fn( 'js', (function( $w, $doc, $head ){
-			var js;
-			js = (function(){
-				var uuId = 0;
-				return function( $cb, $url ){
-					var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
-					$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
-						t1 ? $w[ '____callbacks' + id ] = function(){
-							$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
-						} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
-							if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
-						},
-						el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
-				}
-			})();
-			return function( $cb, $url/* ,$url, $url */ ){
-				var arr = arguments, i = 0, leng = arr.length - 1, load, complete;
-				load = function(){ js( complete, arr[ ++i ] ); },
-					complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
-					leng == 1 ? js( $cb, arr[ ++i ] ) : load();
-			}
-		})( W, DOC, HEAD ) ),
-		dk.fn( 'img', (function( $doc, $detector ){
-			var onload = (function(){
-				if( $detector.ie8 )
-					return function( $el, $cb ){
-						var t0 = setInterval( function(){ $el.complete ? ( clearInterval( t0 ), $cb() ) : 0; }, 16 );
-					}
-				else
-					return function( $el, $cb ){
-						$el.onload = function(){ $cb(); }
-					}
-			})();
-
-			return function( $cb, $src /* , $src, $src */ ){
-				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el, load, complete;
-				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), onload( el, complete ); },
-					complete = function(){ i == leng ? $cb ? $cb( r ) : null : load(); },
-					load();
-			}
-		})( DOC, dk.DETECTOR ) ),
-
-// PLUGIN :
-		dk.fn( 'pluginRoot', (function(){
-			var url = 'http://ssw3131.github.io/garnet/v0.2/plugin/';
-			return function( $url ){ return url = $url ? $url : url; }
-		})() ),
-		dk.fn( 'plugin', (function( $pluginRoot, $js ){
-			var uuList = {};
-			return function( $cb, $id/* ,$id, $id */ ){
-				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
-				while( i-- > 1 ){
-					uuList[ t0 = arguments[ leng - i ] ] ? null : ( uuList[ t0 ] = 1, arr.push( url + t0 ) );
-				}
-				$js.apply( null, arr );
-			}
-		})( dk.pluginRoot, dk.js ) ),
 
 // OBJ :
 		dk.fn( 'sList', (function(){
@@ -937,7 +863,6 @@
 
 		dk.obj( 'LOOP', (function( $sList ){
 			var r = $sList( 'LOOP', 1 );
-			// TODO 트윈처리
 			(function loop(){ r[ 'update' ](), requestAnimFrame( loop ) })();
 			// setInterval( function(){ r[ 'update' ](); }, 16 );
 			return r;
@@ -945,23 +870,35 @@
 
 		dk.obj( 'WIN', (function(){
 			var r = {
-				width : 0, height : 0,
-				scrollTo : function( $x, $y ){ W.scrollTo( $x, $y ) }
+				width : 0, height : 0
 			}
 			return r;
 		})() ),
 
-		dk.obj( 'RESIZE', (function( $sList, $addEvent, $delEvent, $detector, $dkWIN ){
-			var r, func, start, end, t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client';
-			func = function(){
-				$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]();
+		dk.obj( 'RESIZE', (function( $w, $doc, $sList, $addEvent, $delEvent, $detector, $dkWIN, $dkEvent ){
+			var r, func, t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client';
+			func = function( $e ){
+				log( $e )
+				$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]( $dkEvent( $e ) );
 			},
-				start = function(){ $addEvent( W, 'resize', func ); },
-				end = function(){ $delEvent( W, 'resize', func ); },
-				r = $sList( 'RESIZE', 1, start, end ),
-				func();
+				$addEvent( W, 'resize', func ),
+				r = $sList( 'RESIZE', 1 )
+
+			if( $detector.ie8 ){
+				r.dispatchEvent = function(){
+					log( 'dispatchEvent' )
+					var ev = $doc.createEventObject();
+					$doc.fireEvent( 'onresize', ev );
+				}
+			}else{
+				r.dispatchEvent = function(){
+					var ev = $doc.createEvent( 'UIEvents' );
+					ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
+				}
+			}
+			r.dispatchEvent();
 			return r;
-		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN ) ),
+		})( W, DOC, dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
 
 		dk.obj( 'SCROLL', (function( $sList, $addEvent, $delEvent, $doc ){
 			var r, func, start, end;
@@ -988,13 +925,13 @@
 							r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop;
 						while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].pageX, pageY : eTouches[ i ].pageY };
 					}
-					cancelBubbling( $e ),
-						r.touchList = touchList,
-						// expandTouch 제거
-						evType == 'touchstart' ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
-							evType == 'touchmove' ? ( r.moveX = mouseX - startX, r.moveY = mouseY - startY ) :
-								evType == 'touchend' ? ( r.moveX = r.moveY = 0 ) : null,
+					r.touchList = touchList,
+						cancelBubbling( $e ),
 						ev.type = map[ evType ] ? map[ evType ] : evType,
+						// move
+						evType == 'touchstart' ? eTouches.length == 1 ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) : null :
+							evType == 'touchmove' ? ( r.moveX = mouseX - startX, r.moveY = mouseY - startY ) :
+								evType == 'touchend' ? eTouches.length == 0 ? ( r.moveX = r.moveY = 0 ) : null : null,
 						r[ 'update' ]( ev );
 				} : function( $e ){
 					var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
@@ -1059,5 +996,109 @@
 					return !k.length
 				}
 			}
-		})() )
+		})() ),
+
+// LOADER :
+		dk.fn( 'ajax', (function( $w, $detector ){
+			var checkXMLHttp, param, ajax;
+			checkXMLHttp = (function(){
+				if( $w[ 'XMLHttpRequest' ] ) return function(){ return new $w[ 'XMLHttpRequest' ]() };
+				var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
+				while( i < j ){
+					try{
+						new ActiveXObject( t0[ i ] );
+						return function(){ return new ActiveXObject( t0[ i ] ); }
+					}catch( $e ){
+						i++;
+					}
+				}
+			})(),
+				param = function(){
+					var pK, pV, params, arg = arguments[ 0 ], i, j = arg.length, k, v;
+					for( i = 2; i < j; i++ ){
+						pK = encodeURIComponent( k = arg[ i++ ] ), pV = encodeURIComponent( v = arg[ i ] ), params ? ( params += '&' + pK + '=' + pV ) : ( params = '?' + pK + '=' + pV );
+					}
+					return params;
+				},
+				// todo error 처리 rq.status == 404
+				ajax = function( $cb, $url, $err ){
+					var rq = checkXMLHttp(), params;
+					params = param( arguments ),
+						rq.open( 'GET', $url, true ),
+						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
+						rq.onreadystatechange = function(){
+							if( $err != undefined && rq.readyState == 4 && rq.status == 404 ) return $err();
+							if( rq.readyState == 4 && rq.status == 200 ){
+								rq.onreadystatechange = null;
+								if( $cb !== undefined ){
+									$cb( ( ( $detector.browser == 'ie' && $detector.browserVer < 10 ) ? rq.responseXML.documentElement : rq.responseXML ) ? ( (function(){
+										var i, data = rq.responseXML, len = data.childNodes.length;
+										for( i = 0; i < len; i++ ) if( data.childNodes[ i ].nodeType == 1 ) return data.childNodes[ i ];
+									})() ) : rq.responseText )
+								}
+							}
+						},
+						rq.send( params ? params : null );
+				};
+			return ajax;
+		})( W, dk.DETECTOR ) ),
+
+		dk.fn( 'js', (function( $w, $doc, $head ){
+			var js;
+			js = (function(){
+				var uuId = 0;
+				return function( $cb, $url ){
+					var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
+					$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
+						t1 ? $w[ '____callbacks' + id ] = function(){
+							$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
+						} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
+							if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
+						},
+						el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
+				}
+			})();
+			return function( $cb, $url/* ,$url, $url */ ){
+				var arr = arguments, i = 0, leng = arr.length - 1, load, complete;
+				load = function(){ js( complete, arr[ ++i ] ); },
+					complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
+					leng == 1 ? js( $cb, arr[ ++i ] ) : load();
+			}
+		})( W, DOC, HEAD ) ),
+
+		dk.fn( 'img', (function( $doc, $detector ){
+			var onload = (function(){
+				if( $detector.ie8 )
+					return function( $el, $cb ){
+						var t0 = setInterval( function(){ $el.complete ? ( clearInterval( t0 ), $cb() ) : 0; }, 16 );
+					}
+				else
+					return function( $el, $cb ){
+						$el.onload = function(){ $cb(); }
+					}
+			})();
+
+			return function( $cb, $src /* , $src, $src */ ){
+				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el, load, complete;
+				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), onload( el, complete ); },
+					complete = function(){ i == leng ? $cb ? $cb( r ) : null : load(); },
+					load();
+			}
+		})( DOC, dk.DETECTOR ) ),
+
+// PLUGIN :
+		dk.fn( 'pluginRoot', (function(){
+			var url = 'http://ssw3131.github.io/garnet/v0.2/plugin/';
+			return function( $url ){ return url = $url ? $url : url; }
+		})() ),
+		dk.fn( 'plugin', (function( $pluginRoot, $js ){
+			var uuList = {};
+			return function( $cb, $id/* ,$id, $id */ ){
+				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
+				while( i-- > 1 ){
+					uuList[ t0 = arguments[ leng - i ] ] ? null : ( uuList[ t0 ] = 1, arr.push( url + t0 ) );
+				}
+				$js.apply( null, arr );
+			}
+		})( dk.pluginRoot, dk.js ) )
 })();
