@@ -878,21 +878,17 @@
 		dk.obj( 'RESIZE', (function( $w, $doc, $sList, $addEvent, $delEvent, $detector, $dkWIN, $dkEvent ){
 			var r, func, t0 = DOC.documentElement, t1 = $detector.ie8 ? t0 : W, t2 = W.innerWidth ? 'inner' : 'client';
 			func = function( $e ){
-				log( $e )
 				$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]( $dkEvent( $e ) );
 			},
 				$addEvent( W, 'resize', func ),
 				r = $sList( 'RESIZE', 1 ),
 				r.dispatchEvent = $detector.ie8 ? function(){
-					if( t0 ){
-						var ev = $doc.createEventObject();
-						t0.fireEvent( 'onresize', ev );
-					}
+					if( t0 ) t0.fireEvent( 'onresize', $doc.createEventObject() );
 				} : function(){
 					var ev = $doc.createEvent( 'UIEvents' );
 					ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
-				}
-			r.dispatchEvent();
+				},
+				r.dispatchEvent();
 			return r;
 		})( W, DOC, dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
 
