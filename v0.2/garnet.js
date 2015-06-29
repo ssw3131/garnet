@@ -888,7 +888,7 @@
 				r.dispatchEvent = function(){
 					log( 'dispatchEvent' )
 					var ev = $doc.createEventObject();
-					$doc.fireEvent( 'onresize', ev );
+					$doc.documentElement.fireEvent( 'onresize', ev );
 				}
 			}else{
 				r.dispatchEvent = function(){
