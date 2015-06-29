@@ -886,9 +886,12 @@
 
 			if( $detector.ie8 ){
 				r.dispatchEvent = function(){
-					log( 'dispatchEvent' )
-					var ev = $doc.createEventObject();
-					$doc.documentElement.fireEvent( 'onresize', ev );
+					if ( t0 ){
+						log( 'dispatchEvent' )
+						var ev = $doc.createEventObject();
+						log( ev )
+						t0.fireEvent( 'onresize', ev );
+					}
 				}
 			}else{
 				r.dispatchEvent = function(){
