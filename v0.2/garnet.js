@@ -32,7 +32,10 @@
 						default:
 							return
 					}
-					if( $doc && $doc.getElementsByTagName && $doc.getElementById && $doc.body ) clearInterval( check ), $host ? $host() : null;
+					if( $doc && $doc.getElementsByTagName && $doc.getElementById && $doc.body ){
+						dk.RESIZE.dispatchEvent(), clearInterval( check ),
+							$host ? $host() : null;
+					}
 				}, 10 );
 			}
 		})( DOC ),
@@ -887,9 +890,7 @@
 				} : function(){
 					var ev = $doc.createEvent( 'UIEvents' );
 					ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
-				},
-
-				r.dispatchEvent();
+				}
 			return r;
 		})( W, DOC, dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
 
