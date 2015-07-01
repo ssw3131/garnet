@@ -8,7 +8,6 @@
 // 보정패치 :
 	W.console = W[ 'console' ] ? W[ 'console' ] : { log : function(){} },
 		W.log = W[ 'log' ] ? W[ 'log' ] : function(){ W.console.log( arguments[ 0 ] ) },
-		W.JSON = W[ 'JSON' ] ? W[ 'JSON' ] : { parse : function( $v ){ return ( 0, eval )( '(' + $v + ')' ); } },
 		Date.now = Date.now * 1 || function(){ return +new Date },
 		W.requestAnimFrame = (function(){ return W.requestAnimationFrame || W.webkitRequestAnimationFrame || W.mozRequestAnimationFrame || function( $loop ){ W.setTimeout( $loop, 17 ) } })(),
 		(function( f ){ W.setTimeout = f( W.setTimeout ), W.setInterval = f( W.setInterval ) })( function( f ){
@@ -213,7 +212,7 @@
 
 		(function( $detector ){
 			var map = { over : 'mouseover', out : 'mouseout', down : 'mousedown', move : 'mousemove', up : 'mouseup', enter : 'mouseenter', leave : 'mouseleave' };
-			$detector.mobile ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : null,
+			$detector.touchBool ? ( map.down = 'touchstart', map.move = 'touchmove', map.up = 'touchend' ) : null,
 				dk.fn( 'addEvent', (function(){
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
@@ -230,7 +229,7 @@
 				})() )
 		})( dk.DETECTOR ),
 
-// SELECTOR : bsSelector v0.3.2 141110
+// SELECTOR : bsSelector v0.3.2, 141110
 		dk.fn( 'selector', (function( $doc ){
 			/* bsSelector v0.3.2
 			 * Copyright (c) 2014 by ProjectBS Committe and contributors.
@@ -894,72 +893,80 @@
 			return r;
 		})( W, DOC, dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
 
-		dk.obj( 'SCROLL', (function( $sList, $addEvent, $delEvent, $doc ){
-			var r, func, start, end;
-			func = function(){
+		dk.obj( 'SCROLL', (function( $doc, $sList, $addEvent, $delEvent, $dkEvent ){
+			var r, func;
+			func = function( $e ){
 				r.scrollLeft = $doc.documentElement ? $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body ? $doc.body.scrollLeft : 0 : $doc.body ? $doc.body.scrollLeft : 0,
 					r.scrollTop = $doc.documentElement ? $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body ? $doc.body.scrollTop : 0 : $doc.body ? $doc.body.scrollTop : 0,
-					r[ 'update' ]();
+					r[ 'update' ]( $dkEvent( $e ) );
 			},
-				start = function(){ $addEvent( W, 'scroll', func ); },
-				end = function(){ $delEvent( W, 'scroll', func ); },
-				r = $sList( 'SCROLL', 1, start, end );
+				$addEvent( W, 'scroll', func ),
+				r = $sList( 'SCROLL', 1 );
 			return r;
-		})( dk.sList, dk.addEvent, dk.delEvent, DOC ) ),
+		})( DOC, dk.sList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
 
 		dk.obj( 'MOUSE', (function( $sList, $addEvent, $delEvent, $detector, $dkScroll, $dkEvent ){
-			var r, cancelBubbling, func, start, end, oldX, oldY, startX, startY, press, map = { mousedown : 'down', mousemove : 'move', mouseup : 'up', touchstart : 'down', touchmove : 'move', touchend : 'up' };
+			var r, cancelBubbling, func, oldX, oldY, startX, startY, press, map = { mousedown : 'down', mousemove : 'move', mouseup : 'up', touchstart : 'down', touchmove : 'move', touchend : 'up' };
 			cancelBubbling = function( $e ){
-				cancelBubbling = $e.stopPropagation ? function( $e ){ $e.stopPropagation(); } : $w.event ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
+				cancelBubbling = $e.stopPropagation !== undefined ? function( $e ){ $e.stopPropagation(); } : $w.event !== undefined ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
 			},
-				func = $detector.mobile ? function( $e ){
-					var mouseX = 0, mouseY = 0, evType = $e.type, touchList = [], eTouches = $e.touches, i = eTouches.length, ev = $dkEvent( $e );
+				func = $detector.touchBool ? function( $e ){
+					var mouseX = 0, mouseY = 0, evType = $e.type, eTouches = $e.touches, i = eTouches.length, ev = $dkEvent( $e );
 					if( i ){
 						r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
-							r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop;
-						while( i-- ) touchList[ i ] = { pageX : eTouches[ i ].pageX, pageY : eTouches[ i ].pageY };
+							r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop,
+							r.touches = eTouches, r.targetTouches = $e.targetTouches, r.changedTouches = $e.changedTouches;
 					}
-					r.touchList = touchList,
-						cancelBubbling( $e ),
-						ev.type = map[ evType ] ? map[ evType ] : evType,
-						// move
-						evType == 'touchstart' ? eTouches.length == 1 ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) : null :
-							evType == 'touchmove' ? ( r.moveX = mouseX - startX, r.moveY = mouseY - startY ) :
-								evType == 'touchend' ? eTouches.length == 0 ? ( r.moveX = r.moveY = 0 ) : null : null,
-						r[ 'update' ]( ev );
+					cancelBubbling( $e ),
+						ev.type = map[ evType ] ? map[ evType ] : evType;
+					// move
+					switch( evType ){
+						case'touchstart':
+							eTouches.length == 1 ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0, r.speedX = r.speedY = 0 ) : null;
+							break;
+						case'touchmove':
+							r.moveX = mouseX - startX, r.moveY = mouseY - startY;
+							break;
+						case'touchend':
+							eTouches.length == 0 ? r.moveX = r.moveY = 0 : null;
+							break;
+					}
+					r[ 'update' ]( ev );
 				} : function( $e ){
 					var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
 					r.mouseX = mouseX = $e.clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
 						r.mouseY = mouseY = $e.clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop,
-						evType == 'mousedown' ? ( press = 1, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0 ) :
-							evType == 'mousemove' ? ( r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0 ) :
-								evType == 'mouseup' ? ( press = 0, r.moveX = r.moveY = 0 ) : null,
-						ev.type = map[ evType ] ? map[ evType ] : evType,
-						r[ 'update' ]( ev );
+						ev.type = map[ evType ] ? map[ evType ] : evType;
+					switch( evType ){
+						case'mousedown':
+							press = true, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0;
+							break;
+						case'mousemove':
+							r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0;
+							break;
+						case'mouseup':
+							press = false, r.moveX = r.moveY = 0;
+							break;
+					}
+					r[ 'update' ]( ev );
 				},
-				start = function(){
-					$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func ),
-						$dkScroll.S( 'dkMouseScroll', function(){} );
-				},
-				end = function(){
-					$delEvent( DOC, 'down', func ), $delEvent( DOC, 'move', func ), $delEvent( DOC, 'up', func ),
-						$dkScroll.S( 'dkMouseScroll', null );
-				},
-				r = $sList( 'MOUSE', 1, start, end );
+				$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func ),
+				r = $sList( 'MOUSE', 1 );
 			return r;
 		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dk.dkEvent ) ),
 
-		dk.obj( 'WHEEL', (function( $sList, $addEvent, $delEvent, $detector ){
+		dk.obj( 'WHEEL', (function( $sList, $addEvent, $delEvent, $detector, $dkEvent ){
 			var r, func, start, end;
 			func = function( $e ){
-				var ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
-				r[ 'update' ]( delta );
+				var dkEvent, ev = W.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
+				dkEvent = $dkEvent( ev ), dkEvent.delta = delta,
+					r[ 'update' ]( dkEvent );
 			},
 				start = function(){ $addEvent( W, $detector.wheelEvent, func ); },
 				end = function(){ $delEvent( W, $detector.wheelEvent, func ); },
 				r = $sList( 'WHEEL', 1, start, end );
 			return r;
-		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR ) ),
+		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.dkEvent ) ),
 
 		dk.obj( 'KEY', (function( $sList, $addEvent, $delEvent, $dkEvent ){
 			var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
@@ -992,13 +999,17 @@
 			}
 		})() ),
 
+		dk.obj( 'JSON', {
+			parse : function( $v ){ return ( new Function( '', 'return ' + $v ) )(); }
+		} ),
+
 // LOADER :
 		dk.fn( 'ajax', (function( $w, $detector ){
-			var checkXMLHttp, param, ajax;
+			var checkXMLHttp, async;
 			checkXMLHttp = (function(){
-				if( $w[ 'XMLHttpRequest' ] ) return function(){ return new $w[ 'XMLHttpRequest' ]() };
-				var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP' ], i = 0, j = t0.length;
-				while( i < j ){
+				if( $w[ 'XMLHttpRequest' ] !== undefined ) return function(){ return new XMLHttpRequest() };
+				var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP' ], i = 0, leng = t0.length;
+				while( i < leng ){
 					try{
 						new ActiveXObject( t0[ i ] );
 						return function(){ return new ActiveXObject( t0[ i ] ); }
@@ -1007,34 +1018,40 @@
 					}
 				}
 			})(),
-				param = function(){
-					var pK, pV, params, arg = arguments[ 0 ], i, j = arg.length, k, v;
-					for( i = 2; i < j; i++ ){
-						pK = encodeURIComponent( k = arg[ i++ ] ), pV = encodeURIComponent( v = arg[ i ] ), params ? ( params += '&' + pK + '=' + pV ) : ( params = '?' + pK + '=' + pV );
-					}
-					return params;
-				},
-				// todo error 처리 rq.status == 404
-				ajax = function( $cb, $url, $err ){
-					var rq = checkXMLHttp(), params;
-					params = param( arguments ),
-						rq.open( 'GET', $url, true ),
+				async = function( $cb, $url ){
+					var rq = checkXMLHttp(),
+						timeId = setTimeout( function(){
+							if( timeId == -1 ) return;
+							if( rq.readyState !== 4 ) rq.abort();
+							timeId = -1, rq.onreadystatechange = null, $cb( null, 'timeout' );
+						}, 5000 ),
+						param = function( $arg ){
+							var i = 2, j = $arg.length, k, v, r = '';
+							if( !$arg || j < i + 1 ) return '';
+							while( i < j ){
+								r += i == 2 ? '?' : '&', k = $arg[ i++ ], v = $arg[ i++ ],
+									r += encodeURIComponent( k ) + '=' + encodeURIComponent( v )
+							}
+							return r;
+						},
+						url = $url + param( arguments, 2 );
+					log( 'dk ajax url : ' + url ),
+						rq.open( 'get', url, true ),
 						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
 						rq.onreadystatechange = function(){
-							if( $err != undefined && rq.readyState == 4 && rq.status == 404 ) return $err();
-							if( rq.readyState == 4 && rq.status == 200 ){
-								rq.onreadystatechange = null;
-								if( $cb !== undefined ){
-									$cb( ( ( $detector.browser == 'ie' && $detector.browserVer < 10 ) ? rq.responseXML.documentElement : rq.responseXML ) ? ( (function(){
-										var i, data = rq.responseXML, len = data.childNodes.length;
-										for( i = 0; i < len; i++ ) if( data.childNodes[ i ].nodeType == 1 ) return data.childNodes[ i ];
-									})() ) : rq.responseText )
+							if( rq.readyState !== 4 || timeId == -1 ) return;
+							clearTimeout( timeId ), timeId = -1;
+							if( rq.readyState == 4 ){
+								if( rq.status == 404 ) return $cb( null, rq.status );
+								if( rq.status >= 200 && rq.status < 300 || rq.status == 304 ){
+									rq.onreadystatechange = null;
+									$cb( rq.responseText, rq.status )
 								}
 							}
 						},
-						rq.send( params ? params : null );
+						rq.send( null );
 				};
-			return ajax;
+			return async;
 		})( W, dk.DETECTOR ) ),
 
 		dk.fn( 'js', (function( $w, $doc, $head ){
