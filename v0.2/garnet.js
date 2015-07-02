@@ -1035,8 +1035,7 @@
 							return r;
 						},
 						url = $url + param( arguments, 2 );
-					log( 'dk ajax url : ' + url ),
-						rq.open( 'get', url, true ),
+					rq.open( 'get', url, true ),
 						rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
 						rq.onreadystatechange = function(){
 							if( rq.readyState !== 4 || timeId == -1 ) return;
@@ -1069,30 +1068,79 @@
 						el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
 				}
 			})();
-			return function( $cb, $url/* ,$url, $url */ ){
-				var arr = arguments, i = 0, leng = arr.length - 1, load, complete;
-				load = function(){ js( complete, arr[ ++i ] ); },
+			return function( $cb, $url/* , [ $url ], $url, $url */ ){
+				var arg = arguments, arr, i, leng, load, complete;
+				arr = (function(){
+					var r = [], i, leng = arg.length, j, leng2;
+					for( i = 1; i < leng; i++ ){
+						if( Object.prototype.toString.call( arg[ i ] ) === '[object Array]' ){
+							leng2 = arg[ i ].length;
+							for( j = 0; j < leng2; j++ ){
+								r.push( arg[ i ][ j ] )
+							}
+						}else{
+							r.push( arg[ i ] )
+						}
+					}
+					return r;
+				})(),
+					i = 0, leng = arr.length,
+					load = function(){ js( complete, arr[ i++ ] ); },
 					complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
-					leng == 1 ? js( $cb, arr[ ++i ] ) : load();
+					leng == 1 ? js( $cb, arr[ i++ ] ) : load();
 			}
 		})( W, DOC, HEAD ) ),
 
 		dk.fn( 'img', (function( $doc, $detector ){
 			var onload = (function(){
+				// todo ie8 로드에러 체크
 				if( $detector.ie8 )
 					return function( $el, $cb ){
-						var t0 = setInterval( function(){ $el.complete ? ( clearInterval( t0 ), $cb() ) : 0; }, 16 );
+						var timeId = setTimeout( function(){
+								if( timeId == -1 ) return;
+								timeId = -1, $cb( false, $el );
+							}, 5000 ),
+							t0 = setInterval( function(){
+								// todo $el.complete 이 무조건 뜬다
+								$el.complete ? ( clearTimeout( timeId ), timeId = -1, clearInterval( t0 ), $cb( true ) ) : 0;
+							}, 16 );
 					}
 				else
 					return function( $el, $cb ){
-						$el.onload = function(){ $cb(); }
+						$el.onload = function(){
+							$el.onerror = $el.onabort = $el.onload = null, $cb( true );
+						},
+							$el.onerror = $el.onabort = function(){
+								$el.onerror = $el.onabort = $el.onload = null, $cb( false, $el );
+							}
 					}
 			})();
 
-			return function( $cb, $src /* , $src, $src */ ){
-				var arr = arguments, i = 0, leng = arr.length - 1, r = [], el, load, complete;
-				load = function(){ el = DOC.createElement( 'img' ), el.src = arr[ ++i ], r.push( el ), onload( el, complete ); },
-					complete = function(){ i == leng ? $cb ? $cb( r ) : null : load(); },
+			return function( $cb, $src /* , [ $src ], $src, $src */ ){
+				var arg = arguments, arr, i, leng, load, complete, r = [], el;
+				arr = (function(){
+					var r = [], i, leng = arg.length, j, leng2;
+					for( i = 1; i < leng; i++ ){
+						if( Object.prototype.toString.call( arg[ i ] ) === '[object Array]' ){
+							leng2 = arg[ i ].length;
+							for( j = 0; j < leng2; j++ ){
+								r.push( arg[ i ][ j ] )
+							}
+						}else{
+							r.push( arg[ i ] )
+						}
+					}
+					return r;
+				})(),
+					i = 0, leng = arr.length,
+					load = function(){ el = DOC.createElement( 'img' ), onload( el, complete ), el.src = arr[ i++ ], r.push( el ); },
+					complete = function( $bool, $el ){
+						if( $bool ){
+							i == leng ? $cb( r ) : load();
+						}else{
+							$cb( false, $el.src );
+						}
+					},
 					load();
 			}
 		})( DOC, dk.DETECTOR ) ),
