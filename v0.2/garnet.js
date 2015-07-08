@@ -1150,15 +1150,14 @@
 			var url = 'http://ssw3131.github.io/garnet/v0.2/plugin/';
 			return function( $url ){ return url = $url ? $url : url; }
 		})() ),
-		dk.fn( 'plugin', (function( $pluginRoot, $dkJs ){
+		dk.fn( 'plugin', (function( $pluginRoot, $js ){
 			var uuList = {};
 			return function( $cb, $id/* ,$id, $id */ ){
 				var url = $pluginRoot(), leng = arguments.length, i = leng, arr = [ $cb ], t0;
 				while( i-- > 1 ){
 					uuList[ t0 = arguments[ leng - i ] ] ? null : ( uuList[ t0 ] = 1, arr.push( url + t0 ) );
 				}
-				$dkJs.apply( null, arr );
-				log( uuList )
+				$js.apply( null, arr );
 			}
 		})( dk.pluginRoot, dk.js ) )
 })();
