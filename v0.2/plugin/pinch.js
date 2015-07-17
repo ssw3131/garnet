@@ -22,7 +22,7 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
 			$e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault(),
 				point0 = { x : touchList[ 0 ].pageX, y : touchList[ 0 ].pageY };
-			log( leng )
+
 			if( leng == 0 ){
 				ev.type = 'oneEnd', startFlag = false, initFlag = false, reset( ev ), r[ 'update' ]( ev ); // oneEnd
 			}else if( leng == 1 ){
@@ -48,13 +48,9 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 					init( ev ), initOne = point0, r[ 'update' ]( ev ); // oneStart ( safari 동시 투터치 시작 )
 				}
 			}
-		}
-},
-	start = function(){ $dkMouse.S( 'dkPinch', func ) },
-	end = function(){ $dkMouse.S( 'dkPinch', null ) },
-	r = $sList( 'PINCH', 1, start, end )
-return r;
-})
-( dk.sList, dk.MOUSE, dk.dkEvent )
-)
-;
+		},
+		start = function(){ $dkMouse.S( 'dkPinch', func ) },
+		end = function(){ $dkMouse.S( 'dkPinch', null ) },
+		r = $sList( 'PINCH', 1, start, end )
+	return r;
+})( dk.sList, dk.MOUSE, dk.dkEvent ) );
