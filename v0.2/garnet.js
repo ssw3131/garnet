@@ -950,7 +950,7 @@
 					}
 					r[ 'update' ]( ev );
 				},
-				$addEvent( DOC, 'down', func ), $addEvent( DOC, 'move', func ), $addEvent( DOC, 'up', func ),
+				$addEvent( DOC, 'down', func, true ), $addEvent( DOC, 'move', func, true ), $addEvent( DOC, 'up', func, true ),
 				r = $sList( 'MOUSE', 1 );
 			return r;
 		})( dk.sList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dk.dkEvent ) ),

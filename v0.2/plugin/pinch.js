@@ -12,7 +12,7 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 
 	getDistance = function( $p0, $p1 ){ return ~~mSqrt( mPow( $p0.x - $p1.x, 2 ) + mPow( $p0.y - $p1.y, 2 ) ); },
 		reset = function( $ev ){ $ev.distance = 0, $ev.moveX = 0, $ev.moveY = 0, $ev.scale = 1, oldScale = 1, $ev.centerX = 0, $ev.centerY = 0; },
-		init = function( $ev ){ $ev.nativeEvent.preventDefault(), $ev.type = 'oneStart', startFlag = true, initFlag = true, reset( $ev ); },
+		init = function( $ev ){ $ev.nativeEvent.stopPropagation(), $ev.nativeEvent.preventDefault(), $ev.type = 'oneStart', startFlag = true, initFlag = true, reset( $ev ); },
 
 		func = function( $e ){
 			log( count++ )
