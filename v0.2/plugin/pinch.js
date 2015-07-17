@@ -8,14 +8,14 @@
 
 dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 	var r, func, start, end, mPow = Math.pow, mSqrt = Math.sqrt, mMax = Math.max, mMin = Math.min, mAbs = Math.abs,
-		getDistance, reset, startFlag = false, initFlag = false, oldScale, initD, init, pinchFlag = false, initOne = {}, initPinch = {};
+		getDistance, reset, startFlag = false, initFlag = false, oldScale, initD, init, pinchFlag = false, initOne = {}, initPinch = {}, count = 0;
 
 	getDistance = function( $p0, $p1 ){ return ~~mSqrt( mPow( $p0.x - $p1.x, 2 ) + mPow( $p0.y - $p1.y, 2 ) ); },
 		reset = function( $ev ){ $ev.distance = 0, $ev.moveX = 0, $ev.moveY = 0, $ev.scale = 1, oldScale = 1, $ev.centerX = 0, $ev.centerY = 0; },
 		init = function( $ev ){ $ev.nativeEvent.preventDefault(), $ev.type = 'oneStart', startFlag = true, initFlag = true, reset( $ev ); },
 
 		func = function( $e ){
-			log( $e )
+			log( count++ )
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
 
 			if( leng == 0 && $e.type == 'up' ){
