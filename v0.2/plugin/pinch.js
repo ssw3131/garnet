@@ -15,7 +15,7 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 		init = function( $ev ){ $ev.nativeEvent.preventDefault(), $ev.type = 'oneStart', startFlag = true, initFlag = true, reset( $ev ); },
 
 		func = function( $e ){
-			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touchList, leng = touchList.length, point0, point1;
+			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
 
 			if( leng == 0 && $e.type == 'up' ){
 				ev.type = 'end', startFlag = false, initFlag = false, pinchFlag = false, reset( ev ), r[ 'update' ]( ev );
