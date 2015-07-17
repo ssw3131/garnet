@@ -16,7 +16,6 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 
 		func = function( $e ){
 			log( count++ )
-			r[ 'update' ]( $dkEvent( $e.nativeEvent ) )
 			return;
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
 
