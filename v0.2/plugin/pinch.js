@@ -18,21 +18,20 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
 			$e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault();
 
-			log( leng )
-			log( $e.type )
-			if( leng == 0 && $e.type == 'up' ){
-				ev.type = 'end', startFlag = false, initFlag = false, pinchFlag = false, reset( ev ), r[ 'update' ]( ev );
-			}else{
+			//if( leng == 0 && $e.type == 'up' ){
+			//	ev.type = 'end', startFlag = false, initFlag = false, pinchFlag = false, reset( ev ), r[ 'update' ]( ev );
+			//}else{
 				point0 = { x : touchList[ 0 ].pageX, y : touchList[ 0 ].pageY };
 
 				if( leng == 1 ){
-					pinchFlag = false;
 					if( $e.type == 'move' ){
 						if( startFlag ) ev.type = 'one', ev.scale = oldScale, ev.moveX = point0.x - initOne.x, ev.moveY = point0.y - initOne.y, r[ 'update' ]( ev );
 						else init( ev ), initOne = point0, r[ 'update' ]( ev ); // oneStart
 					}else if( $e.type == 'up' ){
-						ev.type = 'pinchEnd', initOne = point0, ev.moveX = 0, ev.moveY = 0, r[ 'update' ]( ev );
+						if ( pinchFlag ) ev.type = 'pinchEnd', initOne = point0, ev.moveX = 0, ev.moveY = 0, r[ 'update' ]( ev );
+						else ev.type = 'end', startFlag = false, initFlag = false, pinchFlag = false, reset( ev ), r[ 'update' ]( ev );
 					}
+					pinchFlag = false;
 				}else if( leng > 1 ){
 					if( initFlag ){
 						point1 = { x : touchList[ 1 ].pageX, y : touchList[ 1 ].pageY },
@@ -49,7 +48,7 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 						init( ev ), initOne = point0, r[ 'update' ]( ev ); // oneStart
 					}
 				}
-			}
+			//}
 		},
 		start = function(){ $dkMouse.S( 'dkPinch', func ) },
 		end = function(){ $dkMouse.S( 'dkPinch', null ) },
