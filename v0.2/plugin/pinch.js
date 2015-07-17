@@ -16,11 +16,11 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 
 	getDistance = function( $p0, $p1 ){ return ~~mSqrt( mPow( $p0.x - $p1.x, 2 ) + mPow( $p0.y - $p1.y, 2 ) ); },
 		reset = function( $ev ){ $ev.distance = 0, $ev.moveX = 0, $ev.moveY = 0, $ev.scale = 1, oldScale = 1, $ev.centerX = 0, $ev.centerY = 0; },
-		init = function( $ev ){ $ev.type = 'oneStart', startFlag = true, initFlag = true, reset( $ev ); },
+		init = function( $ev ){ $e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault(), $ev.type = 'oneStart', startFlag = true, initFlag = true, reset( $ev ); },
 
 		func = function( $e ){
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
-			$e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault(),
+
 				point0 = { x : touchList[ 0 ].pageX, y : touchList[ 0 ].pageY };
 
 			log( leng )
