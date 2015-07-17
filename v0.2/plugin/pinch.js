@@ -1,5 +1,6 @@
 /*dk.PINCH.S( 'test', function( $e ){
  log( 'site pinch ---------------------------------' );
+ log( 'type : ' + $e.type );
  log( 'scale : ' + $e.scale );
  log( 'distance : ' + $e.distance );
  log( 'move : ' + $e.moveX + ' , ' + $e.moveY );
