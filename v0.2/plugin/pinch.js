@@ -18,6 +18,8 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
 			$e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault();
 
+			log( leng )
+			log( $e.type )
 			if( leng == 0 && $e.type == 'up' ){
 				ev.type = 'end', startFlag = false, initFlag = false, pinchFlag = false, reset( ev ), r[ 'update' ]( ev );
 			}else{
