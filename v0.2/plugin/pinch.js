@@ -1,12 +1,15 @@
-/*dk.PINCH.S( 'test', function( $e ){
+/*
+ dk.PINCH.S( 'test', function( $e ){
  log( 'site pinch ---------------------------------' );
  log( 'type : ' + $e.type );
  log( 'scale : ' + $e.scale );
  log( 'distance : ' + $e.distance );
  log( 'move : ' + $e.moveX + ' , ' + $e.moveY );
  log( 'center : ' + $e.centerX + ' , ' + $e.centerY );
- } )*/
-
+ } )
+ $e.type
+ oneStart, one, oneEnd, pinchStart, pinch, pinchEnd
+ */
 dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 	var r, func, start, end, mPow = Math.pow, mSqrt = Math.sqrt, mMax = Math.max, mMin = Math.min, mAbs = Math.abs,
 		getDistance, reset, startFlag = false, initFlag = false, oldScale, initD, init, pinchFlag = false, initOne = {}, initPinch = {}, count = 0;
@@ -26,7 +29,7 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 					else init( ev ), initOne = point0, r[ 'update' ]( ev ); // oneStart one
 				}else if( $e.type == 'up' ){
 					if( pinchFlag ) ev.type = 'pinchEnd', initOne = point0, ev.moveX = 0, ev.moveY = 0, r[ 'update' ]( ev ); // pinchEnd
-					else ev.type = 'end', startFlag = false, initFlag = false, reset( ev ), r[ 'update' ]( ev ); // end
+					else ev.type = 'oneEnd', startFlag = false, initFlag = false, reset( ev ), r[ 'update' ]( ev ); // oneEnd
 				}
 				pinchFlag = false;
 			}else if( leng > 1 ){
