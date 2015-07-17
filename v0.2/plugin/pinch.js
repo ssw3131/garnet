@@ -23,6 +23,7 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 			$e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault(),
 				point0 = { x : touchList[ 0 ].pageX, y : touchList[ 0 ].pageY };
 
+			log( leng )
 			if( leng == 0 ){
 				ev.type = 'oneEnd', startFlag = false, initFlag = false, reset( ev ), r[ 'update' ]( ev ); // oneEnd
 			}else if( leng == 1 ){
