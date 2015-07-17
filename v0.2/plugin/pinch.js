@@ -20,12 +20,13 @@ dk.obj( 'PINCH', (function( $sList, $dkMouse, $dkEvent ){
 
 		func = function( $e ){
 			var ev = $dkEvent( $e.nativeEvent ), touchList = $dkMouse.touches, leng = touchList.length, point0, point1;
-
-				point0 = { x : touchList[ 0 ].pageX, y : touchList[ 0 ].pageY };
-
 			if( initFlag ) $e.nativeEvent.stopPropagation(), $e.nativeEvent.preventDefault();
 
-			if( leng == 1 ){
+			point0 = { x : touchList[ 0 ].pageX, y : touchList[ 0 ].pageY };
+
+			if( leng == 0 ){
+				ev.type = 'oneEnd', initFlag = false, reset( ev ), r[ 'update' ]( ev ); // oneEnd
+			}else if( leng == 1 ){
 				if( $e.type == 'move' ){
 					if( initFlag ) ev.type = 'one', ev.scale = oldScale, ev.moveX = point0.x - initOne.x, ev.moveY = point0.y - initOne.y, r[ 'update' ]( ev ); // one
 					else init( ev ), initOne = point0, r[ 'update' ]( ev ); // oneStart one
