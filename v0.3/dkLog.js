@@ -22,7 +22,7 @@
             var jcJoin = Array.prototype.join;
             return function(){
                 var body = DOC.body;
-                e0.innerHTML = jcJoin.call( logArr, "<br>" ), body.appendChild( e0 ), body.appendChild( e1 ), toggle = true;
+                e0.innerHTML = jcJoin.call( logArr, "<br>" ), body.appendChild( e0 )//, body.appendChild( e1 ), toggle = true;
             }
         })(),
 
