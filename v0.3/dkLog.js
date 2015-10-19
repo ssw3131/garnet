@@ -22,7 +22,7 @@
             var jcJoin = Array.prototype.join;
             return function(){
                 var body = DOC.body;
-                e0.innerHTML = jcJoin.call( logArr, "<br>" ), console.log( e0 ), body.appendChild( e0 )//, body.appendChild( e1 ), toggle = true;
+                e0.innerHTML = jcJoin.call( logArr, "<br>" ), body.appendChild( e0 ), body.appendChild( e1 ), toggle = true;
             }
         })(),
 
@@ -35,7 +35,8 @@
             if( $prop.left !== undefined ) es0.left = $prop.left + "px", es1.left = $prop.left + "px";
             if( $prop.top !== undefined ) es0.top = $prop.top + 22 + "px", es1.top = $prop.top + "px";
             if( $prop.width !== undefined ) es0.width = $prop.width + "px", es1.width = $prop.width + 10 + "px";
-        },
+        }
 
-		log.show();
+
+
 })();
