@@ -28,15 +28,14 @@
 
         log.hide = function(){
             var body = DOC.body;
-            body.removeChild( e0 ), body.removeChild( e1 ), toggle = false;
+            if( body !== undefined ) body.removeChild( e0 ), body.removeChild( e1 ), toggle = false;
         },
 
         log.position = function( $prop ){
             if( $prop.left !== undefined ) es0.left = $prop.left + "px", es1.left = $prop.left + "px";
             if( $prop.top !== undefined ) es0.top = $prop.top + 22 + "px", es1.top = $prop.top + "px";
             if( $prop.width !== undefined ) es0.width = $prop.width + "px", es1.width = $prop.width + 10 + "px";
-        }
+        },
 
-
-
+        log.show();
 })();
