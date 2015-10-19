@@ -22,14 +22,13 @@
             var jcJoin = Array.prototype.join;
             return function(){
                 var body = DOC.body;
-                console.log( body );
-                if( body !== undefined ) e0.innerHTML = jcJoin.call( logArr, "<br>" ), body.appendChild( e0 ), body.appendChild( e1 ), toggle = true;
+                if( body ) e0.innerHTML = jcJoin.call( logArr, "<br>" ), body.appendChild( e0 ), body.appendChild( e1 ), toggle = true;
             }
         })(),
 
         log.hide = function(){
             var body = DOC.body;
-            if( body !== undefined ) body.removeChild( e0 ), body.removeChild( e1 ), toggle = false;
+            if( body ) body.removeChild( e0 ), body.removeChild( e1 ), toggle = false;
         },
 
         log.position = function( $prop ){
