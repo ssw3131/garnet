@@ -645,6 +645,18 @@
 				}
 				$fn.apply( undefined, param );
 			},
+			attr : (function(){
+				return {
+					'@addClass' : function( $v ){
+						var e = this.el;
+						e.setAttribute( 'class', e.getAttribute( 'class' ) + ' ' + $v );
+					},
+					'@delClass' : function( $v ){
+						var e = this.el;
+						e.setAttribute( 'class', e.getAttribute( 'class' ).replace( $v, '' ) );
+					}
+				}
+			})(),
 			css : (function( $detector ){
 				var prefixCss = $detector.prefixCss, dtFloat = $detector.float, t0 = $detector.ie8;
 				return {
@@ -744,7 +756,7 @@
 							var r, i, leng = this.length;
 							r = this.list[ 0 ].S.apply( this.list[ 0 ], arguments );
 							for( i = 1; i < leng; i++ ) this.list[ i ].S.apply( this.list[ i ], arguments );
-							return r || this;
+							return r === false ? this : r;
 						},
 							DomList.prototype.S = func;
 						return func.apply( this, arguments );
@@ -797,7 +809,90 @@
 
 			return factory;
 		})( DOC, dk.selector, dk.DETECTOR ) ),
-		dk.PROTO.connect( dk.Dom.fn, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event ),
+		dk.PROTO.connect( dk.Dom.fn, dk.PROTO.attr, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event ),
+
+// CSS :
+		dk.cls( 'Css', (function( $doc, $head, $detector ){
+			var factory, Css, uuList = {}, proto = {}, el, sheet, rules;
+			el = $doc.createElement( 'style' ), $head.appendChild( el ), sheet = el.sheet || el.styleSheet, rules = sheet.cssRules || sheet.rules,
+
+				Css = sheet.insertRule ? function( $key ){
+					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.insertRule( $key + '{}', this.cssId );
+				} : sheet.addRule ? function( $key ){
+					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.addRule( $key, ' ', this.cssId );
+				} : function( $key ){
+					dk.err( 'sheet에 rule을 추가할 수 없습니다.' );
+				},
+				Css.prototype.S = (function(){
+					var prefixCss = $detector.prefixCss, nopx = { zIndex : 1, 'z-index' : 1 };
+					return function(){
+						var i = 0, j = arguments.length, k, v, s = this.rules[ this.cssId ].style, r, t0;
+						while( i < j ){
+							k = arguments[ i++ ];
+							if( i == j ) return proto[ k ] ? proto[ k ].call( { style : s } ) :
+								( r = s[ k ], r.indexOf( '%' ) > -1 ? r : ( t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 ) );
+							else  v = arguments[ i++ ],
+								proto[ k ] ? proto[ k ].call( { style : s }, v ) :
+									s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+						}
+						return this;
+					}
+				})(),
+
+				factory = function( $k ){
+					return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Css( $k );
+				},
+				factory.fn = function(){
+					var i = 0, j = arguments.length, k, v;
+					while( i < j ){
+						k = arguments[ i++ ];
+						if( i == j ) return proto[ k ];
+						else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+					}
+				};
+			return factory;
+		})( DOC, HEAD, dk.DETECTOR ) ),
+		dk.PROTO.connect( dk.Css.fn, dk.PROTO.css ),
+
+// OBJ :
+		dk.fn( 'sList', (function(){
+			function dkList( $k, $update, $start, $end ){
+				this.list = {}, this._list = [], this.name = $k,
+					this.start = $start, this.end = $end,
+					this.update = $update ? function( $param ){
+						var t, i, j;
+						t = this._list, i = t.length, j = i % 8;
+						while( i-- > j ) t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i ]( $param );
+						while( j-- ) t[ j ]( $param );
+					} : null;
+			}
+
+			function reset(){
+				var k, t0 = this.list, t1 = [];
+				for( k in t0 ) t1.push( t0[ k ] );
+				this._list = t1, t1.length ? this.start ? this.start() : null : this.end ? this.end() : null;
+			}
+
+			dkList.prototype.S = function(){
+				var i = 0, j = arguments.length, k, v;
+				while( i < j ){
+					k = arguments[ i++ ];
+					if( i == j ) return this.list[ k ];
+					else v = arguments[ i++ ], v === null ? delete this.list[ k ] : this.list[ k ] = v;
+				}
+				reset.call( this );
+				return v;
+			}
+			return function( $k, $update, $start, $end ){
+				return new dkList( $k, $update, $start, $end );
+			}
+		})() ),
+
+		dk.obj( 'LOOP', (function( $sList ){
+			var r = $sList( 'LOOP', true );
+			(function loop(){ r[ 'update' ](), requestAnimFrame( loop ) })();
+			return r;
+		})( dk.sList ) ),
 
 		log( 'code end' );
 })();
