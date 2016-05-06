@@ -648,12 +648,23 @@
 			attr : (function(){
 				return {
 					'@addClass' : function( $v ){
-						var e = this.el;
-						e.setAttribute( 'class', e.getAttribute( 'class' ) + ' ' + $v );
+						var e = this.el, r, check = new RegExp( '(\\s|^)' + $v + '(\\s|$)' );
+						r = e.getAttribute( 'class' ), r = r ? r.replace( check, ' ' ).replace( trim, '' ) + ' ' + $v : $v,
+							e.setAttribute( 'class', r.replace( trim, '' ) );
 					},
 					'@delClass' : function( $v ){
+						var e = this.el, r, check = new RegExp( '(\\s|^)' + $v + '(\\s|$)' );
+						r = e.getAttribute( 'class' ), r ? e.setAttribute( 'class', r.replace( check, ' ' ).replace( trim, '' ) ) : null;
+					},
+					scrollLeft : function( $v ){
 						var e = this.el;
-						e.setAttribute( 'class', e.getAttribute( 'class' ).replace( $v, '' ) );
+						if( $v === undefined ) return e[ 'scrollLeft' ];
+						else e[ 'scrollLeft' ] = $v;
+					},
+					scrollTop : function( $v ){
+						var e = this.el;
+						if( $v === undefined ) return e[ 'scrollTop' ];
+						else e[ 'scrollTop' ] = $v;
 					}
 				}
 			})(),
