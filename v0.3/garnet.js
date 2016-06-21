@@ -5,7 +5,7 @@
 	var W = window, DOC = document, HEAD = DOC.getElementsByTagName( 'head' )[ 0 ];
 	var trim = /^\s*|\s*$/g;
 
-// º¸Á¤ÆĞÄ¡ :
+// ë³´ì •íŒ¨ì¹˜ :
 	W.console = W[ 'console' ] ? W[ 'console' ] : { log : function(){} },
 		W.log = W[ 'log' ] ? W[ 'log' ] : function(){ W.console.log( arguments[ 0 ] ) },
 		Date.now = Date.now * 1 || function(){ return +new Date },
@@ -40,15 +40,15 @@
 // CORE :
 		dk.fn = function( $k, $v ){
 			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toLowerCase() + $k.substring( 1, $k.length ),
-				dk[ $k ] ? dk.err( 'dk.fn¿¡ ÀÌ¹Ì ' + $k + '°ªÀÌ Á¸ÀçÇÕ´Ï´Ù' ) : dk[ $k ] = $v;
+				dk[ $k ] ? dk.err( 'dk.fnì— ì´ë¯¸ ' + $k + 'ê°’ì´ ì¡´ì¬í•©ë‹ˆë‹¤' ) : dk[ $k ] = $v;
 		},
 		dk.cls = function( $k, $v ){
 			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
-				dk[ $k ] ? dk.err( 'dk.cls¿¡ ÀÌ¹Ì ' + $k + '°ªÀÌ Á¸ÀçÇÕ´Ï´Ù' ) : dk[ $k ] = $v;
+				dk[ $k ] ? dk.err( 'dk.clsì— ì´ë¯¸ ' + $k + 'ê°’ì´ ì¡´ì¬í•©ë‹ˆë‹¤' ) : dk[ $k ] = $v;
 		},
 		dk.obj = function( $k, $v ){
 			$k = $k.replace( trim, '' ).toUpperCase(),
-				dk[ $k ] ? dk.err( 'dk.obj¿¡ ÀÌ¹Ì ' + $k + '°ªÀÌ Á¸ÀçÇÕ´Ï´Ù' ) : dk[ $k ] = $v;
+				dk[ $k ] ? dk.err( 'dk.objì— ì´ë¯¸ ' + $k + 'ê°’ì´ ì¡´ì¬í•©ë‹ˆë‹¤' ) : dk[ $k ] = $v;
 		},
 
 // INFO :
@@ -624,14 +624,14 @@
 					return W.addEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.addEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 ÀÌÇÏ capture ºÒ°¡´É
+						$et = map[ $et ] ? map[ $et ] : $et, $el.attachEvent( 'on' + $et, $cb ); // ie8 ì´í•˜ capture ë¶ˆê°€ëŠ¥
 					}
 				})() ),
 				dk.fn( 'delEvent', (function(){
 					return W.removeEventListener ? function( $el, $et, $cb, $cap ){
 						$et = map[ $et ] ? map[ $et ] : $et, $el.removeEventListener( $et, $cb, $cap );
 					} : function( $el, $et, $cb ){
-						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 ÀÌÇÏ capture ºÒ°¡´É
+						$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 ì´í•˜ capture ë¶ˆê°€ëŠ¥
 					}
 				})() )
 		})( dk.DETECTOR ),
@@ -801,12 +801,12 @@
 				},
 
 				factory = function( $k, $v ){
-					if( $v === null ) return uuList[ $k ]; // Ä³½ÌÁ¦°Å
+					if( $v === null ) return uuList[ $k ]; // ìºì‹±ì œê±°
 					if( $k === undefined ) return new DomList( [ $doc.createElement( 'div' ) ] );
-					else if( typeof $k === 'string' ){ // ¹®ÀÚ¿­
-						if( $k.charAt( 0 ) === '<' ) return new DomList( [ parser( $k ) ] ); // ÅÂ±×¹®ÀÚ
-						else return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new DomList( $selector( $k ) ); // ¼¿·ºÅÍ, Ä³½Ì
-					}else if( $k instanceof Object && $k.length ) return new DomList( $k ); // element ¹è¿­
+					else if( typeof $k === 'string' ){ // ë¬¸ìì—´
+						if( $k.charAt( 0 ) === '<' ) return new DomList( [ parser( $k ) ] ); // íƒœê·¸ë¬¸ì
+						else return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new DomList( $selector( $k ) ); // ì…€ë ‰í„°, ìºì‹±
+					}else if( $k instanceof Object && $k.length ) return new DomList( $k ); // element ë°°ì—´
 					else return $k.nodeType === 1 ? new DomList( [ $k ] ) : null;
 				},
 				factory.fn = function(){
@@ -832,7 +832,7 @@
 				} : sheet.addRule ? function( $key ){
 					this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.addRule( $key, ' ', this.cssId );
 				} : function( $key ){
-					dk.err( 'sheet¿¡ ruleÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù.' );
+					dk.err( 'sheetì— ruleì„ ì¶”ê°€í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' );
 				},
 				Css.prototype.S = (function(){
 					var prefixCss = $detector.prefixCss, nopx = { zIndex : 1, 'z-index' : 1 };
