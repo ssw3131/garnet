@@ -46,20 +46,20 @@
 			$k = $k.replace( trim, '' ), $k = $k.charAt( 0 ).toUpperCase() + $k.substring( 1, $k.length ),
 				dk[ $k ] ? dk.err( 'dk.cls에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
-		dk.obj = function( $k, $v ){
+		dk.stt = function( $k, $v ){
 			$k = $k.replace( trim, '' ).toUpperCase(),
-				dk[ $k ] ? dk.err( 'dk.obj에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
+				dk[ $k ] ? dk.err( 'dk.stt에 이미 ' + $k + '값이 존재합니다' ) : dk[ $k ] = $v;
 		},
 
 // INFO :
-		dk.obj( 'INFO', { name : 'Dk garnet', version : 'v0.4.1', github : 'https://github.com/ssw3131/garnet.git' } ),
+		dk.stt( 'INFO', { name : 'Dk garnet', version : 'v0.4.1', github : 'https://github.com/ssw3131/garnet.git' } ),
 
 // ERROR :
 		dk.fn( 'err', function( $log ){ log( 'err : ' + $log ); } );
 })();
 // DETECTOR :
 ;
-dk.obj( 'DETECTOR', (function( $w, $doc ){
+dk.stt( 'DETECTOR', (function( $w, $doc ){
 	var navi = $w.navigator, agent = navi.userAgent.toLowerCase(), platform = navi.platform.toLowerCase(), app = navi.appVersion.toLowerCase(),
 		device = 'pc', os, osv, browser, bv, flash,
 		prefixCss, prefixStyle, transform3D, keyframe = $w[ 'CSSRule' ],
@@ -209,8 +209,8 @@ dk.fn( 'random', (function( $mathRandom ){
 		var t0, r;
 		return function(){ return t0 ? ( r = $dateNow() - t0, t0 = null, r ) : ( t0 = $dateNow(), null ); }
 	})( Date.now ) );
-// SELECTOR : bsSelector v0.3.2, 141110
 ;
+// SELECTOR : bsSelector v0.3.2, 141110
 dk.fn( 'selector', (function( $doc ){
 	/* bsSelector v0.3.2
 	 * Copyright (c) 2014 by ProjectBS Committe and contributors.
@@ -609,8 +609,8 @@ dk.fn( 'selector', (function( $doc ){
 	};
 	return bsSelector( $doc, /^\s*|\s*$/g );
 })( document ) );
-// EVENT :
 ;
+// EVENT :
 dk.fn( 'dkEvent', (function( $detector ){
 	var t0 = $detector.currentTarget;
 	return function( $e ){
@@ -639,9 +639,9 @@ dk.fn( 'dkEvent', (function( $detector ){
 				}
 			})() )
 	})( window, dk.DETECTOR );
-// PROTOTYPE :
 ;
-dk.obj( 'PROTO', {
+// PROTOTYPE :
+dk.stt( 'PROTO', {
 	connect : function( $fn/* , $obj, $obj */ ){
 		var i = arguments.length, k, param = [];
 		while( i-- > 1 ){
@@ -750,8 +750,8 @@ dk.obj( 'PROTO', {
 		return r;
 	})( window, dk.dkEvent, dk.addEvent, dk.delEvent )
 } );
-// DOM :
 ;
+// DOM :
 dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 	var factory, DomList, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' ), parser;
 
@@ -763,8 +763,8 @@ dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 	},
 		DomList.prototype.S = function(){
 			var r, i, leng = this.length;
-			for( i = 1; i < leng; i++ ) this.domList[ i ].S.apply( this.domList[ i ], arguments );
 			r = this.dom.S.apply( this.dom, arguments );
+			for( i = 1; i < leng; i++ ) this.domList[ i ].S.apply( this.domList[ i ], arguments );
 			return r === false ? this : r;
 		},
 
@@ -815,3 +815,312 @@ dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 	return factory;
 })( document, dk.selector, dk.DETECTOR ) ),
 	dk.PROTO.connect( dk.Dom.fn, dk.PROTO.attr, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event );
+;
+// CSS :
+dk.cls( 'Css', (function( $doc, $head, $detector ){
+	var factory, Css, uuList = {}, proto = {}, el, sheet, rules;
+	el = $doc.createElement( 'style' ), $head.appendChild( el ), sheet = el.sheet || el.styleSheet, rules = sheet.cssRules || sheet.rules,
+
+		Css = sheet.insertRule ? function( $key ){
+			this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.insertRule( $key + '{}', this.cssId );
+		} : sheet.addRule ? function( $key ){
+			this.sheet = sheet, this.rules = rules, this.cssId = rules.length, sheet.addRule( $key, ' ', this.cssId );
+		} : function( $key ){
+			dk.err( 'sheet에 rule을 추가할 수 없습니다.' );
+		},
+		Css.prototype.S = (function(){
+			var prefixCss = $detector.prefixCss, nopx = { zIndex : 1, 'z-index' : 1 };
+			return function(){
+				var i = 0, j = arguments.length, k, v, s = this.rules[ this.cssId ].style, r, t0;
+				while( i < j ){
+					k = arguments[ i++ ];
+					if( i == j ) return proto[ k ] ? proto[ k ].call( { style : s } ) :
+						( r = s[ k ], r.indexOf( '%' ) > -1 ? r : ( t0 = parseFloat( r ), r = isNaN( t0 ) ? r : t0 ) );
+					else  v = arguments[ i++ ],
+						proto[ k ] ? proto[ k ].call( { style : s }, v ) :
+							s[ k ] = s[ prefixCss + k ] = typeof v == 'number' ? nopx[ k ] ? v : v + 'px' : v
+				}
+				return this;
+			}
+		})(),
+
+		factory = function( $k ){
+			return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new Css( $k );
+		},
+		factory.fn = function(){
+			var i = 0, j = arguments.length, k, v;
+			while( i < j ){
+				k = arguments[ i++ ];
+				if( i == j ) return proto[ k ];
+				else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+			}
+		};
+	return factory;
+})( document, document.getElementsByTagName( 'head' )[ 0 ], dk.DETECTOR ) ),
+	dk.PROTO.connect( dk.Css.fn, dk.PROTO.css );
+// SList :
+;
+dk.cls( 'SList', (function(){
+	var SList, reset;
+	SList = function( $k, $update, $start, $end ){
+		this.list = {}, this._list = [], this.name = $k,
+			this.update = $update ? function( $param ){
+				var t, i, j;
+				t = this._list, i = t.length, j = i % 8;
+				while( i-- > j ) t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i ]( $param );
+				while( j-- ) t[ j ]( $param );
+			} : 0,
+			this.start = $start, this.end = $end;
+	},
+
+		reset = function(){
+			var k, t0 = this.list, t1 = [];
+			for( k in t0 ) t1.push( t0[ k ] );
+			this._list = t1, t1.length ? this.start ? this.start() : null : this.end ? this.end() : null;
+		},
+
+		SList.prototype.S = function(){
+			var i = 0, j = arguments.length, k, v;
+			while( i < j ){
+				k = arguments[ i++ ];
+				if( i == j ) return this.list[ k ];
+				else v = arguments[ i++ ], v === null ? delete this.list[ k ] : this.list[ k ] = v;
+			}
+			reset.call( this );
+			return v;
+		}
+	return function( $k, $update, $start, $end ){
+		return new SList( $k, $update, $start, $end );
+	}
+})() );
+// STATIC :
+;
+dk.stt( 'LOOP', (function( $SList ){
+	var r = $SList( 'LOOP', 1 );
+	(function loop(){
+		r[ 'update' ](), requestAnimFrame( loop );
+	})();
+	return r;
+})( dk.SList ) ),
+
+	dk.stt( 'WIN', (function(){
+		return {
+			width : 0, height : 0
+		}
+	})() ),
+
+	dk.stt( 'RESIZE', (function( $w, $doc, $SList, $addEvent, $delEvent, $detector, $dkWIN, $dkEvent ){
+		var r, func, t0 = $doc.documentElement, t1 = $detector.ie8 ? t0 : $w, t2 = $w.innerWidth ? 'inner' : 'client';
+		func = function( $e ){
+			$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]( $dkEvent( $e ) );
+		},
+			$addEvent( $w, 'resize', func ),
+			r = $SList( 'RESIZE', 1 ),
+			r.dispatchEvent = $detector.ie8 ? function(){
+				if( t0 ) t0.fireEvent( 'onresize', $doc.createEventObject() );
+			} : function(){
+				var ev = $doc.createEvent( 'UIEvents' );
+				ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
+			}
+		return r;
+	})( window, document, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
+
+	dk.stt( 'SCROLL', (function( $w, $doc, $SList, $addEvent, $delEvent, $dkEvent ){
+		var r, func;
+		func = function( $e ){
+			r.scrollLeft = $doc.documentElement ? $doc.documentElement.scrollLeft ? $doc.documentElement.scrollLeft : $doc.body ? $doc.body.scrollLeft : 0 : $doc.body ? $doc.body.scrollLeft : 0,
+				r.scrollTop = $doc.documentElement ? $doc.documentElement.scrollTop ? $doc.documentElement.scrollTop : $doc.body ? $doc.body.scrollTop : 0 : $doc.body ? $doc.body.scrollTop : 0,
+				r[ 'update' ]( $dkEvent( $e ) );
+		},
+			$addEvent( $w, 'scroll', func ),
+			r = $SList( 'SCROLL', 1 );
+		return r;
+	})( window, document, dk.SList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
+
+	dk.stt( 'MOUSE', (function( $doc, $SList, $addEvent, $delEvent, $detector, $dkScroll, $dkEvent ){
+		var r, cancelBubbling, func, oldX, oldY, startX, startY, press, map = { mousedown : 'down', mousemove : 'move', mouseup : 'up', touchstart : 'down', touchmove : 'move', touchend : 'up' };
+		cancelBubbling = function( $e ){
+			cancelBubbling = $e.stopPropagation !== undefined ? function( $e ){ $e.stopPropagation(); } : $w.event !== undefined ? function(){ $w.event.cancelBubble = true; } : null, cancelBubbling( $e );
+		},
+			func = $detector.touchBool ? function( $e ){
+				var mouseX = 0, mouseY = 0, evType = $e.type, eTouches = $e.touches, i = eTouches.length, ev = $dkEvent( $e );
+				if( i ){
+					r.mouseX = mouseX = eTouches[ 0 ].clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
+						r.mouseY = mouseY = eTouches[ 0 ].clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop,
+						r.touches = eTouches, r.targetTouches = $e.targetTouches, r.changedTouches = $e.changedTouches;
+				}
+				cancelBubbling( $e ),
+					ev.type = map[ evType ] ? map[ evType ] : evType;
+				// move
+				switch( evType ){
+					case'touchstart':
+						eTouches.length == 1 ? ( startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0, r.speedX = r.speedY = 0 ) : null;
+						break;
+					case'touchmove':
+						r.moveX = mouseX - startX, r.moveY = mouseY - startY;
+						break;
+					case'touchend':
+						eTouches.length == 0 ? r.moveX = r.moveY = 0 : null;
+						break;
+				}
+				r[ 'update' ]( ev );
+			} : function( $e ){
+				var mouseX, mouseY, evType = $e.type, ev = $dkEvent( $e );
+				r.mouseX = mouseX = $e.clientX, r.speedX = mouseX - oldX, oldX = mouseX, r.pageX = mouseX + $dkScroll.scrollLeft,
+					r.mouseY = mouseY = $e.clientY, r.speedY = mouseY - oldY, oldY = mouseY, r.pageY = mouseY + $dkScroll.scrollTop,
+					ev.type = map[ evType ] ? map[ evType ] : evType;
+				switch( evType ){
+					case'mousedown':
+						press = true, startX = mouseX, startY = mouseY, r.moveX = r.moveY = 0;
+						break;
+					case'mousemove':
+						r.moveX = press ? mouseX - startX : 0, r.moveY = press ? mouseY - startY : 0;
+						break;
+					case'mouseup':
+						press = false, r.moveX = r.moveY = 0;
+						break;
+				}
+				r[ 'update' ]( ev );
+			},
+			$addEvent( $doc, 'down', func, true ), $addEvent( $doc, 'move', func, true ), $addEvent( $doc, 'up', func, true ),
+			r = $SList( 'MOUSE', 1 );
+		return r;
+	})( document, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dk.dkEvent ) ),
+
+	dk.stt( 'WHEEL', (function( $w, $SList, $addEvent, $delEvent, $detector, $dkEvent ){
+		var r, func, start, end;
+		func = function( $e ){
+			var dkEvent, ev = $w.event || $e, delta = ev.detail ? ev.detail < 0 ? -1 : 1 : ev.wheelDelta > 0 ? -1 : 1;
+			dkEvent = $dkEvent( ev ), dkEvent.delta = delta,
+				r[ 'update' ]( dkEvent );
+		},
+			start = function(){ $addEvent( $w, $detector.wheelEvent, func ); },
+			end = function(){ $delEvent( $w, $detector.wheelEvent, func ); },
+			r = $SList( 'WHEEL', 1, start, end );
+		return r;
+	})( window, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.dkEvent ) ),
+
+	dk.stt( 'KEY', (function( $w, $SList, $addEvent, $delEvent, $dkEvent ){
+		var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "SPACE,32,BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
+		func = function( $e ){
+			var ev = $dkEvent( $e ), t0 = list[ t1[ ev.keyCode = $e.keyCode ] ];
+			//ev.target = dk.Dom( ev.nativeTarget );
+			t0 ? t0( ev ) : 0;
+		},
+			start = function(){ $addEvent( $w, 'keydown', func ); },
+			end = function(){ $delEvent( $w, 'keydown', func ); },
+			r = $SList( 'KEY', 0, start, end ),
+			list = r.list;
+		while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toUpperCase(), t0[ t2[ i ].toUpperCase() ] = 0;
+		return r;
+	})( window, dk.SList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
+
+	dk.stt( 'REG', (function(){
+		return {
+			numeric : function( k ){ return /^[+-]*[0-9]*\.?\d+$/.test( k ) },
+			stringOnly : function( k ){ return /^[^0-9]*$/.test( k ) },
+			stripHTMLTags : function( k ){ return k.replace( /<\/?[^\<\/]+\/?>/g, "" ) },
+			lineModify : function( k ){ return k.split( "\r\n" ).join( "\n" ) },
+			Email : function( k ){ return /^(.+)\@(.+)\.(\w+)$/.test( k ) },
+			ip : function( k ){ return /^[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?$/.test( k ) },
+			url : function( k ){ return /^(https?\:\/\/)(www\.)?(.+)\.(\w)+/.test( k ) && k.match( /\./g ).length > 1 },
+			KoreanRegistrationNumber : function( k ){ return /^[0-9]{6}-?[0-9]{7}$/.test( k ) },
+			empty : function( k ){
+				if( !k ) return true;
+				return !k.length
+			}
+		}
+	})() );
+// LOADER :
+;
+// ajax = reqwest
+dk.fn( 'js', (function( $w, $doc, $head ){
+	var js;
+	js = (function(){
+		var uuId = 0;
+		return function( $cb, $url ){
+			var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
+			$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
+				t1 ? $w[ '____callbacks' + id ] = function(){
+					$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
+				} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
+					if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
+				},
+				el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
+		}
+	})();
+	return function( $cb, $url/* , [ $url ], $url, $url */ ){
+		var arg = arguments, arr, i, leng, load, complete;
+		arr = (function(){
+			var r = [], i, leng = arg.length, j, leng2;
+			for( i = 1; i < leng; i++ ){
+				if( Object.prototype.toString.call( arg[ i ] ) === '[object Array]' ){
+					leng2 = arg[ i ].length;
+					for( j = 0; j < leng2; j++ ){
+						r.push( arg[ i ][ j ] )
+					}
+				}else{
+					r.push( arg[ i ] )
+				}
+			}
+			return r;
+		})(),
+			i = 0, leng = arr.length,
+			load = function(){ js( complete, arr[ i++ ] ); },
+			complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
+			leng == 1 ? js( $cb, arr[ i++ ] ) : load();
+	}
+})( window, document, document.getElementsByTagName( 'head' )[ 0 ] ) ),
+
+	dk.fn( 'img', (function( $doc, $detector ){
+		var onload = (function(){
+			if( $detector.ie8 )
+				return function( $el, $cb ){
+					var timeId = setTimeout( function(){
+							if( timeId == -1 ) return;
+							timeId = -1, $cb( false, $el );
+						}, 5000 ),
+						t0 = setInterval( function(){
+							// todo $el.complete 이 무조건 뜬다
+							$el.complete ? ( clearInterval( t0 ), clearTimeout( timeId ), timeId = -1, $cb( true ) ) : null;
+						}, 16 );
+				}
+			else
+				return function( $el, $cb ){
+					$el.onload = function(){
+						$el.onerror = $el.onabort = $el.onload = null, $cb( true );
+					},
+						$el.onerror = $el.onabort = function(){
+							$el.onerror = $el.onabort = $el.onload = null, $cb( false, $el );
+						}
+				}
+		})();
+
+		return function( $cb, $src /* , [ $src ], $src, $src */ ){
+			var arg = arguments, arr, i, leng, load, complete, r = [], el;
+			arr = (function(){
+				var r = [], i, leng = arg.length, j, leng2;
+				for( i = 1; i < leng; i++ ){
+					if( Object.prototype.toString.call( arg[ i ] ) === '[object Array]' ){
+						leng2 = arg[ i ].length;
+						for( j = 0; j < leng2; j++ ){
+							r.push( arg[ i ][ j ] )
+						}
+					}else{
+						r.push( arg[ i ] )
+					}
+				}
+				return r;
+			})(),
+				i = 0, leng = arr.length,
+				load = function(){ el = $doc.createElement( 'img' ), onload( el, complete ), el.src = arr[ i++ ], r.push( el ); },
+				complete = function( $bool, $el ){
+					if( $bool ){
+						i == leng ? $cb( r ) : load();
+					}else{
+						$cb( false, $el.src );
+					}
+				},
+				load();
+		}
+	})( document, dk.DETECTOR ) );
