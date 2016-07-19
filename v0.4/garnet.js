@@ -650,6 +650,7 @@ dk.stt( 'PROTO', {
 		$fn.apply( undefined, param );
 	},
 	attr : (function(){
+		var trim = /^\s*|\s*$/g;
 		return {
 			'@addClass' : function( $v ){
 				var e = this.el, r, check = new RegExp( '(\\s|^)' + $v + '(\\s|$)' );
@@ -753,7 +754,7 @@ dk.stt( 'PROTO', {
 ;
 // DOM :
 dk.cls( 'Dom', (function( $doc, $selector, $detector ){
-	var factory, DomList, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' ), parser;
+	var factory, DomList, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' ), destroy, parser;
 
 	DomList = function( $arr ){
 		var leng = $arr.length, i = leng;
@@ -763,9 +764,11 @@ dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 	},
 		DomList.prototype.S = function(){
 			var r, i, leng = this.length;
-			r = this.dom.S.apply( this.dom, arguments );
-			for( i = 1; i < leng; i++ ) this.domList[ i ].S.apply( this.domList[ i ], arguments );
-			return r === false ? this : r;
+			if( this.length ){
+				r = this.dom.S.apply( this.dom, arguments );
+				for( i = 1; i < leng; i++ ) this.domList[ i ].S.apply( this.domList[ i ], arguments );
+				return r === false ? this : r;
+			}else return this;
 		},
 
 		Dom = function( $el, $idx ){
@@ -789,19 +792,25 @@ dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 			}
 		})(),
 
+		destroy = function( $k ){
+			dk.Dom( $k ).S( 'over', null, 'out', null, 'down', null, 'move', null, 'up', null, 'click', null, 'enter', null, 'leave', null, 'contextmenu', null, 'dblclick', null );
+			delete uuList[ $k ];
+		},
+
 		parser = function( $str ){
 			if( $str.indexOf( '>' ) < 0 ) return $doc.createElement( $str.substring( 1, $str.length ) );
 			else return ( maker.innerHTML = $str, maker ).firstChild;
 		},
 
 		factory = function( $k, $v ){
-			if( $v === null ) return uuList[ $k ]; // 캐싱제거
-			if( $k === undefined ) return new DomList( [ $doc.createElement( 'div' ) ] );
+			if( $v === null ) destroy( $k ); // 캐싱제거
+			else if( $k === undefined ) return new DomList( [ $doc.createElement( 'div' ) ] );
 			else if( typeof $k === 'string' ){ // 문자열
 				if( $k.charAt( 0 ) === '<' ) return new DomList( [ parser( $k ) ] ); // 태그문자
 				else return uuList[ $k ] ? uuList[ $k ] : uuList[ $k ] = new DomList( $selector( $k ) ); // 셀렉터, 캐싱
 			}else if( $k instanceof Object && $k.length ) return new DomList( $k ); // element 배열
-			else return $k.nodeType === 1 ? new DomList( [ $k ] ) : null;
+			else if( $k.nodeType === 1 ) return new DomList( [ $k ] )
+			else return null;
 		},
 		factory.fn = function(){
 			var i = 0, j = arguments.length, k, v;
@@ -1124,3 +1133,33 @@ dk.fn( 'js', (function( $w, $doc, $head ){
 				load();
 		}
 	})( document, dk.DETECTOR ) );
+;
+// SPRITE SHEET :
+dk.cls( 'Sheet', (function( $doc ){
+	var factory, Sheet, uuList = {}, proto = {};
+
+	Sheet = function( $img, $json, $framerate ){
+		var dom;
+		dom = dk.Dom(), this.dom = dom, this.el = dom.el, this.style = this.el.style;
+	},
+		Sheet.prototype.S = function(){
+			this.dom.S.apply( this.dom, arguments );
+		},
+
+		factory = function( $img, $json, $framerate ){
+			return new Sheet( $img, $json, $framerate );
+		},
+		factory.fn = function(){
+			var i = 0, j = arguments.length, k, v;
+			while( i < j ){
+				k = arguments[ i++ ];
+				if( i == j ) return proto[ k ];
+				else v = arguments[ i++ ], v === null ? delete proto[ k ] : proto[ k ] = v;
+			}
+		};
+	return factory;
+})( document ) ),
+	//dk.PROTO.connect( dk.Sheet.fn, dk.PROTO.attr, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event );
+	log( 'a' );
+
+// todo 중복 구현말고 dom 을 확장하라 !!!
