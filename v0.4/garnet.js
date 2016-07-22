@@ -55,7 +55,12 @@
 		dk.stt( 'INFO', { name : 'Dk garnet', version : 'v0.4.1', github : 'https://github.com/ssw3131/garnet.git' } ),
 
 // ERROR :
-		dk.fn( 'err', function( $log ){ log( 'err : ' + $log ); } );
+		dk.fn( 'err', function( $log ){ log( 'dk error : ' + $log ); } ),
+
+// BOM :
+		dk.stt( 'W', W ),
+		dk.stt( 'DOC', DOC ),
+		dk.stt( 'HEAD', DOC.getElementsByTagName( 'head' )[ 0 ] );
 })();
 // DETECTOR :
 ;
@@ -190,7 +195,7 @@ dk.stt( 'DETECTOR', (function( $w, $doc ){
 		wheelEvent : browser == 'firefox' ? 'DOMMouseScroll' : 'mousewheel',
 		isLocalhost : location.host.indexOf( 'localhost' ) < 0 ? false : true
 	}
-})( window, document ) );
+})( dk.W, dk.DOC ) );
 // UTIL :
 ;
 dk.fn( 'random', (function( $mathRandom ){
@@ -608,7 +613,7 @@ dk.fn( 'selector', (function( $doc ){
 		};
 	};
 	return bsSelector( $doc, /^\s*|\s*$/g );
-})( document ) );
+})( dk.DOC ) );
 ;
 // EVENT :
 dk.fn( 'dkEvent', (function( $detector ){
@@ -638,7 +643,7 @@ dk.fn( 'dkEvent', (function( $detector ){
 					$et = map[ $et ] ? map[ $et ] : $et, $el.detachEvent( 'on' + $et, $cb ); // ie8 이하 capture 불가능
 				}
 			})() )
-	})( window, dk.DETECTOR );
+	})( dk.W, dk.DETECTOR );
 ;
 // PROTOTYPE :
 dk.stt( 'PROTO', {
@@ -725,7 +730,7 @@ dk.stt( 'PROTO', {
 			'+text' : function( $v ){ return this.el[ text ] = $v + this.el[ text ]; },
 			'text+' : function( $v ){ return this.el[ text ] = this.el[ text ] + $v; }
 		}
-	})( document, dk.DETECTOR ),
+	})( dk.DOC, dk.DETECTOR ),
 	event : (function( $w, $dkEvent, $addEvent, $delEvent ){
 		var r = {}, evList = [ 'over', 'out', 'down', 'move', 'up', 'click', 'enter', 'leave', 'contextmenu', 'dblclick' ], i = evList.length,
 			cancleMap = { mousedown : 1, mouseup : 1, mousemove : 1 }, t0,
@@ -749,7 +754,7 @@ dk.stt( 'PROTO', {
 
 		while( i-- ) r[ t0 = evList[ i ] ] = make( t0 );
 		return r;
-	})( window, dk.dkEvent, dk.addEvent, dk.delEvent )
+	})( dk.W, dk.dkEvent, dk.addEvent, dk.delEvent )
 } );
 ;
 // DOM :
@@ -822,7 +827,7 @@ dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 		};
 
 	return factory;
-})( document, dk.selector, dk.DETECTOR ) ),
+})( dk.DOC, dk.selector, dk.DETECTOR ) ),
 	dk.PROTO.connect( dk.Dom.fn, dk.PROTO.attr, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event );
 ;
 // CSS :
@@ -865,7 +870,7 @@ dk.cls( 'Css', (function( $doc, $head, $detector ){
 			}
 		};
 	return factory;
-})( document, document.getElementsByTagName( 'head' )[ 0 ], dk.DETECTOR ) ),
+})( dk.DOC, dk.HEAD, dk.DETECTOR ) ),
 	dk.PROTO.connect( dk.Css.fn, dk.PROTO.css );
 // SList :
 ;
@@ -878,14 +883,19 @@ dk.cls( 'SList', (function(){
 				t = this._list, i = t.length, j = i % 8;
 				while( i-- > j ) t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i-- ]( $param ), t[ i ]( $param );
 				while( j-- ) t[ j ]( $param );
-			} : 0,
-			this.start = $start, this.end = $end;
+			} : null,
+			this.start = $start, this.end = $end, this.isStart = false;
 	},
 
 		reset = function(){
 			var k, t0 = this.list, t1 = [];
 			for( k in t0 ) t1.push( t0[ k ] );
-			this._list = t1, t1.length ? this.start ? this.start() : null : this.end ? this.end() : null;
+			this._list = t1;
+			//t1.length  ? this.start ? this.start() : null : this.end ? this.end() : null;
+			if( this.start && this.end ){
+				if( t1.length ) this.isStart ? null : this.start(), this.isStart = true;
+				else this.isStart ? this.end() : null, this.isStart = false;
+			}
 		},
 
 		SList.prototype.S = function(){
@@ -893,10 +903,11 @@ dk.cls( 'SList', (function(){
 			while( i < j ){
 				k = arguments[ i++ ];
 				if( i == j ) return this.list[ k ];
-				else v = arguments[ i++ ], v === null ? delete this.list[ k ] : this.list[ k ] = v;
+				else v = arguments[ i++ ], v === null ? delete this.list[ k ] : this.list[ k ] ? null : this.list[ k ] = v;
+				//else v = arguments[ i++ ], v === null ? delete this.list[ k ] : this.list[ k ] ? dk.err( 'dk.SList에 이미 ' + k + '값이 존재합니다' ) : this.list[ k ] = v;
 			}
 			reset.call( this );
-			return v;
+			return this;
 		}
 	return function( $k, $update, $start, $end ){
 		return new SList( $k, $update, $start, $end );
@@ -905,10 +916,15 @@ dk.cls( 'SList', (function(){
 // STATIC :
 ;
 dk.stt( 'LOOP', (function( $SList ){
-	var r = $SList( 'LOOP', 1 );
-	(function loop(){
-		r[ 'update' ](), requestAnimFrame( loop );
-	})();
+	var r, start, end, loop;
+	start = function(){
+		loop = function(){
+			r[ 'update' ](), requestAnimFrame( loop );
+			//r[ 'update' ](), setTimeout( loop, 160 );
+		}, loop();
+	},
+		end = function(){ loop = function(){}; },
+		r = $SList( 'LOOP', true, start, end );
 	return r;
 })( dk.SList ) ),
 
@@ -924,7 +940,7 @@ dk.stt( 'LOOP', (function( $SList ){
 			$dkWIN.width = t1[ t2 + 'Width' ], $dkWIN.height = t1[ t2 + 'Height' ], r[ 'update' ]( $dkEvent( $e ) );
 		},
 			$addEvent( $w, 'resize', func ),
-			r = $SList( 'RESIZE', 1 ),
+			r = $SList( 'RESIZE', true ),
 			r.dispatchEvent = $detector.ie8 ? function(){
 				if( t0 ) t0.fireEvent( 'onresize', $doc.createEventObject() );
 			} : function(){
@@ -932,7 +948,7 @@ dk.stt( 'LOOP', (function( $SList ){
 				ev.initUIEvent( 'resize', true, false, $w, 0 ), $w.dispatchEvent( ev );
 			}
 		return r;
-	})( window, document, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
+	})( dk.W, dk.DOC, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.WIN, dk.dkEvent ) ),
 
 	dk.stt( 'SCROLL', (function( $w, $doc, $SList, $addEvent, $delEvent, $dkEvent ){
 		var r, func;
@@ -942,9 +958,9 @@ dk.stt( 'LOOP', (function( $SList ){
 				r[ 'update' ]( $dkEvent( $e ) );
 		},
 			$addEvent( $w, 'scroll', func ),
-			r = $SList( 'SCROLL', 1 );
+			r = $SList( 'SCROLL', true );
 		return r;
-	})( window, document, dk.SList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
+	})( dk.W, dk.DOC, dk.SList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
 
 	dk.stt( 'MOUSE', (function( $doc, $SList, $addEvent, $delEvent, $detector, $dkScroll, $dkEvent ){
 		var r, cancelBubbling, func, oldX, oldY, startX, startY, press, map = { mousedown : 'down', mousemove : 'move', mouseup : 'up', touchstart : 'down', touchmove : 'move', touchend : 'up' };
@@ -992,9 +1008,9 @@ dk.stt( 'LOOP', (function( $SList ){
 				r[ 'update' ]( ev );
 			},
 			$addEvent( $doc, 'down', func, true ), $addEvent( $doc, 'move', func, true ), $addEvent( $doc, 'up', func, true ),
-			r = $SList( 'MOUSE', 1 );
+			r = $SList( 'MOUSE', true );
 		return r;
-	})( document, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dk.dkEvent ) ),
+	})( dk.DOC, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.SCROLL, dk.dkEvent ) ),
 
 	dk.stt( 'WHEEL', (function( $w, $SList, $addEvent, $delEvent, $detector, $dkEvent ){
 		var r, func, start, end;
@@ -1005,9 +1021,9 @@ dk.stt( 'LOOP', (function( $SList ){
 		},
 			start = function(){ $addEvent( $w, $detector.wheelEvent, func ); },
 			end = function(){ $delEvent( $w, $detector.wheelEvent, func ); },
-			r = $SList( 'WHEEL', 1, start, end );
+			r = $SList( 'WHEEL', true, start, end );
 		return r;
-	})( window, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.dkEvent ) ),
+	})( dk.W, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.dkEvent ) ),
 
 	dk.stt( 'KEY', (function( $w, $SList, $addEvent, $delEvent, $dkEvent ){
 		var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "SPACE,32,BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
@@ -1022,7 +1038,7 @@ dk.stt( 'LOOP', (function( $SList ){
 			list = r.list;
 		while( i-- ) t1[ t2[ i-- ] ] = t2[ i ].toUpperCase(), t0[ t2[ i ].toUpperCase() ] = 0;
 		return r;
-	})( window, dk.SList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
+	})( dk.W, dk.SList, dk.addEvent, dk.delEvent, dk.dkEvent ) ),
 
 	dk.stt( 'REG', (function(){
 		return {
@@ -1042,44 +1058,96 @@ dk.stt( 'LOOP', (function( $SList ){
 	})() );
 // LOADER :
 ;
-// ajax = reqwest
-dk.fn( 'js', (function( $w, $doc, $head ){
-	var js;
-	js = (function(){
-		var uuId = 0;
-		return function( $cb, $url ){
-			var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
-			$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
-				t1 ? $w[ '____callbacks' + id ] = function(){
-					$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
-				} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
-					if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
-				},
-				el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
-		}
-	})();
-	return function( $cb, $url/* , [ $url ], $url, $url */ ){
-		var arg = arguments, arr, i, leng, load, complete;
-		arr = (function(){
-			var r = [], i, leng = arg.length, j, leng2;
-			for( i = 1; i < leng; i++ ){
-				if( Object.prototype.toString.call( arg[ i ] ) === '[object Array]' ){
-					leng2 = arg[ i ].length;
-					for( j = 0; j < leng2; j++ ){
-						r.push( arg[ i ][ j ] )
-					}
-				}else{
-					r.push( arg[ i ] )
+dk.stt( 'JSON', {
+	parse : function( $v ){ return ( new Function( '', 'return ' + $v ) )(); }
+} ),
+
+	dk.fn( 'ajax', (function( $w ){
+		var checkXMLHttp, async;
+		checkXMLHttp = (function(){
+			if( $w[ 'XMLHttpRequest' ] !== undefined ) return function(){ return new XMLHttpRequest() };
+			var t0 = [ 'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP' ], i = 0, leng = t0.length;
+			while( i < leng ){
+				try{
+					new ActiveXObject( t0[ i ] );
+					return function(){ return new ActiveXObject( t0[ i ] ); }
+				}catch( $e ){
+					i++;
 				}
 			}
-			return r;
 		})(),
-			i = 0, leng = arr.length,
-			load = function(){ js( complete, arr[ i++ ] ); },
-			complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
-			leng == 1 ? js( $cb, arr[ i++ ] ) : load();
-	}
-})( window, document, document.getElementsByTagName( 'head' )[ 0 ] ) ),
+			async = function( $cb, $url ){
+				var rq = checkXMLHttp(),
+					timeId = setTimeout( function(){
+						if( timeId == -1 ) return;
+						if( rq.readyState !== 4 ) rq.abort();
+						timeId = -1, rq.onreadystatechange = null, $cb( null, 'timeout' );
+					}, 5000 ),
+					param = function( $arg ){
+						var i = 2, j = $arg.length, k, v, r = '';
+						if( !$arg || j < i + 1 ) return '';
+						while( i < j ){
+							r += i == 2 ? '?' : '&', k = $arg[ i++ ], v = $arg[ i++ ],
+								r += encodeURIComponent( k ) + '=' + encodeURIComponent( v )
+						}
+						return r;
+					},
+					url = $url + param( arguments, 2 );
+				rq.open( 'get', url, true ),
+					rq.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8' ),
+					rq.onreadystatechange = function(){
+						if( rq.readyState !== 4 || timeId == -1 ) return;
+						clearTimeout( timeId ), timeId = -1;
+						if( rq.readyState == 4 ){
+							if( rq.status == 404 ) return $cb( null, rq.status );
+							if( rq.status >= 200 && rq.status < 300 || rq.status == 304 ){
+								rq.onreadystatechange = null;
+								$cb( rq.responseText, rq.status )
+							}
+						}
+					},
+					rq.send( null );
+			};
+		return async;
+	})( dk.W ) ),
+
+	dk.fn( 'js', (function( $w, $doc, $head ){
+		var js;
+		js = (function(){
+			var uuId = 0;
+			return function( $cb, $url ){
+				var el = $doc.createElement( 'script' ), t0, t1, id = uuId++;
+				$cb ? ( t0 = $url.charAt( $url.length - 1 ) ) : 0, t1 = ( t0 == '=' ),
+					t1 ? $w[ '____callbacks' + id ] = function(){
+						$cb.apply( null, arguments ), $w[ '____callbacks' + id ] = null;
+					} : $doc.addEventListener ? el.onload = $cb : el.onreadystatechange = function(){
+						if( el.readyState == 'loaded' || el.readyState == 'complete' ) el.onreadystatechange = null, $cb ? $cb() : 0;
+					},
+					el.type = 'text/javascript', el.charset = 'utf-8', el.src = $url + ( t1 ? ( '____callbacks' + id ) : '' ), $head.appendChild( el )
+			}
+		})();
+		return function( $cb, $url/* , [ $url ], $url, $url */ ){
+			var arg = arguments, arr, i, leng, load, complete;
+			arr = (function(){
+				var r = [], i, leng = arg.length, j, leng2;
+				for( i = 1; i < leng; i++ ){
+					if( Object.prototype.toString.call( arg[ i ] ) === '[object Array]' ){
+						leng2 = arg[ i ].length;
+						for( j = 0; j < leng2; j++ ){
+							r.push( arg[ i ][ j ] )
+						}
+					}else{
+						r.push( arg[ i ] )
+					}
+				}
+				return r;
+			})(),
+				i = 0, leng = arr.length,
+				load = function(){ js( complete, arr[ i++ ] ); },
+				complete = function(){ i == leng ? $cb ? $cb() : null : load(); },
+				leng == 1 ? js( $cb, arr[ i++ ] ) : load();
+		}
+	})( dk.W, dk.DOC, dk.HEAD ) ),
 
 	dk.fn( 'img', (function( $doc, $detector ){
 		var onload = (function(){
@@ -1132,18 +1200,31 @@ dk.fn( 'js', (function( $w, $doc, $head ){
 				},
 				load();
 		}
-	})( document, dk.DETECTOR ) );
+	})( dk.DOC, dk.DETECTOR ) );
 ;
 // SPRITE SHEET :
-dk.cls( 'Sheet', (function( $doc ){
-	var factory, Sheet, uuList = {}, proto = {};
+dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
+	var factory, Sheet, proto = {}, uuId = 0;
 
 	Sheet = function( $img, $json, $framerate ){
-		var dom;
-		dom = dk.Dom(), this.dom = dom, this.el = dom.el, this.style = this.el.style;
+		var dom, self = this;
+		this.uuId = 'Sheet' + uuId++,
+			dom = $dkDom().S( 'bgImg', $img ), this.dom = dom, this.el = dom.el, this.style = this.el.style,
+			this.arr = null, this.repeat = true, this.currentFrame = 1, this.totalFrames = 1, this.startFrame = 1, this.endFrame = 1, this.currentRate = 0, this.frameRate = 30, this.direction = true,
+			$dkAjax( function( $data ){
+				var data = $dkJSON.parse( $data ), arr = self.arr = data.frames;
+				self.totalFrames = self.endFrame = arr.length, self.frameRate = $framerate == undefined ? 2 : 60 / $framerate,
+					dom.S( 'width', arr[ 0 ].sourceSize.w, 'height', arr[ 0 ].sourceSize.h );
+			}, $json );
 	},
 		Sheet.prototype.S = function(){
-			this.dom.S.apply( this.dom, arguments );
+			var r = this.dom.S.apply( this.dom, arguments );
+			return r === this.dom ? this : r;
+		},
+		Sheet.prototype.S2 = function(){
+			var i = arguments.length, k = arguments[ 0 ];
+			i == 1 ? proto[ k ].call( this ) : proto[ k ].apply( this, Array.prototype.slice.call( arguments, 1 ) );
+			return this;
 		},
 
 		factory = function( $img, $json, $framerate ){
@@ -1158,8 +1239,72 @@ dk.cls( 'Sheet', (function( $doc ){
 			}
 		};
 	return factory;
-})( document ) ),
-	//dk.PROTO.connect( dk.Sheet.fn, dk.PROTO.attr, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event );
-	log( 'a' );
+})( dk.DOC, dk.Dom, dk.ajax, dk.JSON ) ),
 
-// todo 중복 구현말고 dom 을 확장하라 !!!
+	dk.PROTO.connect( dk.Sheet.fn, (function( $dkLOOP, $SList ){
+		var sList, func, start, end, goFrame;
+		func = function(){
+			var list = sList._list, i = list.length, sheet;
+			while( i-- ){
+				sheet = list[ i ];
+				if( sheet.arr == null ) continue;
+				if( ++sheet.currentRate % sheet.frameRate < 1 ){
+					if( sheet.direction ){
+						++sheet.currentFrame > sheet.endFrame ?
+							sheet.repeat ? sheet.currentFrame = sheet.startFrame : ( sheet.currentFrame = sheet.endFrame, sList.S( sheet.uuId, null ) )
+							: null
+					}else{
+						--sheet.currentFrame < sheet.endFrame ?
+							( sheet.currentFrame = sheet.endFrame, sList.S( sheet.uuId, null ) )
+						: null
+					}
+				}
+				goFrame( sheet );
+			}
+		},
+			start = function(){ $dkLOOP.S( 'SHEET', func ) },
+			end = function(){ $dkLOOP.S( 'SHEET', null ) },
+			sList = $SList( 'SHEET', false, start, end ),
+
+			goFrame = function( $sheet ){
+				var arr = $sheet.arr, x, y;
+				x = arr[ $sheet.currentFrame - 1 ].frame.x,
+					y = arr[ $sheet.currentFrame - 1 ].frame.y,
+					$sheet.S( 'backgroundPosition', -x + "px " + -y + "px" );
+			}
+
+		return {
+			repeat : function(){
+				this.direction = true, this.repeat = true, this.startFrame = 1, this.endFrame = this.totalFrames,
+					sList.S( this.uuId, this );
+			},
+			play : function(){
+				this.direction = true, this.repeat = false, this.endFrame = this.totalFrames,
+					this.currentFrame + 1 > this.endFrame ? this.startFrame = this.currentFrame = this.endFrame : null,
+					sList.S( this.uuId, this )
+			},
+			stop : function(){
+				sList.S( this.uuId, null )
+			},
+			rewind : function(){
+				this.direction = false, this.repeat = false, this.endFrame = 1,
+					this.currentFrame - 1 < 1 ? this.startFrame = this.currentFrame = 1 : null,
+					sList.S( this.uuId, this )
+			},
+			gotoAndStop : function( $frame ){
+				this.currentFrame = $frame,
+					sList.S( this.uuId, null ),
+					goFrame( this );
+			},
+			gotoAndPlay : function( $frame ){
+				this.direction = true, this.repeat = false, this.currentFrame = $frame, this.endFrame = this.totalFrames,
+					sList.S( this.uuId, this );
+			},
+			abRepeat : function( $startFrame, $endFrame ){
+				this.direction = true, this.repeat = true, this.startFrame = this.currentFrame = $startFrame, this.endFrame = $endFrame,
+					sList.S( this.uuId, this );
+			}
+		};
+	})( dk.LOOP, dk.SList ) );
+
+// ajax 끝난 시점을 캐치 그 전 실행 매서드 해결
