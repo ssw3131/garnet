@@ -1206,7 +1206,7 @@ dk.stt( 'JSON', {
 dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 	var factory, Sheet, proto = {}, uuId = 0;
 
-	Sheet = function( $img, $json, $framerate ){
+	Sheet = function( $cb, $img, $json, $framerate ){
 		var dom, self = this;
 		this.uuId = 'Sheet' + uuId++,
 			dom = $dkDom().S( 'bgImg', $img ), this.dom = dom, this.el = dom.el, this.style = this.el.style,
@@ -1214,7 +1214,7 @@ dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 			$dkAjax( function( $data ){
 				var data = $dkJSON.parse( $data ), arr = self.arr = data.frames;
 				self.totalFrames = self.endFrame = arr.length, self.frameRate = $framerate == undefined ? 2 : 60 / $framerate,
-					dom.S( 'width', arr[ 0 ].sourceSize.w, 'height', arr[ 0 ].sourceSize.h );
+					dom.S( 'width', arr[ 0 ].sourceSize.w, 'height', arr[ 0 ].sourceSize.h ), $cb( self );
 			}, $json );
 	},
 		Sheet.prototype.S = function(){
@@ -1256,7 +1256,7 @@ dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 					}else{
 						--sheet.currentFrame < sheet.endFrame ?
 							( sheet.currentFrame = sheet.endFrame, sList.S( sheet.uuId, null ) )
-						: null
+							: null
 					}
 				}
 				goFrame( sheet );
@@ -1306,5 +1306,3 @@ dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 			}
 		};
 	})( dk.LOOP, dk.SList ) );
-
-// ajax 끝난 시점을 캐치 그 전 실행 매서드 해결
