@@ -18,7 +18,7 @@
 		} ),
 
 // dk :
-		dk = W.dk = W[ 'dk' ] ? W[ 'dk' ] : dk = (function( $doc ){
+		dk = W.dk = W[ 'dk' ] ? W[ 'dk' ] : (function( $doc ){
 			return function( $host ){
 				var check;
 				check = setInterval( function(){
@@ -55,15 +55,17 @@
 		dk.stt( 'INFO', { name : 'Dk garnet', version : 'v0.4.1', github : 'https://github.com/ssw3131/garnet.git' } ),
 
 // ERROR :
-		dk.fn( 'err', function( $log ){ log( 'dk error : ' + $log ); } ),
+		dk.fn( 'err', function( $log ){
+			//log( 'dk error : ' + $log );
+		} ),
 
 // BOM :
 		dk.stt( 'W', W ),
 		dk.stt( 'DOC', DOC ),
 		dk.stt( 'HEAD', DOC.getElementsByTagName( 'head' )[ 0 ] );
 })();
+
 // DETECTOR :
-;
 dk.stt( 'DETECTOR', (function( $w, $doc ){
 	var navi = $w.navigator, agent = navi.userAgent.toLowerCase(), platform = navi.platform.toLowerCase(), app = navi.appVersion.toLowerCase(),
 		device = 'pc', os, osv, browser, bv, flash,
@@ -196,8 +198,8 @@ dk.stt( 'DETECTOR', (function( $w, $doc ){
 		isLocalhost : location.host.indexOf( 'localhost' ) < 0 ? false : true
 	}
 })( dk.W, dk.DOC ) );
+
 // UTIL :
-;
 dk.fn( 'random', (function( $mathRandom ){
 	return function( $max, $min ){ return $max = $max || 1, $min = $min || 0, ( $max - $min ) * $mathRandom() + $min; }
 })( Math.random ) ),
@@ -214,7 +216,7 @@ dk.fn( 'random', (function( $mathRandom ){
 		var t0, r;
 		return function(){ return t0 ? ( r = $dateNow() - t0, t0 = null, r ) : ( t0 = $dateNow(), null ); }
 	})( Date.now ) );
-;
+
 // SELECTOR : bsSelector v0.3.2, 141110
 dk.fn( 'selector', (function( $doc ){
 	/* bsSelector v0.3.2
@@ -614,7 +616,7 @@ dk.fn( 'selector', (function( $doc ){
 	};
 	return bsSelector( $doc, /^\s*|\s*$/g );
 })( dk.DOC ) );
-;
+
 // EVENT :
 dk.fn( 'dkEvent', (function( $detector ){
 	var t0 = $detector.currentTarget;
@@ -644,7 +646,7 @@ dk.fn( 'dkEvent', (function( $detector ){
 				}
 			})() )
 	})( dk.W, dk.DETECTOR );
-;
+
 // PROTOTYPE :
 dk.stt( 'PROTO', {
 	connect : function( $fn/* , $obj, $obj */ ){
@@ -719,10 +721,10 @@ dk.stt( 'PROTO', {
 	tree : (function( $doc, $detector ){
 		var text = $detector.innerText ? 'innerText' : 'textContent';
 		return {
-			'>' : function( $v ){ this.el.appendChild( $v.list[ 0 ].el ); },
-			'<' : function( $v ){ $v === 'body' ? $doc.body.appendChild( this.el ) : $v.list[ 0 ].el.appendChild( this.el ); },
-			'>-' : function( $v ){ this.el.removeChild( $v.list[ 0 ].el ); },
-			'<-' : function( $v ){ $v === 'body' ? $doc.body.removeChild( this.el ) : $v.list[ 0 ].el.removeChild( this.el ); },
+			'>' : function( $v ){ this.el.appendChild( $v.elList[ 0 ] ); },
+			'<' : function( $v ){ $v === 'body' ? $doc.body.appendChild( this.el ) : $v.elList[ 0 ].appendChild( this.el ); },
+			'>-' : function( $v ){ this.el.removeChild( $v.elList[ 0 ] ); },
+			'<-' : function( $v ){ $v === 'body' ? $doc.body.removeChild( this.el ) : $v.elList[ 0 ].removeChild( this.el ); },
 			'html' : function( $v ){ return ( $v === undefined ) ? this.el.innerHTML : this.el.innerHTML = $v; },
 			'+html' : function( $v ){ return this.el.innerHTML = $v + this.el.innerHTML; },
 			'html+' : function( $v ){ return this.el.innerHTML = this.el.innerHTML + $v; },
@@ -756,7 +758,7 @@ dk.stt( 'PROTO', {
 		return r;
 	})( dk.W, dk.dkEvent, dk.addEvent, dk.delEvent )
 } );
-;
+
 // DOM :
 dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 	var factory, DomList, Dom, uuList = {}, proto = {}, maker = $doc.createElement( 'div' ), destroy, parser;
@@ -829,7 +831,7 @@ dk.cls( 'Dom', (function( $doc, $selector, $detector ){
 	return factory;
 })( dk.DOC, dk.selector, dk.DETECTOR ) ),
 	dk.PROTO.connect( dk.Dom.fn, dk.PROTO.attr, dk.PROTO.css, dk.PROTO.tree, dk.PROTO.event );
-;
+
 // CSS :
 dk.cls( 'Css', (function( $doc, $head, $detector ){
 	var factory, Css, uuList = {}, proto = {}, el, sheet, rules;
@@ -872,8 +874,8 @@ dk.cls( 'Css', (function( $doc, $head, $detector ){
 	return factory;
 })( dk.DOC, dk.HEAD, dk.DETECTOR ) ),
 	dk.PROTO.connect( dk.Css.fn, dk.PROTO.css );
+
 // SList :
-;
 dk.cls( 'SList', (function(){
 	var SList, reset;
 	SList = function( $k, $update, $start, $end ){
@@ -913,8 +915,8 @@ dk.cls( 'SList', (function(){
 		return new SList( $k, $update, $start, $end );
 	}
 })() );
+
 // STATIC :
-;
 dk.stt( 'LOOP', (function( $SList ){
 	var r, start, end, loop;
 	start = function(){
@@ -1056,8 +1058,8 @@ dk.stt( 'LOOP', (function( $SList ){
 			}
 		}
 	})() );
+
 // LOADER :
-;
 dk.stt( 'JSON', {
 	parse : function( $v ){ return ( new Function( '', 'return ' + $v ) )(); }
 } ),
@@ -1201,7 +1203,7 @@ dk.stt( 'JSON', {
 				load();
 		}
 	})( dk.DOC, dk.DETECTOR ) );
-;
+
 // SPRITE SHEET :
 dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 	var factory, Sheet, proto = {}, uuId = 0;
