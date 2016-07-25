@@ -18,7 +18,7 @@
 		} ),
 
 // dk :
-		W.dk = W[ 'dk' ] ? W[ 'dk' ] : dk = (function( $doc ){
+		dk = W.dk = W[ 'dk' ] ? W[ 'dk' ] : dk = (function( $doc ){
 			return function( $host ){
 				var check;
 				check = setInterval( function(){
