@@ -56,7 +56,7 @@
 
 // ERROR :
 		dk.fn( 'err', function( $log ){
-			//log( 'dk error : ' + $log );
+			log( 'dk error : ' + $log );
 		} ),
 
 // BOM :
@@ -659,6 +659,7 @@ dk.stt( 'PROTO', {
 	attr : (function(){
 		var trim = /^\s*|\s*$/g;
 		return {
+			// todo 중복 문자열 에러
 			'@addClass' : function( $v ){
 				var e = this.el, r, check = new RegExp( '(\\s|^)' + $v + '(\\s|$)' );
 				r = e.getAttribute( 'class' ), r = r ? r.replace( check, ' ' ).replace( trim, '' ) + ' ' + $v : $v,
@@ -678,6 +679,7 @@ dk.stt( 'PROTO', {
 				if( $v === undefined ) return e[ 'scrollTop' ];
 				else e[ 'scrollTop' ] = $v;
 			}
+			// todo computed height, computed width
 		}
 	})(),
 	css : (function( $detector ){
@@ -1028,7 +1030,7 @@ dk.stt( 'LOOP', (function( $SList ){
 	})( dk.W, dk.SList, dk.addEvent, dk.delEvent, dk.DETECTOR, dk.dkEvent ) ),
 
 	dk.stt( 'KEY', (function( $w, $SList, $addEvent, $delEvent, $dkEvent ){
-		var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "SPACE,32,BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "'*',106,'+',107,'-',109,'.',110,'/',111,'=',187,COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
+		var r, func, start, end, list, t0 = {}, t1 = {}, t2 = ( "SPACE,32,BACKSPACE,8,TAB,9,ENTER,13,SHIFT,16,CTRL,17,ALT,18,PAUSE,19,CAPSLOCK,20,ESC,27," + "PAGE_UP,33,PAGE_DOWN,34,END,35,HOME,36,LEFT_ARROW,37,UP_ARROW,38,RIGHT_ARROW,39,DOWN_ARROW,40,INSERT,45,DELETE,46,NUMLOCK,144,SCROLLLOCK,145," + "0,48,1,49,2,50,3,51,4,52,5,53,6,54,7,55,8,56,9,57,A,65,B,66,C,67,D,68,E,69,F,70,G,71,H,72,I,73,J,74,K,75,L,76,M,77,N,78,O,79,P,80,Q,81,R,82,S,83,T,84,U,85,V,86,W,87,X,88,Y,89,Z,90," + "NUMPAD_0,96,NUMPAD_1,97,NUMPAD_2,98,NUMPAD_3,99,NUMPAD_4,100,NUMPAD_5,101,NUMPAD_6,102,NUMPAD_7,103,NUMPAD_8,104,NUMPAD_9,105," + "COMA,188,'SLASH',191,'BACKSLASH',220," + "F1,112,F2,113,F3,114,F4,115,F5,116,F6,117,F7,118,F8,119,F9,120,F10,121,F11,122,F12,123" ).split( "," ), i = t2.length;
 		func = function( $e ){
 			var ev = $dkEvent( $e ), t0 = list[ t1[ ev.keyCode = $e.keyCode ] ];
 			//ev.target = dk.Dom( ev.nativeTarget );
@@ -1209,13 +1211,14 @@ dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 	var factory, Sheet, proto = {}, uuId = 0;
 
 	Sheet = function( $cb, $img, $json, $framerate ){
+		log( arguments )
 		var dom, self = this;
 		this.uuId = 'Sheet' + uuId++,
 			dom = $dkDom().S( 'bgImg', $img ), this.dom = dom, this.el = dom.el, this.style = this.el.style,
 			this.arr = null, this.repeat = true, this.currentFrame = 1, this.totalFrames = 1, this.startFrame = 1, this.endFrame = 1, this.currentRate = 0, this.frameRate = 30, this.direction = true,
 			$dkAjax( function( $data ){
 				var data = $dkJSON.parse( $data ), arr = self.arr = data.frames;
-				self.totalFrames = self.endFrame = arr.length, self.frameRate = $framerate == undefined ? 2 : 60 / $framerate,
+				self.totalFrames = self.endFrame = arr.length, self.frameRate = $framerate,
 					dom.S( 'width', arr[ 0 ].sourceSize.w, 'height', arr[ 0 ].sourceSize.h ), $cb( self );
 			}, $json );
 	},
@@ -1229,8 +1232,8 @@ dk.cls( 'Sheet', (function( $doc, $dkDom, $dkAjax, $dkJSON ){
 			return this;
 		},
 
-		factory = function( $img, $json, $framerate ){
-			return new Sheet( $img, $json, $framerate );
+		factory = function( $cb, $img, $json, $framerate ){
+			return new Sheet( $cb, $img, $json, $framerate == undefined ? 2 : 60 / $framerate );
 		},
 		factory.fn = function(){
 			var i = 0, j = arguments.length, k, v;
