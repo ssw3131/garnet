@@ -877,7 +877,7 @@ dk.cls( 'Css', (function( $doc, $head, $detector ){
 })( dk.DOC, dk.HEAD, dk.DETECTOR ) ),
 	dk.PROTO.connect( dk.Css.fn, dk.PROTO.css );
 
-// SList :
+// SLIST :
 dk.cls( 'SList', (function(){
 	var SList, reset;
 	SList = function( $k, $update, $start, $end ){
